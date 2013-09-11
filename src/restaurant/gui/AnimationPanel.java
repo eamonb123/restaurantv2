@@ -12,9 +12,12 @@ public class AnimationPanel extends JPanel implements ActionListener {
 
     private final int WINDOWX = 450;
     private final int WINDOWY = 350;
+    private int xPos=200;
+    private int yPos=250;
+    private int Width=50;
+    private int Height=50;
     private Image bufferImage;
     private Dimension bufferSize;
-
     private List<Gui> guis = new ArrayList<Gui>();
 
     public AnimationPanel() {
@@ -40,7 +43,7 @@ public class AnimationPanel extends JPanel implements ActionListener {
 
         //Here is the table
         g2.setColor(Color.ORANGE);
-        g2.fillRect(200, 250, 50, 50);//200 and 250 need to be table params
+        g2.fillRect(xPos, yPos, Width, Height);//200 and 250 need to be table params
 
 
         for(Gui gui : guis) {

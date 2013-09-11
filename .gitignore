@@ -5,6 +5,8 @@
 *.jar
 *.war
 *.ear
+.classpath
+.project
 
 # Editor Temporary Files
 .*.sw[a-z]

@@ -21,6 +21,8 @@ public class ListPanel extends JPanel implements ActionListener {
     private JPanel view = new JPanel();
     private List<JButton> list = new ArrayList<JButton>();
     private JButton addPersonB = new JButton("Add");
+    private JTextField textField = new JTextField(30);
+    private JCheckBox alwaysHungry = new JCheckBox();
 
     private RestaurantPanel restPanel;
     private String type;
@@ -34,13 +36,15 @@ public class ListPanel extends JPanel implements ActionListener {
     public ListPanel(RestaurantPanel rp, String type) {
         restPanel = rp;
         this.type = type;
-
+        alwaysHungry.setText("Hungry?");
+        alwaysHungry.addActionListener(this);
         setLayout(new BoxLayout((Container) this, BoxLayout.Y_AXIS));
         add(new JLabel("<html><pre> <u>" + type + "</u><br></pre></html>"));
-
         addPersonB.addActionListener(this);
+        textField.setMaximumSize(textField.getPreferredSize());
+        add(textField);
+        add(alwaysHungry);
         add(addPersonB);
-
         view.setLayout(new BoxLayout((Container) view, BoxLayout.Y_AXIS));
         pane.setViewportView(view);
         add(pane);
@@ -53,7 +57,7 @@ public class ListPanel extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == addPersonB) {
         	// Chapter 2.19 describes showInputDialog()
-            addPerson(JOptionPane.showInputDialog("Please enter a name:"));
+            addPerson(textField.getText());
         }
         else {
         	// Isn't the second for loop more beautiful?
@@ -87,9 +91,11 @@ public class ListPanel extends JPanel implements ActionListener {
             button.addActionListener(this);
             list.add(button);
             view.add(button);
-            restPanel.addPerson(type, name);//puts customer on list
+            restPanel.addPerson(type, alwaysHungry, name);//puts customer on list
             restPanel.showInfo(type, name);//puts hungry button on panel
             validate();
+            textField.setText("");
+            alwaysHungry.setSelected(false);
         }
     }
 }

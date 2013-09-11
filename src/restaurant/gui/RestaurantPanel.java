@@ -86,12 +86,12 @@ public class RestaurantPanel extends JPanel {
      * @param type indicates whether the person is a customer or waiter (later)
      * @param name name of person
      */
-    public void addPerson(String type, String name) {
-
+    public void addPerson(String type, JCheckBox alwaysHungry, String name) {
     	if (type.equals("Customers")) {
     		CustomerAgent c = new CustomerAgent(name);	
     		CustomerGui g = new CustomerGui(c, gui);
-
+    		if (alwaysHungry.isSelected())
+    			g.setHungry();
     		gui.animationPanel.addGui(g);// dw
     		c.setHost(host);
     		c.setGui(g);
@@ -99,5 +99,4 @@ public class RestaurantPanel extends JPanel {
     		c.startThread();
     	}
     }
-
 }
