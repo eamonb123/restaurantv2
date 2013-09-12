@@ -14,11 +14,10 @@ import java.util.concurrent.Semaphore;
 //the HostAgent. A Host is the manager of a restaurant who sees that all
 //is proceeded as he wishes.
 public class HostAgent extends Agent {
-	static final int NTABLES = 1;//a global for the number of tables.
+	static final int NTABLES = 3;//a global for the number of tables.
 	//Notice that we implement waitingCustomers using ArrayList, but type it
 	//with List semantics.
-	public List<CustomerAgent> waitingCustomers
-	= new ArrayList<CustomerAgent>();
+	public List<CustomerAgent> waitingCustomers = new ArrayList<CustomerAgent>();
 	public Collection<Table> tables;
 	//note that tables is typed with Collection semantics.
 	//Later we will see how it is implemented
@@ -34,10 +33,15 @@ public class HostAgent extends Agent {
 		this.name = name;
 		// make some tables
 		tables = new ArrayList<Table>(NTABLES);
+		int xPos = 200;
 		for (int ix = 1; ix <= NTABLES; ix++) {
+			Table newTable = new Table(ix);
+			newTable.xPos = xPos;
 			tables.add(new Table(ix));//how you add to a collections
+			xPos+=150;
 		}
 	}
+	
 
 	public String getMaitreDName() {
 		return name;
@@ -122,7 +126,7 @@ public class HostAgent extends Agent {
 		//Notice how we print "customer" directly. It's toString method will do it.
 		//Same with "table"
 		print("Seating " + customer + " at " + table);
-		hostGui.DoBringToTable(customer); 
+		hostGui.DoBringToTable(customer);
 
 	}
 
@@ -139,7 +143,7 @@ public class HostAgent extends Agent {
 	private class Table {
 		CustomerAgent occupiedBy;
 		int tableNumber;
-
+		int xPos;
 		Table(int tableNumber) {
 			this.tableNumber = tableNumber;
 		}

@@ -5,6 +5,7 @@ import restaurant.CustomerAgent;
 import restaurant.HostAgent;
 
 import java.awt.*;
+import java.util.*;
 
 public class HostGui implements Gui {
 
@@ -12,7 +13,15 @@ public class HostGui implements Gui {
 
     private int xPos = -20, yPos = -20;//default waiter position
     private int xDestination = -20, yDestination = -20;//default start position
-
+    
+    HashMap<Integer, Integer> tableMap = new HashMap<Integer, Integer>();
+    {
+    	for (int i=1; i<=3; i++)
+    	{
+    		tableMap.put(i,200);
+    	}
+    }
+    
     public static final int xTable = 200;
     public static final int yTable = 250;
 

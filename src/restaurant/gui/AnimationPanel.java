@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class AnimationPanel extends JPanel implements ActionListener {
-
+	
     private final int WINDOWX = 450;
     private final int WINDOWY = 350;
     private int xPos=200;
@@ -36,16 +36,18 @@ public class AnimationPanel extends JPanel implements ActionListener {
 
     public void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D)g;
-
+        int NTABLES = 3;
+        int xPosUpdated=xPos;
         //Clear the screen by painting a rectangle the size of the frame
         g2.setColor(getBackground());
         g2.fillRect(0, 0, WINDOWX, WINDOWY );
-
         //Here is the table
-        g2.setColor(Color.ORANGE);
-        g2.fillRect(xPos, yPos, Width, Height);//200 and 250 need to be table params
-        g2.fillRect(xPos + 150, yPos, Width, Height);
-        g2.fillRect(xPos + 300, yPos, Width, Height);
+        for (int i=0; i<NTABLES; i++)
+        {
+	        g2.setColor(Color.ORANGE);
+	        g2.fillRect(xPosUpdated, yPos, Width, Height);//200 and 250 need to be table params
+	        xPosUpdated+=150;
+        }
 
         for(Gui gui : guis) {
             if (gui.isPresent()) {

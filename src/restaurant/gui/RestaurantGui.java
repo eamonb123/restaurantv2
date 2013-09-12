@@ -22,7 +22,7 @@ public class RestaurantGui extends JFrame implements ActionListener {
      * 2) the infoPanel about the clicked Customer (created just below)
      */    
     private RestaurantPanel restPanel = new RestaurantPanel(this);
-    private ImageIcon image = new ImageIcon("c:\\Barkhordarian_Eamon.jpg");
+    private ImageIcon image = new ImageIcon("c:\\Users\\Eamon\\workspace\\Lab1\\Barkhordarian_Eamon.jpg");
     /* infoPanel holds information about the clicked customer, if there is one*/
     private JPanel infoPanel;
     private JPanel organizer = new JPanel();
