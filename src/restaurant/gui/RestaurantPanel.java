@@ -15,7 +15,7 @@ import java.util.Vector;
 public class RestaurantPanel extends JPanel {
 
     //Host, cook, waiters and customers
-    private HostAgent host = new HostAgent("Sarah");
+    private HostAgent host = new HostAgent("Sarah", 3);
     private HostGui hostGui = new HostGui(host);
 
     private Vector<CustomerAgent> customers = new Vector<CustomerAgent>();
@@ -93,6 +93,7 @@ public class RestaurantPanel extends JPanel {
     		if (alwaysHungry.isSelected())
     			g.setHungry();
     		gui.animationPanel.addGui(g);// dw
+    		//add a new waiter here
     		c.setHost(host);
     		c.setGui(g);
     		customers.add(c);

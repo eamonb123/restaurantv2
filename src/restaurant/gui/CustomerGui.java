@@ -4,6 +4,7 @@ import restaurant.CustomerAgent;
 import restaurant.HostAgent;
 
 import java.awt.*;
+import java.util.HashMap;
 
 public class CustomerGui implements Gui{
 
@@ -77,10 +78,27 @@ public class CustomerGui implements Gui{
 	public void setPresent(boolean p) {
 		isPresent = p;
 	}
-
-	public void DoGoToSeat(int seatnumber) {//later you will map seatnumber to table coordinates.
-		xDestination = xTable1;
-		yDestination = yTable;
+	
+	//HashMap<Integer, Integer> tableMap = new HashMap<Integer, Integer>();
+	public void DoGoToSeat(int tableNumber) {//later you will map seatnumber to table coordinates.
+		if (tableNumber==1)
+		{
+			xDestination=200;
+			yDestination = yTable;
+		}
+		else if (tableNumber==2)
+		{
+			xDestination=350;
+			yDestination = yTable;
+		}
+		else if (tableNumber==3)
+		{
+			xDestination=500;
+			yDestination = yTable;
+		}
+		
+		//xDestination = tableMap.get(tableNumber); 
+		
 		command = Command.GoToSeat;
 	}
 

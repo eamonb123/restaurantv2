@@ -1,6 +1,5 @@
 package restaurant.gui;
 
-
 import restaurant.CustomerAgent;
 import restaurant.HostAgent;
 
@@ -8,17 +7,19 @@ import java.awt.*;
 import java.util.*;
 
 public class HostGui implements Gui {
-
+	private int NTABLES;
     private HostAgent agent = null;
-
     private int xPos = -20, yPos = -20;//default waiter position
     private int xDestination = -20, yDestination = -20;//default start position
+    private int updatedPosition=200;
     
+    //MAPPING TABLE NUMBERS TO COORDINATES ON THE GUI
     HashMap<Integer, Integer> tableMap = new HashMap<Integer, Integer>();
     {
     	for (int i=1; i<=3; i++)
     	{
-    		tableMap.put(i,200);
+    		tableMap.put(i,updatedPosition);
+    		updatedPosition+=150;
     	}
     }
     
@@ -26,11 +27,12 @@ public class HostGui implements Gui {
     public static final int yTable = 250;
 
     public HostGui(HostAgent agent) {
-        this.agent = agent;
+    	this.agent = agent;
     }
 
     public void updatePosition() {
-        if (xPos < xDestination)
+    
+    	if (xPos < xDestination)
             xPos++;
         else if (xPos > xDestination)
             xPos--;

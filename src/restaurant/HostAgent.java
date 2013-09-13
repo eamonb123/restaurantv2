@@ -14,20 +14,19 @@ import java.util.concurrent.Semaphore;
 //the HostAgent. A Host is the manager of a restaurant who sees that all
 //is proceeded as he wishes.
 public class HostAgent extends Agent {
-	static final int NTABLES = 3;//a global for the number of tables.
+	static int NTABLES;//a global for the number of tables.
 	//Notice that we implement waitingCustomers using ArrayList, but type it
 	//with List semantics.
 	public List<CustomerAgent> waitingCustomers = new ArrayList<CustomerAgent>();
 	public Collection<Table> tables;
 	//note that tables is typed with Collection semantics.
 	//Later we will see how it is implemented
-
 	private String name;
 	private Semaphore atTable = new Semaphore(0,true);
-
+	private boolean isServing=false;
 	public HostGui hostGui = null;
 
-	public HostAgent(String name) {
+	public HostAgent(String name, int NTABLES) {
 		super();
 
 		this.name = name;
@@ -37,7 +36,7 @@ public class HostAgent extends Agent {
 		for (int ix = 1; ix <= NTABLES; ix++) {
 			Table newTable = new Table(ix);
 			newTable.xPos = xPos;
-			tables.add(new Table(ix));//how you add to a collections
+			tables.add(newTable);//how you add to a collections
 			xPos+=150;
 		}
 	}
@@ -80,7 +79,7 @@ public class HostAgent extends Agent {
 		atTable.release();// = true;
 		stateChanged();
 	}
-
+	
 	/**
 	 * Scheduler.  Determine what action is called for, and do it.
 	 */
@@ -90,11 +89,14 @@ public class HostAgent extends Agent {
             so that table is unoccupied and customer is waiting.
             If so seat him at the table.
 		 */
-		for (Table table : tables) {
-			if (!table.isOccupied()) {
-				if (!waitingCustomers.isEmpty()) {
-					seatCustomer(waitingCustomers.get(0), table);//the action
-					return true;//return true to the abstract agent to reinvoke the scheduler.
+		if (isServing!=true)
+		{
+			for (Table table : tables) {
+				if (!table.isOccupied()) {
+					if (!waitingCustomers.isEmpty()) {
+						seatCustomer(waitingCustomers.get(0), table);//the action
+						return true;//return true to the abstract agent to reinvoke the scheduler.
+					}
 				}
 			}
 		}
@@ -103,6 +105,19 @@ public class HostAgent extends Agent {
 		//we have tried all our rules and found
 		//nothing to do. So return false to main loop of abstract agent
 		//and wait.
+	}
+	
+	public int tableNumber()
+	{
+		int tableNum=2;
+		for (Table table : tables) {
+			if (!table.isOccupied()) {
+				tableNum=table.tableNumber;
+				
+				break;
+			}
+		}
+		return tableNum;
 	}
 
 	// Actions

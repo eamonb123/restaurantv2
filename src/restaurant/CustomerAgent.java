@@ -4,6 +4,7 @@ import restaurant.gui.CustomerGui;
 import restaurant.gui.RestaurantGui;
 import agent.Agent;
 
+import java.util.Collection;
 import java.util.Timer;
 import java.util.TimerTask;
  
@@ -118,7 +119,9 @@ public class CustomerAgent extends Agent {
 
 	private void SitDown() {
 		Do("Being seated. Going to table");
-		customerGui.DoGoToSeat(1);//hack; only one table
+		//Collection collection = host.getTables();
+		int number= host.tableNumber();
+		customerGui.DoGoToSeat(number);//hack; only one table
 	}
 
 	private void EatFood() {

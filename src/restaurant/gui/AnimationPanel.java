@@ -2,6 +2,8 @@ package restaurant.gui;
 
 import javax.swing.*;
 
+import restaurant.HostAgent;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -37,12 +39,12 @@ public class AnimationPanel extends JPanel implements ActionListener {
     public void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D)g;
         int NTABLES = 3;
-        int xPosUpdated=xPos;
         //Clear the screen by painting a rectangle the size of the frame
         g2.setColor(getBackground());
         g2.fillRect(0, 0, WINDOWX, WINDOWY );
+        int xPosUpdated=xPos;
         //Here is the table
-        for (int i=0; i<NTABLES; i++)
+        for (int i=1; i<=NTABLES; i++) //CREATING GUI TABLES
         {
 	        g2.setColor(Color.ORANGE);
 	        g2.fillRect(xPosUpdated, yPos, Width, Height);//200 and 250 need to be table params
