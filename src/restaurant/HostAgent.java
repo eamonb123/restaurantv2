@@ -14,7 +14,7 @@ import java.util.concurrent.Semaphore;
 //the HostAgent. A Host is the manager of a restaurant who sees that all
 //is proceeded as he wishes.
 public class HostAgent extends Agent {
-	static int NTABLES;//a global for the number of tables.
+	static int NTABLES=3;//a global for the number of tables.
 	//Notice that we implement waitingCustomers using ArrayList, but type it
 	//with List semantics.
 	public List<CustomerAgent> waitingCustomers = new ArrayList<CustomerAgent>();
@@ -26,9 +26,8 @@ public class HostAgent extends Agent {
 	private boolean isServing=false;
 	public HostGui hostGui = null;
 
-	public HostAgent(String name, int NTABLES) {
+	public HostAgent(String name) {
 		super();
-
 		this.name = name;
 		// make some tables
 		tables = new ArrayList<Table>(NTABLES);
@@ -89,7 +88,7 @@ public class HostAgent extends Agent {
             so that table is unoccupied and customer is waiting.
             If so seat him at the table.
 		 */
-		if (isServing!=true)
+		if (isServing==false)
 		{
 			for (Table table : tables) {
 				if (!table.isOccupied()) {
@@ -100,7 +99,6 @@ public class HostAgent extends Agent {
 				}
 			}
 		}
-
 		return false;
 		//we have tried all our rules and found
 		//nothing to do. So return false to main loop of abstract agent
@@ -109,11 +107,12 @@ public class HostAgent extends Agent {
 	
 	public int tableNumber()
 	{
-		int tableNum=2;
-		for (Table table : tables) {
-			if (!table.isOccupied()) {
+		int tableNum=0;
+		for (Table table : tables) 
+		{
+			if (!table.isOccupied()) 
+			{
 				tableNum=table.tableNumber;
-				
 				break;
 			}
 		}

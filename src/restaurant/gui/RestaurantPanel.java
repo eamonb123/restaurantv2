@@ -15,7 +15,7 @@ import java.util.Vector;
 public class RestaurantPanel extends JPanel {
 
     //Host, cook, waiters and customers
-    private HostAgent host = new HostAgent("Sarah", 3);
+    private HostAgent host = new HostAgent("Sarah");
     private HostGui hostGui = new HostGui(host);
 
     private Vector<CustomerAgent> customers = new Vector<CustomerAgent>();

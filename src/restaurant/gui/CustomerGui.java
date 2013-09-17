@@ -1,5 +1,5 @@
 package restaurant.gui;
-
+import java.lang.Object;
 import restaurant.CustomerAgent;
 import restaurant.HostAgent;
 
@@ -11,6 +11,8 @@ public class CustomerGui implements Gui{
 	private CustomerAgent agent = null;
 	private boolean isPresent = false;
 	private boolean isHungry = false;
+	private int xPosition=200;
+	private int yPosition=250;
 
 	//private HostAgent host;
 	RestaurantGui gui;
@@ -19,11 +21,6 @@ public class CustomerGui implements Gui{
 	private int xDestination, yDestination;
 	private enum Command {noCommand, GoToSeat, LeaveRestaurant};
 	private Command command=Command.noCommand;
-
-	public static final int xTable1 = 200;
-	public static final int xTable2 = 350;
-	public static final int xTable3 = 500;
-	public static final int yTable = 250;
 
 	public CustomerGui(CustomerAgent c, RestaurantGui gui){ //HostAgent m) {
 		agent = c;
@@ -79,26 +76,21 @@ public class CustomerGui implements Gui{
 		isPresent = p;
 	}
 	
-	//HashMap<Integer, Integer> tableMap = new HashMap<Integer, Integer>();
-	public void DoGoToSeat(int tableNumber) {//later you will map seatnumber to table coordinates.
-		if (tableNumber==1)
-		{
-			xDestination=200;
-			yDestination = yTable;
-		}
-		else if (tableNumber==2)
-		{
-			xDestination=350;
-			yDestination = yTable;
-		}
-		else if (tableNumber==3)
-		{
-			xDestination=500;
-			yDestination = yTable;
-		}
-		
-		//xDestination = tableMap.get(tableNumber); 
-		
+	//MAPPING TABLE NUMBERS TO COORDINATES ON THE GUI
+    HashMap<Integer, Point> tableMap = new HashMap<Integer, Point>();
+    {
+    	for (int i=1; i<=3; i++)
+    	{
+    		Point location = new Point(xPosition, yPosition);
+    		tableMap.put(i,location);
+    		xPosition+=150;
+    	}
+    }
+	
+	public void DoGoToSeat(int tableNumber) {
+		Point location = tableMap.get(tableNumber); 
+		xDestination = location.x;
+		yDestination = location.y;
 		command = Command.GoToSeat;
 	}
 
