@@ -23,7 +23,7 @@ public class HostAgent extends Agent {
 	//Later we will see how it is implemented
 	private String name; 
 	private Semaphore atTable = new Semaphore(0,true);
-	private boolean isServing=false;
+	public boolean isServing=false;
 	public HostGui hostGui = null;
 
 	public HostAgent(String name) {
@@ -88,17 +88,18 @@ public class HostAgent extends Agent {
             so that table is unoccupied and customer is waiting.
             If so seat him at the table.
 		 */
-		if (isServing==false)
-		{
+		//if (isServing==false)
+		//{
 			//isServing=true;
 			for (Table table : tables) {
 				if (!table.isOccupied()) {
 					if (!waitingCustomers.isEmpty()) {
 						seatCustomer(waitingCustomers.get(0), table);//the action
+						//isServing=true;
 						return true;//return true to the abstract agent to reinvoke the scheduler.
 					}
 				}
-			}
+			//}
 		}
 		return false;
 		//we have tried all our rules and found
@@ -143,6 +144,7 @@ public class HostAgent extends Agent {
 		table.setOccupant(customer);
 		waitingCustomers.remove(customer);
 		hostGui.DoLeaveCustomer();
+		//isServing=false;
 	}
 
 //	CallWaiter(myCustomer cust, Table t)
