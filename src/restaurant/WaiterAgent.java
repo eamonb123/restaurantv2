@@ -13,11 +13,12 @@ import java.util.concurrent.Semaphore;
 //does all the rest. Rather than calling the other agent a waiter, we called him
 //the HostAgent. A Host is the manager of a restaurant who sees that all
 //is proceeded as he wishes.
-public class HostAgent extends Agent {
+public class WaiterAgent extends Agent {
 	static int NTABLES=3;//a global for the number of tables.
 	//Notice that we implement waitingCustomers using ArrayList, but type it
 	//with List semantics.
-	public List<CustomerAgent> waitingCustomers = new ArrayList<CustomerAgent>();
+	public List<CustomerAgent> waitingCustomers = new ArrayList<CustomerAgent>();//	public enum customerState= waiting, seated, askedForOrder, ordered, deliver, eating, done;
+//	public List<CustomerAgent> waitingCustomers = new ArrayList<CustomerAgent>();
 	public Collection<Table> tables;
 	//note that tables is typed with Collection semantics.
 	//Later we will see how it is implemented
@@ -26,7 +27,7 @@ public class HostAgent extends Agent {
 	private boolean isServing=false;
 	public HostGui hostGui = null;
 
-	public HostAgent(String name) {
+	public WaiterAgent(String name) {
 		super();
 		this.name = name;
 		// make some tables
@@ -57,7 +58,7 @@ public class HostAgent extends Agent {
 		return tables;
 	}
 	// Messages
-	
+
 	public void msgIWantFood(CustomerAgent cust) {
 		waitingCustomers.add(cust);
 		stateChanged();
@@ -82,6 +83,38 @@ public class HostAgent extends Agent {
 	/**
 	 * Scheduler.  Determine what action is called for, and do it.
 	 */
+	
+//	for (myCustomer cust : customers) 
+//	{
+//		if(cust.s==waiting)
+//			seatCustomer(cust);
+//	}
+//	
+//	for (myCustomer cust : customers) 
+//	{
+//		if(cust.s==readyToOrder)
+//			takeOrder(cust);
+//	}
+//	
+//	for (myCustomer cust : customers) 
+//	{
+//		if(cust.s==askedForOrder)
+//			giveCook(cust);
+//	}
+//	
+//	for (myCustomer cust : customers) 
+//	{
+//		if(cust.s==deliver)
+//			deliver(cust);
+//	}
+//	
+//	for (myCustomer cust : customers) 
+//	{
+//		if(cust.s==done)
+//			cleanUp(cust);
+//	}
+//	
+	
 	protected boolean pickAndExecuteAnAction() {
 		/* Think of this next rule as:
             Does there exist a table and customer,
@@ -120,20 +153,13 @@ public class HostAgent extends Agent {
 		return tableNum;
 	}
 
-//	for (Customer cust : waitingCustomers) 
-//	{
-//		for (Table t : myTable) 
-//		{
-//			if (cust.s=waiting && t==NULL && !w.isBusy())
-//				CallWaiter(cust, t.tableNumber);
-//		}
-//	}
-
 	// Actions
 
 	private void seatCustomer(CustomerAgent customer, Table table) {
 		customer.msgSitAtTable();
+//		customer.c.followme(this, new menu);
 		DoSeatCustomer(customer, table);
+//		customer.s=seated;
 		try {
 			atTable.acquire();
 		} catch (InterruptedException e) {
@@ -144,14 +170,34 @@ public class HostAgent extends Agent {
 		waitingCustomers.remove(customer);
 		hostGui.DoLeaveCustomer();
 	}
-
-//	CallWaiter(myCustomer cust, Table t)
+	
+//	private void takeOrder(CustomerAgent customer)
 //	{
-//		t.cust=cust;
-//		sitAtTable(cust, t.tableNumber);
+//		DoGoToTable(customer.tableNumber);
+//		customer.c.whatwouldyoulike();
+//		customer.s=askedToOrder;
+//		customer.choice=customerchoice;
+//	}
+//	
+//	giveCook(CustomerAgent customer)
+//	{
+//		doGiveToCook(customer);
+//		hereIsAnOrder(this, c.choice, c.table);
+//		customer.s=ordered;
+//	}
+//	
+//	Deliver(CustomerAgent customer)
+//	{
+//		DoGoToCustomer(customer);
+//	}
+//	
+//	CleanUp(CustomerAgent customer)
+//	{
+//		customer.s=done;
+//		tableIsFree(c.table);
 //	}
 	
-	
+
 	// The animation DoXYZ() routines
 	private void DoSeatCustomer(CustomerAgent customer, Table table) {
 		//Notice how we print "customer" directly. It's toString method will do it.
@@ -171,7 +217,16 @@ public class HostAgent extends Agent {
 		return hostGui;
 	}
 
-	public class Table {
+//	private class myCustomer
+//	{
+//		Customer c;
+//		int tableNumber;
+//		string choice;
+//		customerstate s;
+//	}
+	
+	
+	private class Table {
 		CustomerAgent occupiedBy;
 		int tableNumber;
 		int xPos;

@@ -1,8 +1,10 @@
 package restaurant;
 
 import agent.Agent;
+import restaurant.HostAgent.Table;
 import restaurant.gui.HostGui;
 
+import java.awt.Point;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
@@ -13,11 +15,18 @@ import java.util.concurrent.Semaphore;
 //does all the rest. Rather than calling the other agent a waiter, we called him
 //the HostAgent. A Host is the manager of a restaurant who sees that all
 //is proceeded as he wishes.
-public class HostAgent extends Agent {
+public class CookAgent extends Agent {
 	static int NTABLES=3;//a global for the number of tables.
 	//Notice that we implement waitingCustomers using ArrayList, but type it
 	//with List semantics.
 	public List<CustomerAgent> waitingCustomers = new ArrayList<CustomerAgent>();
+//	public List<Order> orders;
+//	Timer timer;
+//	enum state
+//	{
+//		pending, cooking, done, finished
+//	}
+//	HashMap<String, Seconds> map = new HashMap<String, Seconds>();
 	public Collection<Table> tables;
 	//note that tables is typed with Collection semantics.
 	//Later we will see how it is implemented
@@ -26,7 +35,7 @@ public class HostAgent extends Agent {
 	private boolean isServing=false;
 	public HostGui hostGui = null;
 
-	public HostAgent(String name) {
+	public CookAgent(String name) {
 		super();
 		this.name = name;
 		// make some tables
@@ -57,7 +66,7 @@ public class HostAgent extends Agent {
 		return tables;
 	}
 	// Messages
-	
+
 	public void msgIWantFood(CustomerAgent cust) {
 		waitingCustomers.add(cust);
 		stateChanged();
@@ -82,6 +91,26 @@ public class HostAgent extends Agent {
 	/**
 	 * Scheduler.  Determine what action is called for, and do it.
 	 */
+	
+//	for (Order o : orders) 
+//	{
+//		if (o.s==done)
+//		{
+//			orderDone();
+//			remove(o);
+//		}
+//	}
+//	
+//	for (Order o : orders) 
+//	{
+//		if (o.s==pending)
+//		{
+//			cookit(o);
+//		}
+//	}
+			
+			
+			
 	protected boolean pickAndExecuteAnAction() {
 		/* Think of this next rule as:
             Does there exist a table and customer,
@@ -120,17 +149,26 @@ public class HostAgent extends Agent {
 		return tableNum;
 	}
 
-//	for (Customer cust : waitingCustomers) 
-//	{
-//		for (Table t : myTable) 
-//		{
-//			if (cust.s=waiting && t==NULL && !w.isBusy())
-//				CallWaiter(cust, t.tableNumber);
-//		}
-//	}
-
 	// Actions
 
+//	CookIt(Order o)
+//	{
+//		doCooking(o);
+//	}
+//	
+//	timer.start(run(timerDone(o)))
+//	{
+//		o.state=cooking;
+//		cookingtime.get(o.choice);
+//	}
+//	
+//	plateIt(Order o)
+//	{
+//		doPlating(o);
+//		o.w.orderDone(o.choice, o.table);
+//		orders.remove(o);
+//	}
+	
 	private void seatCustomer(CustomerAgent customer, Table table) {
 		customer.msgSitAtTable();
 		DoSeatCustomer(customer, table);
@@ -145,13 +183,6 @@ public class HostAgent extends Agent {
 		hostGui.DoLeaveCustomer();
 	}
 
-//	CallWaiter(myCustomer cust, Table t)
-//	{
-//		t.cust=cust;
-//		sitAtTable(cust, t.tableNumber);
-//	}
-	
-	
 	// The animation DoXYZ() routines
 	private void DoSeatCustomer(CustomerAgent customer, Table table) {
 		//Notice how we print "customer" directly. It's toString method will do it.
@@ -171,7 +202,15 @@ public class HostAgent extends Agent {
 		return hostGui;
 	}
 
-	public class Table {
+//	private class Order
+//	{
+//		Waiter w;
+//		String choice;
+//		int tableNum;
+//		state s;
+//	}
+	
+	private class Table {
 		CustomerAgent occupiedBy;
 		int tableNumber;
 		int xPos;

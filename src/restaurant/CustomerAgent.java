@@ -119,9 +119,8 @@ public class CustomerAgent extends Agent {
 
 	private void SitDown() {
 		Do("Being seated. Going to table");
-		//Collection collection = host.getTables();
 		int number= host.tableNumber();
-		customerGui.DoGoToSeat(number);//hack; only one table
+		customerGui.DoGoToSeat(number);
 	}
 
 	private void EatFood() {

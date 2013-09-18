@@ -1,5 +1,4 @@
 package restaurant.gui;
-import java.lang.Object;
 import restaurant.CustomerAgent;
 import restaurant.HostAgent;
 
