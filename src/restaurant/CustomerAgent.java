@@ -16,7 +16,11 @@ public class CustomerAgent extends Agent {
 	private int hungerLevel = 5;        // determines length of meal
 	Timer timer = new Timer();
 	private CustomerGui customerGui;
-
+	public class Menu {
+		String lamb;
+		String beef;
+		String chicken;
+	}
 	// agent correspondents
 	private HostAgent host;
 

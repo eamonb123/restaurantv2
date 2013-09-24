@@ -18,21 +18,28 @@ public class WaiterAgent extends Agent {
 	//	public List<CustomerAgent> waitingCustomers = new ArrayList<CustomerAgent>();
 	static int NTABLES=3;//a global for the number of tables.
 	public Collection<Table> tables;
+	private CookAgent cook;
+	private HostAgent host;
 	public enum CustomerState
-	{nothing, waiting, seated, askedForOrder, ordered, delivered, eating, done};
-	public class myCustomer
+	{nothing, waiting, seated, readyToOrder, askedForOrder, ordered, delivered, eating, done};
+	List<String> menuOptions = new ArrayList<String>();{
+	    menuOptions.add("chicken");
+	    menuOptions.add("beef");
+	    menuOptions.add("lamb");
+	}
+	public class Customer
 	{
 		CustomerAgent cust;
 		int tableNumber;
 		String choice;
 		CustomerState state = CustomerState.nothing;
-		myCustomer(CustomerAgent c, int table, CustomerState s) {
+		Customer(CustomerAgent c, int table, CustomerState s) {
 			cust=c;
 			tableNumber=table;
 			state=s;
 		}
 	}
-	List<myCustomer> myCustomers = new ArrayList<myCustomer>();
+	List<Customer> myCustomers = new ArrayList<Customer>();
 	private String name;
 	private Semaphore atTable = new Semaphore(0,true);
 	public boolean isServing=false;
@@ -57,34 +64,74 @@ public class WaiterAgent extends Agent {
 
 	public void msgPleaseSeatCustomer(CustomerAgent cust, int tableNumber)
 	{
-		myCustomers.add(new myCustomer(cust, tableNumber, CustomerState.nothing));
+		myCustomers.add(new Customer(cust, tableNumber, CustomerState.waiting));
 	}
-
-	public void msgLeavingTable(CustomerAgent cust) {
-		for (Table table : tables) {
-			if (table.getOccupant() == cust) {
-				print(cust + " leaving " + table);
-				table.setUnoccupied();
-				stateChanged();
+	
+	public void msgReadyToOrder(CustomerAgent cust)
+	{
+		for (Customer c : myCustomers)
+		{
+			if (c.cust==cust)
+			{
+				c.state=CustomerState.readyToOrder;
+			}
+		}
+	}
+	
+	public void msgHereIsChoice(CustomerAgent cust, String choice)
+	{
+		for (Customer c : myCustomers)
+		{
+			if (c.cust==cust && c.choice==choice)
+			{
+				c.state=CustomerState.ordered;
+				c.choice=choice;
+			}
+		}
+	}
+	
+	public void msgOrderIsReady(CustomerAgent cust, String choice, int tableNumber)
+	{
+		for (Customer c : myCustomers)
+		{
+			if (c.cust== cust && c.choice==choice && c.tableNumber==tableNumber)
+			{
+				c.state=CustomerState.delivered;
+			}
+		}
+	}
+	
+	public void msgDoneEating(CustomerAgent cust)
+	{
+		for (Customer c : myCustomers)
+		{
+			if (c.cust==cust)
+			{
+				c.state=CustomerState.done;
 			}
 		}
 	}
 
-	public void msgAtTable() {//from animation
-		//print("msgAtTable() called");
-		atTable.release();// = true;
-		stateChanged();
-	}
+//	public void msgLeavingTable(CustomerAgent cust) {
+//		for (Table table : tables) {
+//			if (table.getOccupant() == cust) {
+//				print(cust + " leaving " + table);
+//				table.setUnoccupied();
+//				stateChanged();
+//			}
+//		}
+//	}
+
+//	public void msgAtTable() {//from animation
+//		//print("msgAtTable() called");
+//		atTable.release();// = true;
+//		stateChanged();
+//	}
 	
 	/**
 	 * Scheduler.  Determine what action is called for, and do it.
 	 */
 	
-//	for (myCustomer cust : customers) 
-//	{
-//		if(cust.s==waiting)
-//			seatCustomer(cust);
-//	}
 //	
 //	for (myCustomer cust : customers) 
 //	{
@@ -117,16 +164,44 @@ public class WaiterAgent extends Agent {
             so that table is unoccupied and customer is waiting.
             If so seat him at the table.
 		 */
-		if (isServing==false)
+		for (Customer cust : myCustomers) 
 		{
-			//isServing=true;
-			for (Table table : tables) {
-				if (!table.isOccupied()) {
-					if (!waitingCustomers.isEmpty()) {
-						seatCustomer(waitingCustomers.get(0), table);//the action
-						return true;//return true to the abstract agent to reinvoke the scheduler.
-					}
-				}
+			if (cust.state==CustomerState.waiting)
+			{
+				SeatCustomer(cust);
+				return true;
+			}
+		}
+		for (Customer cust : myCustomers) 
+		{
+			if (cust.state==CustomerState.readyToOrder)
+			{
+				TakeOrder(cust);
+				return true;
+			}
+		}
+		for (Customer cust : myCustomers) 
+		{
+			if (cust.state==CustomerState.askedForOrder)
+			{
+				GiveCook(cust);
+				return true;
+			}
+		}
+		for (Customer cust : myCustomers) 
+		{
+			if (cust.state==CustomerState.delivered)
+			{
+				Deliver(cust);
+				return true;
+			}
+		}
+		for (Customer cust : myCustomers) 
+		{
+			if (cust.state==CustomerState.done)
+			{
+				CleanUp(cust);
+				return true;
 			}
 		}
 		return false;
@@ -151,21 +226,50 @@ public class WaiterAgent extends Agent {
 
 	// Actions
 
-	private void seatCustomer(CustomerAgent customer, Table table) {
-		customer.msgSitAtTable();
-//		customer.c.followme(this, new menu);
-		DoSeatCustomer(customer, table);
-//		customer.s=seated;
-		try {
-			atTable.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		table.setOccupant(customer);
-		waitingCustomers.remove(customer);
-		hostGui.DoLeaveCustomer();
+	private void SeatCustomer(Customer c) 
+	{
+		c.cust.followMe(this, new Menu);
+		//DoSeatCustomer(c);
+		c.state=CustomerState.seated;
 	}
+	
+	
+	private void TakeOrder(Customer c)
+	{
+		//DoGoToTable(cust.tableNumber);
+		c.cust.whatWouldYouLike();
+		c.state=CustomerState.askedForOrder;
+		String order= customerChoice();
+		c.choice=CustomerChoice();
+	}
+
+	
+	private String CustomerChoice()
+	{
+		Random random = new Random();
+		int index = random.nextInt(menuOptions.size());
+		return menuOptions.get(index);
+	}
+	
+	private void GiveCook(Customer c)
+	{
+		//DoGiveCook(c);
+		cook.msgHereIsAnOrder(this, c.choice, c.tableNumber);
+		c.state=CustomerState.ordered;
+	}
+	
+	private void Deliver(Customer c)
+	{
+		//DoGoToCustomer(c);
+		c.msgHereIsYourFood(c.choice);
+	}
+	
+	private void CleanUp(Customer c)
+	{
+		c.state=CustomerState.done;
+		host.msgTableIsFree(c.tableNumber);
+	}
+	
 	
 //	private void takeOrder(CustomerAgent customer)
 //	{
@@ -212,15 +316,6 @@ public class WaiterAgent extends Agent {
 	public HostGui getGui() {
 		return hostGui;
 	}
-
-//	private class myCustomer
-//	{
-//		Customer c;
-//		int tableNumber;
-//		string choice;
-//		customerstate s;
-//	}
-	
 	
 	private class Table {
 		CustomerAgent occupiedBy;

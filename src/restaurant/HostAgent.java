@@ -49,23 +49,6 @@ public class HostAgent extends Agent {
 		}
 	}
 	
-
-	public String getMaitreDName() {
-		return name;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public List getWaitingCustomers() {
-		return waitingCustomers;
-	}
-
-	public Collection getTables() {
-		return myTables;
-	}
-	
 	
 	// Messages
 	
@@ -103,6 +86,7 @@ public class HostAgent extends Agent {
 				{
 					callWaiter(waitingCustomers.get(0), table);
 					waitingCustomers.remove(0);
+					return true;
 				}
 			}
 		}
