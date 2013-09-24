@@ -2,8 +2,10 @@ package restaurant.gui;
 
 import restaurant.CustomerAgent;
 import restaurant.HostAgent;
+import restaurant.WaiterAgent;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Vector;
@@ -16,8 +18,10 @@ public class RestaurantPanel extends JPanel {
 
     //Host, cook, waiters and customers
     private HostAgent host = new HostAgent("Sarah");
+    private WaiterAgent waiter = new WaiterAgent("Matt");
     private HostGui hostGui = new HostGui(host);
-
+//    private WaiterAgent waiter = new WaiterAgent("Matt");
+//    private WaiterGui waiterGui = new WaiterGui(host);
     private Vector<CustomerAgent> customers = new Vector<CustomerAgent>();
 
     private JPanel restLabel = new JPanel();
@@ -32,7 +36,10 @@ public class RestaurantPanel extends JPanel {
 
         gui.animationPanel.addGui(hostGui);
         host.startThread();
-
+        waiter.startThread();
+        host.newWaiter(waiter);
+        
+        
         setLayout(new GridLayout(1, 2, 20, 20));
         group.setLayout(new GridLayout(1, 2, 10, 10));
 

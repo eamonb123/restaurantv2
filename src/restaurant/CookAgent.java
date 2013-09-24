@@ -19,19 +19,35 @@ public class CookAgent extends Agent {
 	static int NTABLES=3;//a global for the number of tables.
 	//Notice that we implement waitingCustomers using ArrayList, but type it
 	//with List semantics.
-	public List<CustomerAgent> waitingCustomers = new ArrayList<CustomerAgent>();
-//	public List<Order> orders;
+	//	public List<Order> orders;
 //	Timer timer;
 //	enum state
 //	{
 //		pending, cooking, done, finished
 //	}
-//	HashMap<String, Seconds> map = new HashMap<String, Seconds>();
-	public Collection<Table> tables;
+	WaiterAgent waiter;
+	
+	public class Order
+	{
+		WaiterAgent waiter;
+		String choice;
+		int tableNumber;
+		CookState state;
+		Order(WaiterAgent waiter, String choice, int tableNumber)
+		{
+			this.waiter=waiter;
+			this.choice=choice;
+			this.tableNumber=tableNumber;
+		}
+	}
+	public List<Order> orders = new ArrayList<Order>();
+	public enum CookState
+	{pending, cooking, done, finished};
+	Map<String, Integer> cookingTimes = new HashMap<String, Integer>();
+
 	//note that tables is typed with Collection semantics.
 	//Later we will see how it is implemented
 	private String name; 
-	private Semaphore atTable = new Semaphore(0,true);
 	private boolean isServing=false;
 	public HostGui hostGui = null;
 
@@ -49,29 +65,13 @@ public class CookAgent extends Agent {
 		}
 	}
 	
-
-	public String getMaitreDName() {
-		return name;
+	//Messages
+	
+	public void HereIsOrder(WaiterAgent waiter, String choice, int tableNumber)
+	{
+		orders.add(new Order(waiter, choice, tableNumber));
 	}
-
-	public String getName() {
-		return name;
-	}
-
-	public List getWaitingCustomers() {
-		return waitingCustomers;
-	}
-
-	public Collection getTables() {
-		return tables;
-	}
-	// Messages
-
-	public void msgIWantFood(CustomerAgent cust) {
-		waitingCustomers.add(cust);
-		stateChanged();
-	}
-
+	
 	public void msgLeavingTable(CustomerAgent cust) {
 		for (Table table : tables) {
 			if (table.getOccupant() == cust) {

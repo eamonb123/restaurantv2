@@ -20,6 +20,7 @@ public class HostAgent extends Agent {
 	public List<CustomerAgent> waitingCustomers = new ArrayList<CustomerAgent>();
 	public Collection<Table> myTables;
 	private WaiterAgent waiter;
+	public List<WaiterAgent> waiterList = new ArrayList<WaiterAgent>();
 	//note that tables is typed with Collection semantics.
 	//Later we will see how it is implemented
 	private String name; 
@@ -146,5 +147,9 @@ public class HostAgent extends Agent {
 		return hostGui;
 	}
 
+	public void newWaiter(WaiterAgent waiter)
+	{
+		waiterList.add(waiter);
+	}
 }
 

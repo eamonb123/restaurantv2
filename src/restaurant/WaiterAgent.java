@@ -33,10 +33,10 @@ public class WaiterAgent extends Agent {
 		int tableNumber;
 		String choice;
 		CustomerState state = CustomerState.nothing;
-		Customer(CustomerAgent c, int table, CustomerState s) {
-			cust=c;
-			tableNumber=table;
-			state=s;
+		Customer(CustomerAgent cust, int tableNumber, CustomerState state) {
+			this.cust=cust;
+			this.tableNumber=tableNumber;
+			this.state=state;
 		}
 	}
 	List<Customer> myCustomers = new ArrayList<Customer>();
