@@ -1,6 +1,7 @@
 package restaurant;
 
 import agent.Agent;
+import restaurant.HostAgent.Table;
 import restaurant.gui.HostGui;
 
 import java.util.*;
@@ -14,17 +15,27 @@ import java.util.concurrent.Semaphore;
 //the HostAgent. A Host is the manager of a restaurant who sees that all
 //is proceeded as he wishes.
 public class WaiterAgent extends Agent {
+	//	public List<CustomerAgent> waitingCustomers = new ArrayList<CustomerAgent>();
 	static int NTABLES=3;//a global for the number of tables.
-	//Notice that we implement waitingCustomers using ArrayList, but type it
-	//with List semantics.
-	public List<CustomerAgent> waitingCustomers = new ArrayList<CustomerAgent>();//	public enum customerState= waiting, seated, askedForOrder, ordered, deliver, eating, done;
-//	public List<CustomerAgent> waitingCustomers = new ArrayList<CustomerAgent>();
 	public Collection<Table> tables;
-	//note that tables is typed with Collection semantics.
-	//Later we will see how it is implemented
-	private String name; 
+	public enum CustomerState
+	{nothing, waiting, seated, askedForOrder, ordered, delivered, eating, done};
+	public class myCustomer
+	{
+		CustomerAgent cust;
+		int tableNumber;
+		String choice;
+		CustomerState state = CustomerState.nothing;
+		myCustomer(CustomerAgent c, int table, CustomerState s) {
+			cust=c;
+			tableNumber=table;
+			state=s;
+		}
+	}
+	List<myCustomer> myCustomers = new ArrayList<myCustomer>();
+	private String name;
 	private Semaphore atTable = new Semaphore(0,true);
-	private boolean isServing=false;
+	public boolean isServing=false;
 	public HostGui hostGui = null;
 
 	public WaiterAgent(String name) {
@@ -42,26 +53,11 @@ public class WaiterAgent extends Agent {
 	}
 	
 
-	public String getMaitreDName() {
-		return name;
-	}
+	//Messages
 
-	public String getName() {
-		return name;
-	}
-
-	public List getWaitingCustomers() {
-		return waitingCustomers;
-	}
-
-	public Collection getTables() {
-		return tables;
-	}
-	// Messages
-
-	public void msgIWantFood(CustomerAgent cust) {
-		waitingCustomers.add(cust);
-		stateChanged();
+	public void msgPleaseSeatCustomer(CustomerAgent cust, int tableNumber)
+	{
+		myCustomers.add(new myCustomer(cust, tableNumber, CustomerState.nothing));
 	}
 
 	public void msgLeavingTable(CustomerAgent cust) {

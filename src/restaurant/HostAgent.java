@@ -18,24 +18,33 @@ public class HostAgent extends Agent {
 	//Notice that we implement waitingCustomers using ArrayList, but type it
 	//with List semantics.
 	public List<CustomerAgent> waitingCustomers = new ArrayList<CustomerAgent>();
-	public Collection<Table> tables;
+	public Collection<Table> myTables;
+	private WaiterAgent waiter;
 	//note that tables is typed with Collection semantics.
 	//Later we will see how it is implemented
 	private String name; 
+	public class Table {
+		CustomerAgent cust;
+		int tableNumber;
+		int xPos;
+		boolean isOccupied=false;
+		Table(int tableNumber) {
+			this.tableNumber = tableNumber;
+		}
+	}
 	private Semaphore atTable = new Semaphore(0,true);
 	public boolean isServing=false;
 	public HostGui hostGui = null;
-
 	public HostAgent(String name) {
 		super();
 		this.name = name;
 		// make some tables
-		tables = new ArrayList<Table>(NTABLES);
+		myTables = new ArrayList<Table>(NTABLES);
 		int xPos = 200;
 		for (int ix = 1; ix <= NTABLES; ix++) {
 			Table newTable = new Table(ix);
 			newTable.xPos = xPos;
-			tables.add(newTable);//how you add to a collections
+			myTables.add(newTable);//how you add to a collections
 			xPos+=150;
 		}
 	}
@@ -54,69 +63,62 @@ public class HostAgent extends Agent {
 	}
 
 	public Collection getTables() {
-		return tables;
+		return myTables;
 	}
+	
+	
 	// Messages
 	
-	public void msgIWantFood(CustomerAgent cust) {
+	public void msgIWantToEat(CustomerAgent cust) {
 		waitingCustomers.add(cust);
-		stateChanged();
 	}
 
-	public void msgLeavingTable(CustomerAgent cust) {
-		for (Table table : tables) {
-			if (table.getOccupant() == cust) {
-				print(cust + " leaving " + table);
-				table.setUnoccupied();
-				stateChanged();
+
+	public void msgTableIsFree(int tableNumber) {//from animation
+		//print("msgAtTable() called");
+		for (Table table : myTables) 
+		{
+			if (table.tableNumber==tableNumber)
+			{
+				table.isOccupied=false;
 			}
 		}
 	}
-
-	public void msgAtTable() {//from animation
-		//print("msgAtTable() called");
-		atTable.release();// = true;
-		stateChanged();
-	}
+	
 	
 	/**
 	 * Scheduler.  Determine what action is called for, and do it.
 	 */
+	
 	protected boolean pickAndExecuteAnAction() {
-		/* Think of this next rule as:
-            Does there exist a table and customer,
-            so that table is unoccupied and customer is waiting.
-            If so seat him at the table.
-		 */
-		//if (isServing==false)
-		//{
-			//isServing=true;
-			for (Table table : tables) {
-				if (!table.isOccupied()) {
-					if (!waitingCustomers.isEmpty()) {
-						seatCustomer(waitingCustomers.get(0), table);//the action
-						//isServing=true;
-						return true;//return true to the abstract agent to reinvoke the scheduler.
-					}
+//		 Think of this next rule as:
+//            Does there exist a table and customer,
+//            so that table is unoccupied and customer is waiting.
+//            If so seat him at the table.
+		for (CustomerAgent cust : waitingCustomers)
+		{
+			for (Table table : myTables)
+			{
+				if (!table.isOccupied && !waiter.isServing)
+				{
+					callWaiter(waitingCustomers.get(0), table);
+					waitingCustomers.remove(0);
 				}
-			//}
+			}
 		}
 		return false;
-		//we have tried all our rules and found
-		//nothing to do. So return false to main loop of abstract agent
-		//and wait.
 	}
 	
 	public int tableNumber()
 	{
 		int tableNum=0;
-		for (Table table : tables) 
+		for (Table table : myTables) 
 		{
-			if (!table.isOccupied()) 
-			{
-				tableNum=table.tableNumber;
-				break;
-			}
+//			if (!table.isOccupied()) 
+//			{
+//				tableNum=table.tableNumber;
+//				break;
+//			}
 		}
 		return tableNum;
 	}
@@ -132,26 +134,13 @@ public class HostAgent extends Agent {
 
 	// Actions
 
-	private void seatCustomer(CustomerAgent customer, Table table) {
-		customer.msgSitAtTable();
-		DoSeatCustomer(customer, table);
-		try {
-			atTable.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		table.setOccupant(customer);
-		waitingCustomers.remove(customer);
-		hostGui.DoLeaveCustomer();
-		//isServing=false;
-	}
 
-//	CallWaiter(myCustomer cust, Table t)
-//	{
-//		t.cust=cust;
-//		sitAtTable(cust, t.tableNumber);
-//	}
+	private void callWaiter(CustomerAgent cust, Table table)
+	{
+		table.cust=cust;
+		table.isOccupied=true;
+		waiter.msgPleaseSeatCustomer(cust, table.tableNumber);
+	}
 	
 	
 	// The animation DoXYZ() routines
@@ -173,33 +162,5 @@ public class HostAgent extends Agent {
 		return hostGui;
 	}
 
-	public class Table {
-		CustomerAgent occupiedBy;
-		int tableNumber;
-		int xPos;
-		Table(int tableNumber) {
-			this.tableNumber = tableNumber;
-		}
-
-		void setOccupant(CustomerAgent cust) {
-			occupiedBy = cust;
-		}
-
-		void setUnoccupied() {
-			occupiedBy = null;
-		}
-
-		CustomerAgent getOccupant() {
-			return occupiedBy;
-		}
-
-		boolean isOccupied() {
-			return occupiedBy != null;
-		}
-
-		public String toString() {
-			return "table " + tableNumber;
-		}
-	}
 }
 

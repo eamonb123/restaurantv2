@@ -33,7 +33,7 @@ public class HostGui implements Gui {
 
         if (xPos == xDestination && yPos == yDestination
         		& (xDestination == xTable + 20) & (yDestination == yTable - 20)) {
-           agent.msgAtTable();
+           //agent.msgAtTable();
         }
     }
 

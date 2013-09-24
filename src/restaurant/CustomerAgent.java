@@ -114,7 +114,6 @@ public class CustomerAgent extends Agent {
 
 	private void goToRestaurant() {
 		Do("Going to restaurant");
-		host.msgIWantFood(this);//send our instance, so he can respond to us
 	}
 
 	private void SitDown() {
@@ -147,7 +146,7 @@ public class CustomerAgent extends Agent {
 
 	private void leaveTable() {
 		Do("Leaving.");
-		host.msgLeavingTable(this);
+		
 		customerGui.DoExitRestaurant();
 	}
 
