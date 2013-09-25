@@ -106,8 +106,8 @@ public class HostAgent extends Agent {
 
 	private void callWaiter(CustomerAgent cust, Table table)
 	{
-		table.isOccupied=true;
 		waiterList.get(0).msgPleaseSeatCustomer(cust, table.tableNumber);
+		table.isOccupied=true;
 	}
 	
 	

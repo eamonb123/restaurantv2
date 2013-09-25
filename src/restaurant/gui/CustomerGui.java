@@ -10,7 +10,7 @@ public class CustomerGui implements Gui{
 	private CustomerAgent agent = null;
 	private boolean isPresent = false;
 	private boolean isHungry = false;
-	private int xPosition=200;
+	private int xPosition=100;
 	private int yPosition=250;
 
 	//private HostAgent host;

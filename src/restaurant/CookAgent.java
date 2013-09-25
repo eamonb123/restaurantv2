@@ -99,11 +99,13 @@ public class CookAgent extends Agent {
 
 	// Actions
 
-	private void CookIt(Order order)
+	private void CookIt(Order order) //can cook multiple things at a time with no decrease in speed
 	{
 		//DoCooking(order);
+		order.s = state.cooking; //put this inside timer class when u implement it
 		CookingTimer(order);
-		TimerDone(order);	
+		TimerDone(order);
+		order.s = state.done;
 	}
 	
 	private void CookingTimer(Order order)

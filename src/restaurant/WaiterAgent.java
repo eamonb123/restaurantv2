@@ -22,7 +22,7 @@ public class WaiterAgent extends Agent {
 	private CookAgent cook;
 	private HostAgent host;
 	public enum CustomerState
-	{nothing, waiting, seated, readyToOrder, askedForOrder, ordered, delivered, eating, done};
+	{nothing, waiting, seated, readyToOrder, askedForOrder, orderComplete, deliver, eating, done};
 	public enum WaiterState
 	{available, busy};
 	public WaiterState state = WaiterState.available;
@@ -91,7 +91,7 @@ public class WaiterAgent extends Agent {
 		{
 			if (c.cust==cust && c.choice==choice)
 			{
-				c.state=CustomerState.ordered;
+				c.state=CustomerState.orderComplete;
 				c.choice=choice;
 			}
 		}
@@ -104,7 +104,7 @@ public class WaiterAgent extends Agent {
 		{
 			if (c.choice==choice && c.tableNumber==tableNumber)
 			{
-				c.state=CustomerState.delivered;
+				c.state=CustomerState.deliver;
 			}
 		}
 		stateChanged();
@@ -169,7 +169,7 @@ public class WaiterAgent extends Agent {
 		}
 		for (Customer cust : myCustomers) 
 		{
-			if (cust.state==CustomerState.delivered)
+			if (cust.state==CustomerState.deliver)
 			{
 				Deliver(cust);
 				return true;
@@ -205,7 +205,7 @@ public class WaiterAgent extends Agent {
 	private void SeatCustomer(Customer c) 
 	{
 		state = WaiterState.busy;
-		c.cust.msgFollowMeToTable(this, menuOptions);
+		c.cust.msgFollowMeToTable(this, menuOptions, c.tableNumber);
 		//DoSeatCustomer(c);
 		c.state=CustomerState.seated;
 	}
@@ -214,25 +214,15 @@ public class WaiterAgent extends Agent {
 	private void TakeOrder(Customer c)
 	{
 		//DoGoToTable(cust.tableNumber);
-		c.cust.msgWhatWouldYouLike();
 		c.state=CustomerState.askedForOrder;
-		String order= CustomerChoice();
-		c.choice=CustomerChoice();
+		c.cust.msgWhatWouldYouLike();
 	}
-
-	private String CustomerChoice()
-	{
-		Random random = new Random();
-		int index = random.nextInt(menuOptions.size());
-		return menuOptions.get(index);
-	}
-	
 	
 	private void GiveCook(Customer c)
 	{
 		//DoGiveCook(c);
 		cook.HereIsOrder(this, c.choice, c.tableNumber);
-		c.state=CustomerState.ordered;
+		c.state=CustomerState.orderComplete;
 	}
 	
 	private void Deliver(Customer c)
@@ -243,7 +233,6 @@ public class WaiterAgent extends Agent {
 	
 	private void CleanUp(Customer c)
 	{
-		c.state=CustomerState.done;
 		host.msgTableIsFree(c.tableNumber);
 		state = WaiterState.available;
 	}

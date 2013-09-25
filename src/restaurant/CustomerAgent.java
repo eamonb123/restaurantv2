@@ -18,6 +18,8 @@ import java.util.TimerTask;
 public class CustomerAgent extends Agent {
 	private String name;
 	private int hungerLevel = 5;        // determines length of meal
+    String choice;
+    int tableNumber;
 	Timer timer = new Timer();
 	private CustomerGui customerGui;
 	public List<String> menuOptions = new ArrayList<String>();
@@ -26,18 +28,17 @@ public class CustomerAgent extends Agent {
 		String beef;
 		String chicken;
 	}
-    String choice;
 	// agent correspondents
 	private HostAgent host;
 	private WaiterAgent waiter;
 
 	//    private boolean isHungry = false; //hack for gui
 	public enum AgentState
-	{DoingNothing, WaitingInRestaurant, BeingSeated, Ordered, doneAndLeaving};
+	{DoingNothing, WaitingInRestaurant, BeingSeated, Ordered, finishing, leaving};
 	private AgentState state = AgentState.DoingNothing;//The start state
 
 	public enum AgentEvent 
-	{none, gotHungry, followHost, readyToOrder, eating};
+	{none, gotHungry, followHost, readyToGiveOrder, eating, doneEating};
 	AgentEvent event = AgentEvent.none;
 
 	/**
@@ -72,11 +73,12 @@ public class CustomerAgent extends Agent {
 		stateChanged();
 	}
 
-	public void msgFollowMeToTable(WaiterAgent waiter, List<String> menuOptions)
+	public void msgFollowMeToTable(WaiterAgent waiter, List<String> menuOptions, int tableNumber)
 	{
 		this.menuOptions=menuOptions;
+		this.tableNumber=tableNumber;
 		event = AgentEvent.followHost;
-		print("hey");
+		//print("moving toward table");
 		stateChanged();
 	}
 	
@@ -88,8 +90,8 @@ public class CustomerAgent extends Agent {
 	
 	public void msgWhatWouldYouLike()
 	{
-		choice= CustomerChoice();
-		state = AgentState.Ordered;
+		choice = CustomerChoice();
+		event = AgentEvent.readyToGiveOrder;
 		stateChanged();
 	}
 	
@@ -109,20 +111,16 @@ public class CustomerAgent extends Agent {
 		stateChanged();
 	}
 	
-//	public void msgSitAtTable() {
-//		print("Received msgSitAtTable");
-//		event = AgentEvent.followHost;
-//		stateChanged();
-//	}
 
 	public void msgAnimationFinishedGoToSeat() {
 		//from animation
-		event = AgentEvent.seated;
+		//event = AgentEvent.seated;
 		stateChanged();
 	}
+	
 	public void msgAnimationFinishedLeaveRestaurant() {
 		//from animation
-		event = AgentEvent.doneLeaving;
+		//event = AgentEvent.doneLeaving;
 		stateChanged();
 	}
 
@@ -132,61 +130,67 @@ public class CustomerAgent extends Agent {
 	protected boolean pickAndExecuteAnAction() {
 		//	CustomerAgent is a finite state machine
 
-		if (state == AgentState.DoingNothing && event == AgentEvent.gotHungry ){
+		if (event == AgentEvent.gotHungry && state == AgentState.DoingNothing ){
 			state = AgentState.WaitingInRestaurant;
 			goToRestaurant();
 			return true;
 		}
-		if (state == AgentState.WaitingInRestaurant && event == AgentEvent.followHost ){
+		if (event == AgentEvent.followHost && state == AgentState.WaitingInRestaurant ){
 			state = AgentState.BeingSeated;
 			SitDown();
 			return true;
 		}
-		if (state == AgentState.BeingSeated && event == AgentEvent.seated){
-			state = AgentState.Eating;
-			EatFood();
+		if (event == AgentEvent.readyToGiveOrder && state == AgentState.BeingSeated ){
+			state = AgentState.Ordered;
+			OrderFood();
 			return true;
 		}
 
-		if (state == AgentState.Eating && event == AgentEvent.doneEating){
-			state = AgentState.Leaving;
-			leaveTable();
+		if (event == AgentEvent.eating && state == AgentState.Ordered ){
+			state = AgentState.finishing;
+			ConsumeFood();
 			return true;
 		}
-		if (state == AgentState.Leaving && event == AgentEvent.doneLeaving){
-			state = AgentState.DoingNothing;
-			//no action
+		if (event == AgentEvent.doneEating && state == AgentState.finishing ){
+			state = AgentState.leaving;
+			LeaveTable();
 			return true;
 		}
 		return false;
 	}
 
 	// Actions
-
+	
 	private void goToRestaurant() {
 		Do("Going to restaurant");
-	}
-	
-	private void ImReadyToOrder()
-	{
-		
-	}
-	
-	private void HereIsMyChoice()
-	{
-		
-	}
-	
-	private void DoneEatingAndLeaving()
-	{
-		
+		host.msgIWantToEat(this);
 	}
 	
 	private void SitDown() {
 		Do("Being seated. Going to table");
-		int number= host.tableNumber();
-		customerGui.DoGoToSeat(number);
+		//int number= host.tableNumber();
+		customerGui.DoGoToSeat(tableNumber);
+		waiter.msgReadyToOrder(this);
 	}
+	
+	private void OrderFood()
+	{
+		waiter.msgHereIsChoice(this, choice);
+	}
+	
+	
+	private void ConsumeFood() //currently every food takes same amount of time to eat
+	{
+		EatFood();
+	}
+	
+	private void LeaveTable()
+	{
+		waiter.msgDoneEating(this);
+		print("leaving the restaurant");
+		customerGui.DoExitRestaurant();
+	}
+	
 
 	private void EatFood() {
 		Do("Eating Food");
@@ -210,10 +214,6 @@ public class CustomerAgent extends Agent {
 		5000);//getHungerLevel() * 1000);//how long to wait before running task
 	}
 
-	private void leaveTable() {
-		Do("Leaving.");
-		customerGui.DoExitRestaurant();
-	}
 
 	// Accessors, etc.
 
