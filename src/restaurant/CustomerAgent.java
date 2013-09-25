@@ -4,7 +4,10 @@ import restaurant.gui.CustomerGui;
 import restaurant.gui.RestaurantGui;
 import agent.Agent;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
  
@@ -16,17 +19,20 @@ public class CustomerAgent extends Agent {
 	private int hungerLevel = 5;        // determines length of meal
 	Timer timer = new Timer();
 	private CustomerGui customerGui;
+	public List<String> menuOptions = new ArrayList<String>();
 	public class Menu {
 		String lamb;
 		String beef;
 		String chicken;
 	}
+    String choice;
 	// agent correspondents
 	private HostAgent host;
+	private WaiterAgent waiter;
 
 	//    private boolean isHungry = false; //hack for gui
 	public enum AgentState
-	{DoingNothing, WaitingInRestaurant, BeingSeated, Seated, Eating, DoneEating, Leaving};
+	{DoingNothing, WaitingInRestaurant, BeingSeated, Seated, Ordered, Eating, DoneEating, Leaving};
 	private AgentState state = AgentState.DoingNothing;//The start state
 
 	public enum AgentEvent 
@@ -54,14 +60,42 @@ public class CustomerAgent extends Agent {
 	public String getCustomerName() {
 		return name;
 	}
+	
+	
+	
 	// Messages
 
 	public void gotHungry() {//from animation
 		print("I'm hungry");
 		event = AgentEvent.gotHungry;
+		state = AgentState.WaitingInRestaurant;
 		stateChanged();
 	}
 
+	public void msgFollowMeToTable(WaiterAgent waiter, List<String> menuOptions)
+	{
+		this.menuOptions=menuOptions;
+		state = AgentState.BeingSeated;
+	}
+	
+	public void msgSeated()
+	{
+		state = AgentState.Seated;
+	}
+	
+	public void msgWhatWouldYouLike()
+	{
+		state = AgentState.Ordered;
+	}
+	
+	public void msgHereIsYourFood(String food)
+	{
+		if (food==choice)
+		{
+			state = AgentState.Eating;
+		}
+	}
+	
 	public void msgSitAtTable() {
 		print("Received msgSitAtTable");
 		event = AgentEvent.followHost;

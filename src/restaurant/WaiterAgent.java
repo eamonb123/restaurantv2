@@ -132,31 +132,6 @@ public class WaiterAgent extends Agent {
 	 * Scheduler.  Determine what action is called for, and do it.
 	 */
 	
-//	
-//	for (myCustomer cust : customers) 
-//	{
-//		if(cust.s==readyToOrder)
-//			takeOrder(cust);
-//	}
-//	
-//	for (myCustomer cust : customers) 
-//	{
-//		if(cust.s==askedForOrder)
-//			giveCook(cust);
-//	}
-//	
-//	for (myCustomer cust : customers) 
-//	{
-//		if(cust.s==deliver)
-//			deliver(cust);
-//	}
-//	
-//	for (myCustomer cust : customers) 
-//	{
-//		if(cust.s==done)
-//			cleanUp(cust);
-//	}
-//	
 	
 	protected boolean pickAndExecuteAnAction() {
 		/* Think of this next rule as:
@@ -228,22 +203,21 @@ public class WaiterAgent extends Agent {
 
 	private void SeatCustomer(Customer c) 
 	{
-//		c.cust.followMe(this, new Menu);
-//		//DoSeatCustomer(c);
-//		c.state=CustomerState.seated;
+		c.cust.msgFollowMeToTable(this, menuOptions);
+		//DoSeatCustomer(c);
+		c.state=CustomerState.seated;
 	}
 	
 	
 	private void TakeOrder(Customer c)
 	{
-//		//DoGoToTable(cust.tableNumber);
-//		c.cust.whatWouldYouLike();
-//		c.state=CustomerState.askedForOrder;
-//		String order= customerChoice();
-//		c.choice=CustomerChoice();
+		//DoGoToTable(cust.tableNumber);
+		c.cust.msgWhatWouldYouLike();
+		c.state=CustomerState.askedForOrder;
+		String order= CustomerChoice();
+		c.choice=CustomerChoice();
 	}
 
-	
 	private String CustomerChoice()
 	{
 		Random random = new Random();
@@ -251,17 +225,18 @@ public class WaiterAgent extends Agent {
 		return menuOptions.get(index);
 	}
 	
+	
 	private void GiveCook(Customer c)
 	{
-//		//DoGiveCook(c);
-//		cook.HereIsOrder(this, c.choice, c.tableNumber);
-//		c.state=CustomerState.ordered;
+		//DoGiveCook(c);
+		cook.HereIsOrder(this, c.choice, c.tableNumber);
+		c.state=CustomerState.ordered;
 	}
 	
 	private void Deliver(Customer c)
 	{
-//		//DoGoToCustomer(c);
-//		c.msgHereIsYourFood(c.choice);
+		//DoGoToCustomer(c);
+		c.cust.msgHereIsYourFood(c.choice);
 	}
 	
 	private void CleanUp(Customer c)
@@ -270,33 +245,7 @@ public class WaiterAgent extends Agent {
 		host.msgTableIsFree(c.tableNumber);
 	}
 	
-	
-//	private void takeOrder(CustomerAgent customer)
-//	{
-//		DoGoToTable(customer.tableNumber);
-//		customer.c.whatwouldyoulike();
-//		customer.s=askedToOrder;
-//		customer.choice=customerchoice;
-//	}
-//	
-//	giveCook(CustomerAgent customer)
-//	{
-//		doGiveToCook(customer);
-//		hereIsAnOrder(this, c.choice, c.table);
-//		customer.s=ordered;
-//	}
-//	
-//	Deliver(CustomerAgent customer)
-//	{
-//		DoGoToCustomer(customer);
-//	}
-//	
-//	CleanUp(CustomerAgent customer)
-//	{
-//		customer.s=done;
-//		tableIsFree(c.table);
-//	}
-	
+
 
 	// The animation DoXYZ() routines
 	private void DoSeatCustomer(CustomerAgent customer, Table table) {
