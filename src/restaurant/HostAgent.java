@@ -1,6 +1,7 @@
 package restaurant;
 
 import agent.Agent;
+import restaurant.WaiterAgent.WaiterState;
 import restaurant.gui.HostGui;
 
 import java.util.*;
@@ -49,10 +50,11 @@ public class HostAgent extends Agent {
 	
 	
 	// Messages
-	
-	
+
 	public void msgIWantToEat(CustomerAgent cust) {
 		waitingCustomers.add(cust);
+		print("added customer");
+		stateChanged();
 	}
 
 
@@ -65,6 +67,7 @@ public class HostAgent extends Agent {
 				table.isOccupied=false;
 			}
 		}
+		stateChanged();
 	}
 	
 	
@@ -73,15 +76,11 @@ public class HostAgent extends Agent {
 	 */
 	
 	protected boolean pickAndExecuteAnAction() {
-//		 Think of this next rule as:
-//            Does there exist a table and customer,
-//            so that table is unoccupied and customer is waiting.
-//            If so seat him at the table.
-		for (CustomerAgent cust : waitingCustomers)
+		if (!waitingCustomers.isEmpty())
 		{
 			for (Table table : myTables)
 			{
-				if (!table.isOccupied && !waiterList.get(0).isServing)
+				if (!table.isOccupied && waiterList.get(0).state==WaiterState.available)
 				{
 					callWaiter(waitingCustomers.get(0), table);
 					waitingCustomers.remove(0);
@@ -92,19 +91,6 @@ public class HostAgent extends Agent {
 		return false;
 	}
 	
-	public int tableNumber()
-	{
-		int tableNum=0;
-		for (Table table : myTables) 
-		{
-//			if (!table.isOccupied()) 
-//			{
-//				tableNum=table.tableNumber;
-//				break;
-//			}
-		}
-		return tableNum;
-	}
 
 //	for (Customer cust : waitingCustomers) 
 //	{
@@ -136,6 +122,20 @@ public class HostAgent extends Agent {
 
 	//utilities
 
+	public int tableNumber()
+	{
+		int tableNum=0;
+		for (Table table : myTables) 
+		{
+			if (!table.isOccupied) 
+			{
+				tableNum=table.tableNumber;
+				break;
+			}
+		}
+		return tableNum;
+	}
+	
 	public void setGui(HostGui gui) {
 		hostGui = gui;
 	}

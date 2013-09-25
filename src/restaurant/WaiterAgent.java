@@ -1,6 +1,7 @@
 package restaurant;
 
 import agent.Agent;
+import restaurant.CustomerAgent.AgentState;
 import restaurant.HostAgent.Table;
 import restaurant.gui.HostGui;
 
@@ -22,6 +23,9 @@ public class WaiterAgent extends Agent {
 	private HostAgent host;
 	public enum CustomerState
 	{nothing, waiting, seated, readyToOrder, askedForOrder, ordered, delivered, eating, done};
+	public enum WaiterState
+	{available, busy};
+	public WaiterState state = WaiterState.available;
 	List<String> menuOptions = new ArrayList<String>();{
 	    menuOptions.add("chicken");
 	    menuOptions.add("beef");
@@ -42,7 +46,7 @@ public class WaiterAgent extends Agent {
 	List<Customer> myCustomers = new ArrayList<Customer>();
 	private String name;
 	private Semaphore atTable = new Semaphore(0,true);
-	public boolean isServing=false;
+	//public boolean isServing=false;
 	public HostGui hostGui = null;
 
 	public WaiterAgent(String name) {
@@ -65,6 +69,8 @@ public class WaiterAgent extends Agent {
 	public void msgPleaseSeatCustomer(CustomerAgent cust, int tableNumber)
 	{
 		myCustomers.add(new Customer(cust, tableNumber, CustomerState.waiting));
+		print("whats up");
+		stateChanged();
 	}
 	
 	public void msgReadyToOrder(CustomerAgent cust)
@@ -76,6 +82,7 @@ public class WaiterAgent extends Agent {
 				c.state=CustomerState.readyToOrder;
 			}
 		}
+		stateChanged();
 	}
 	
 	public void msgHereIsChoice(CustomerAgent cust, String choice)
@@ -88,6 +95,7 @@ public class WaiterAgent extends Agent {
 				c.choice=choice;
 			}
 		}
+		stateChanged();
 	}
 	
 	public void msgOrderIsReady(String choice, int tableNumber)
@@ -99,6 +107,7 @@ public class WaiterAgent extends Agent {
 				c.state=CustomerState.delivered;
 			}
 		}
+		stateChanged();
 	}
 	
 	public void msgDoneEating(CustomerAgent cust)
@@ -110,6 +119,7 @@ public class WaiterAgent extends Agent {
 				c.state=CustomerState.done;
 			}
 		}
+		stateChanged();
 	}
 
 //	public void msgLeavingTable(CustomerAgent cust) {
@@ -132,13 +142,7 @@ public class WaiterAgent extends Agent {
 	 * Scheduler.  Determine what action is called for, and do it.
 	 */
 	
-	
 	protected boolean pickAndExecuteAnAction() {
-		/* Think of this next rule as:
-            Does there exist a table and customer,
-            so that table is unoccupied and customer is waiting.
-            If so seat him at the table.
-		 */
 		for (Customer cust : myCustomers) 
 		{
 			if (cust.state==CustomerState.waiting)
@@ -180,9 +184,6 @@ public class WaiterAgent extends Agent {
 			}
 		}
 		return false;
-		//we have tried all our rules and found
-		//nothing to do. So return false to main loop of abstract agent
-		//and wait.
 	}
 	
 	public int tableNumber()
@@ -203,6 +204,7 @@ public class WaiterAgent extends Agent {
 
 	private void SeatCustomer(Customer c) 
 	{
+		state = WaiterState.busy;
 		c.cust.msgFollowMeToTable(this, menuOptions);
 		//DoSeatCustomer(c);
 		c.state=CustomerState.seated;
@@ -243,6 +245,7 @@ public class WaiterAgent extends Agent {
 	{
 		c.state=CustomerState.done;
 		host.msgTableIsFree(c.tableNumber);
+		state = WaiterState.available;
 	}
 	
 

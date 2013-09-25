@@ -18,32 +18,27 @@ import java.util.concurrent.TimeUnit;
 //is proceeded as he wishes.
 public class CookAgent extends Agent {
 	static int NTABLES=3;//a global for the number of tables.
-	//Notice that we implement waitingCustomers using ArrayList, but type it
-	//with List semantics.
-	//	public List<Order> orders;
-//	Timer timer;
-//	enum state
-//	{
-//		pending, cooking, done, finished
-//	}
 	WaiterAgent waiter;
-	
 	List<String> menuOptions = new ArrayList<String>();{
 	    menuOptions.add("chicken");
 	    menuOptions.add("beef");
 	    menuOptions.add("lamb");
 	}
+	private String name; 
+	private boolean isServing=false;
+	public HostGui hostGui = null;
 	public class Order
 	{
 		WaiterAgent waiter;
 		String choice;
 		int tableNumber;
 		state s;
-		Order(WaiterAgent waiter, String choice, int tableNumber)
+		Order(WaiterAgent waiter, String choice, int tableNumber, state s)
 		{
 			this.waiter=waiter;
 			this.choice=choice;
 			this.tableNumber=tableNumber;
+			this.s=s;
 		}
 	}
 	public List<Order> orders = new ArrayList<Order>();
@@ -54,29 +49,21 @@ public class CookAgent extends Agent {
     	int time=2000;
 		for (String choice : menuOptions)
 		{
-			{
-				cookingTime.put(choice, time);
-				time+=1000;
-			}
+			cookingTime.put(choice, time);
+			time+=1000;
 		}
     }
 
 
-
-	//note that tables is typed with Collection semantics.
-	//Later we will see how it is implemented
-	private String name; 
-	private boolean isServing=false;
-	public HostGui hostGui = null;
 	
 	
 	//Messages
 	
 	public void HereIsOrder(WaiterAgent waiter, String choice, int tableNumber)
 	{
-		Order order = new Order(waiter, choice, tableNumber);
-		order.s=state.pending;
+		Order order = new Order(waiter, choice, tableNumber, state.pending);
 		orders.add(order);
+		stateChanged();
 	}
 	
 	public void TimerDone(Order order)
@@ -87,33 +74,9 @@ public class CookAgent extends Agent {
 	
 	/**
 	 * Scheduler.  Determine what action is called for, and do it.
-	 */
-	
-//	for (Order o : orders) 
-//	{
-//		if (o.s==done)
-//		{
-//			orderDone();
-//			remove(o);
-//		}
-//	}
-//	
-//	for (Order o : orders) 
-//	{
-//		if (o.s==pending)
-//		{
-//			cookit(o);
-//		}
-//	}
-			
-			
+	 */	
 			
 	protected boolean pickAndExecuteAnAction() {
-		/* Think of this next rule as:
-            Does there exist a table and customer,
-            so that table is unoccupied and customer is waiting.
-            If so seat him at the table.
-		 */
 		for (Order order : orders) 
 		{
 			if (order.s==state.pending)

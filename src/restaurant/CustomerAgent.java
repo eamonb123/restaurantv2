@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
  
@@ -32,11 +33,11 @@ public class CustomerAgent extends Agent {
 
 	//    private boolean isHungry = false; //hack for gui
 	public enum AgentState
-	{DoingNothing, WaitingInRestaurant, BeingSeated, Seated, Ordered, Eating, DoneEating, Leaving};
+	{DoingNothing, WaitingInRestaurant, BeingSeated, Ordered, doneAndLeaving};
 	private AgentState state = AgentState.DoingNothing;//The start state
 
 	public enum AgentEvent 
-	{none, gotHungry, followHost, seated, doneEating, doneLeaving};
+	{none, gotHungry, followHost, readyToOrder, eating};
 	AgentEvent event = AgentEvent.none;
 
 	/**
@@ -68,39 +69,51 @@ public class CustomerAgent extends Agent {
 	public void gotHungry() {//from animation
 		print("I'm hungry");
 		event = AgentEvent.gotHungry;
-		state = AgentState.WaitingInRestaurant;
 		stateChanged();
 	}
 
 	public void msgFollowMeToTable(WaiterAgent waiter, List<String> menuOptions)
 	{
 		this.menuOptions=menuOptions;
-		state = AgentState.BeingSeated;
+		event = AgentEvent.followHost;
+		print("hey");
+		stateChanged();
 	}
 	
-	public void msgSeated()
-	{
-		state = AgentState.Seated;
-	}
+//	public void msgSeated()
+//	{
+//		event = AgentEvent.sitDown;
+//		stateChanged();
+//	}
 	
 	public void msgWhatWouldYouLike()
 	{
+		choice= CustomerChoice();
 		state = AgentState.Ordered;
+		stateChanged();
+	}
+	
+	private String CustomerChoice()
+	{
+		Random random = new Random();
+		int index = random.nextInt(menuOptions.size());
+		return menuOptions.get(index);
 	}
 	
 	public void msgHereIsYourFood(String food)
 	{
 		if (food==choice)
 		{
-			state = AgentState.Eating;
+			event = AgentEvent.eating;
 		}
-	}
-	
-	public void msgSitAtTable() {
-		print("Received msgSitAtTable");
-		event = AgentEvent.followHost;
 		stateChanged();
 	}
+	
+//	public void msgSitAtTable() {
+//		print("Received msgSitAtTable");
+//		event = AgentEvent.followHost;
+//		stateChanged();
+//	}
 
 	public void msgAnimationFinishedGoToSeat() {
 		//from animation
@@ -153,7 +166,22 @@ public class CustomerAgent extends Agent {
 	private void goToRestaurant() {
 		Do("Going to restaurant");
 	}
-
+	
+	private void ImReadyToOrder()
+	{
+		
+	}
+	
+	private void HereIsMyChoice()
+	{
+		
+	}
+	
+	private void DoneEatingAndLeaving()
+	{
+		
+	}
+	
 	private void SitDown() {
 		Do("Being seated. Going to table");
 		int number= host.tableNumber();
@@ -184,7 +212,6 @@ public class CustomerAgent extends Agent {
 
 	private void leaveTable() {
 		Do("Leaving.");
-		
 		customerGui.DoExitRestaurant();
 	}
 
