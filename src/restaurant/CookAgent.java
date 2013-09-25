@@ -7,6 +7,7 @@ import restaurant.gui.HostGui;
 import java.awt.Point;
 import java.util.*;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Restaurant Host Agent
@@ -27,12 +28,17 @@ public class CookAgent extends Agent {
 //	}
 	WaiterAgent waiter;
 	
+	List<String> menuOptions = new ArrayList<String>();{
+	    menuOptions.add("chicken");
+	    menuOptions.add("beef");
+	    menuOptions.add("lamb");
+	}
 	public class Order
 	{
 		WaiterAgent waiter;
 		String choice;
 		int tableNumber;
-		CookState state;
+		state s;
 		Order(WaiterAgent waiter, String choice, int tableNumber)
 		{
 			this.waiter=waiter;
@@ -41,52 +47,43 @@ public class CookAgent extends Agent {
 		}
 	}
 	public List<Order> orders = new ArrayList<Order>();
-	public enum CookState
+	public enum state
 	{pending, cooking, done, finished};
-	Map<String, Integer> cookingTimes = new HashMap<String, Integer>();
+	HashMap<String, Integer> cookingTime = new HashMap<String, Integer>();
+    {
+    	int time=2000;
+		for (String choice : menuOptions)
+		{
+			{
+				cookingTime.put(choice, time);
+				time+=1000;
+			}
+		}
+    }
+
+
 
 	//note that tables is typed with Collection semantics.
 	//Later we will see how it is implemented
 	private String name; 
 	private boolean isServing=false;
 	public HostGui hostGui = null;
-
-	public CookAgent(String name) {
-		super();
-		this.name = name;
-		// make some tables
-		tables = new ArrayList<Table>(NTABLES);
-		int xPos = 200;
-		for (int ix = 1; ix <= NTABLES; ix++) {
-			Table newTable = new Table(ix);
-			newTable.xPos = xPos;
-			tables.add(newTable);//how you add to a collections
-			xPos+=150;
-		}
-	}
+	
 	
 	//Messages
 	
 	public void HereIsOrder(WaiterAgent waiter, String choice, int tableNumber)
 	{
-		orders.add(new Order(waiter, choice, tableNumber));
+		Order order = new Order(waiter, choice, tableNumber);
+		order.s=state.pending;
+		orders.add(order);
 	}
 	
-	public void msgLeavingTable(CustomerAgent cust) {
-		for (Table table : tables) {
-			if (table.getOccupant() == cust) {
-				print(cust + " leaving " + table);
-				table.setUnoccupied();
-				stateChanged();
-			}
-		}
+	public void TimerDone(Order order)
+	{
+		order.s=state.done;
 	}
 
-	public void msgAtTable() {//from animation
-		//print("msgAtTable() called");
-		atTable.release();// = true;
-		stateChanged();
-	}
 	
 	/**
 	 * Scheduler.  Determine what action is called for, and do it.
@@ -117,44 +114,55 @@ public class CookAgent extends Agent {
             so that table is unoccupied and customer is waiting.
             If so seat him at the table.
 		 */
-		if (isServing==false)
+		for (Order order : orders) 
 		{
-			//isServing=true;
-			for (Table table : tables) {
-				if (!table.isOccupied()) {
-					if (!waitingCustomers.isEmpty()) {
-						seatCustomer(waitingCustomers.get(0), table);//the action
-						return true;//return true to the abstract agent to reinvoke the scheduler.
-					}
-				}
+			if (order.s==state.pending)
+			{
+				CookIt(order);
+				return true;
+			}
+		}
+		for (Order order : orders) 
+		{
+			if (order.s==state.done)
+			{
+				PlateIt(order);
+				return true;
 			}
 		}
 		return false;
-		//we have tried all our rules and found
-		//nothing to do. So return false to main loop of abstract agent
-		//and wait.
 	}
-	
-	public int tableNumber()
-	{
-		int tableNum=0;
-		for (Table table : tables) 
-		{
-			if (!table.isOccupied()) 
-			{
-				tableNum=table.tableNumber;
-				break;
-			}
-		}
-		return tableNum;
-	}
+
 
 	// Actions
 
-//	CookIt(Order o)
-//	{
-//		doCooking(o);
-//	}
+	private void CookIt(Order order)
+	{
+		//DoCooking(order);
+		CookingTimer(order);
+		TimerDone(order);	
+	}
+	
+	private void CookingTimer(Order order)
+	{
+		int time = cookingTime.get(order.choice);
+		try
+		{
+			Thread.sleep(time);
+		}
+		catch(Exception e)
+		{
+			System.out.println("Exception caught");
+		}
+	}
+	
+	private void PlateIt(Order order)
+	{
+		//DoPlating(order);
+		order.waiter.msgOrderIsReady(order.choice, order.tableNumber);
+		orders.remove(order);
+	}
+	
 //	
 //	timer.start(run(timerDone(o)))
 //	{
@@ -169,28 +177,7 @@ public class CookAgent extends Agent {
 //		orders.remove(o);
 //	}
 	
-	private void seatCustomer(CustomerAgent customer, Table table) {
-		customer.msgSitAtTable();
-		DoSeatCustomer(customer, table);
-		try {
-			atTable.acquire();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		table.setOccupant(customer);
-		waitingCustomers.remove(customer);
-		hostGui.DoLeaveCustomer();
-	}
 
-	// The animation DoXYZ() routines
-	private void DoSeatCustomer(CustomerAgent customer, Table table) {
-		//Notice how we print "customer" directly. It's toString method will do it.
-		//Same with "table"
-		print("Seating " + customer + " at " + table);
-		hostGui.DoBringToTable(customer);
-
-	}
 
 	//utilities
 

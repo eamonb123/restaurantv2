@@ -14,18 +14,16 @@ import java.util.concurrent.Semaphore;
 //the HostAgent. A Host is the manager of a restaurant who sees that all
 //is proceeded as he wishes.
 public class HostAgent extends Agent {
-	static int NTABLES=3;//a global for the number of tables.
+	static int NTABLES=4;//a global for the number of tables.
 	//Notice that we implement waitingCustomers using ArrayList, but type it
 	//with List semantics.
 	public List<CustomerAgent> waitingCustomers = new ArrayList<CustomerAgent>();
 	public Collection<Table> myTables;
-	private WaiterAgent waiter;
 	public List<WaiterAgent> waiterList = new ArrayList<WaiterAgent>();
 	//note that tables is typed with Collection semantics.
 	//Later we will see how it is implemented
 	private String name; 
 	public class Table {
-		CustomerAgent cust;
 		int tableNumber;
 		int xPos;
 		boolean isOccupied=false;
@@ -34,7 +32,6 @@ public class HostAgent extends Agent {
 		}
 	}
 	private Semaphore atTable = new Semaphore(0,true);
-	public boolean isServing=false;
 	public HostGui hostGui = null;
 	public HostAgent(String name) {
 		super();
@@ -52,6 +49,7 @@ public class HostAgent extends Agent {
 	
 	
 	// Messages
+	
 	
 	public void msgIWantToEat(CustomerAgent cust) {
 		waitingCustomers.add(cust);
@@ -83,7 +81,7 @@ public class HostAgent extends Agent {
 		{
 			for (Table table : myTables)
 			{
-				if (!table.isOccupied && !waiter.isServing)
+				if (!table.isOccupied && !waiterList.get(0).isServing)
 				{
 					callWaiter(waitingCustomers.get(0), table);
 					waitingCustomers.remove(0);
@@ -122,9 +120,8 @@ public class HostAgent extends Agent {
 
 	private void callWaiter(CustomerAgent cust, Table table)
 	{
-		table.cust=cust;
 		table.isOccupied=true;
-		waiter.msgPleaseSeatCustomer(cust, table.tableNumber);
+		waiterList.get(0).msgPleaseSeatCustomer(cust, table.tableNumber);
 	}
 	
 	
@@ -147,7 +144,7 @@ public class HostAgent extends Agent {
 		return hostGui;
 	}
 
-	public void newWaiter(WaiterAgent waiter)
+	public void setWaiter(WaiterAgent waiter)
 	{
 		waiterList.add(waiter);
 	}

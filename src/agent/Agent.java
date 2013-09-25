@@ -36,7 +36,7 @@ public abstract class Agent {
      * Return agent name for messages.  Default is to return java instance
      * name.
      */
-    protected String getName() {
+    public String getName() {
         return StringUtil.shortName(this);
     }
 

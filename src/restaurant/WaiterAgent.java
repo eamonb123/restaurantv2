@@ -90,11 +90,11 @@ public class WaiterAgent extends Agent {
 		}
 	}
 	
-	public void msgOrderIsReady(CustomerAgent cust, String choice, int tableNumber)
+	public void msgOrderIsReady(String choice, int tableNumber)
 	{
 		for (Customer c : myCustomers)
 		{
-			if (c.cust== cust && c.choice==choice && c.tableNumber==tableNumber)
+			if (c.choice==choice && c.tableNumber==tableNumber)
 			{
 				c.state=CustomerState.delivered;
 			}
@@ -228,19 +228,19 @@ public class WaiterAgent extends Agent {
 
 	private void SeatCustomer(Customer c) 
 	{
-		c.cust.followMe(this, new Menu);
-		//DoSeatCustomer(c);
-		c.state=CustomerState.seated;
+//		c.cust.followMe(this, new Menu);
+//		//DoSeatCustomer(c);
+//		c.state=CustomerState.seated;
 	}
 	
 	
 	private void TakeOrder(Customer c)
 	{
-		//DoGoToTable(cust.tableNumber);
-		c.cust.whatWouldYouLike();
-		c.state=CustomerState.askedForOrder;
-		String order= customerChoice();
-		c.choice=CustomerChoice();
+//		//DoGoToTable(cust.tableNumber);
+//		c.cust.whatWouldYouLike();
+//		c.state=CustomerState.askedForOrder;
+//		String order= customerChoice();
+//		c.choice=CustomerChoice();
 	}
 
 	
@@ -253,15 +253,15 @@ public class WaiterAgent extends Agent {
 	
 	private void GiveCook(Customer c)
 	{
-		//DoGiveCook(c);
-		cook.msgHereIsAnOrder(this, c.choice, c.tableNumber);
-		c.state=CustomerState.ordered;
+//		//DoGiveCook(c);
+//		cook.HereIsOrder(this, c.choice, c.tableNumber);
+//		c.state=CustomerState.ordered;
 	}
 	
 	private void Deliver(Customer c)
 	{
-		//DoGoToCustomer(c);
-		c.msgHereIsYourFood(c.choice);
+//		//DoGoToCustomer(c);
+//		c.msgHereIsYourFood(c.choice);
 	}
 	
 	private void CleanUp(Customer c)

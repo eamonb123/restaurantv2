@@ -18,10 +18,9 @@ public class RestaurantPanel extends JPanel {
 
     //Host, cook, waiters and customers
     private HostAgent host = new HostAgent("Sarah");
-    private WaiterAgent waiter = new WaiterAgent("Matt");
     private HostGui hostGui = new HostGui(host);
-//    private WaiterAgent waiter = new WaiterAgent("Matt");
-//    private WaiterGui waiterGui = new WaiterGui(host);
+    private WaiterAgent waiter = new WaiterAgent("Matt");
+
     private Vector<CustomerAgent> customers = new Vector<CustomerAgent>();
 
     private JPanel restLabel = new JPanel();
@@ -37,7 +36,7 @@ public class RestaurantPanel extends JPanel {
         gui.animationPanel.addGui(hostGui);
         host.startThread();
         waiter.startThread();
-        host.newWaiter(waiter);
+        host.setWaiter(waiter);
         
         
         setLayout(new GridLayout(1, 2, 20, 20));
