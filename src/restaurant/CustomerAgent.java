@@ -142,7 +142,6 @@ public class CustomerAgent extends Agent {
 			OrderFood();
 			return true;
 		}
-
 		if (event == AgentEvent.eating && state == AgentState.Ordered ){
 			state = AgentState.finishing;
 			ConsumeFood();
@@ -179,7 +178,7 @@ public class CustomerAgent extends Agent {
 	private void OrderFood()
 	{
 		print("customer " + name + " tells the waiter he wants " + choice);
-		waiter.msgHereIsChoice(this, choice);
+		waiter.msgHereIsChoice(this);
 	}
 	
 	

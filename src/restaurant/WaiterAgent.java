@@ -22,7 +22,7 @@ public class WaiterAgent extends Agent {
 	private CookAgent cook;
 	private HostAgent host;
 	public enum CustomerState
-	{nothing, waiting, seated, readyToOrder, orderComplete, deliver, eating, done};
+	{nothing, waiting, seated, readyToOrder, takingOrder, ordered, sendOrderToCook, deliver, delivering, eating, cleaningUp, done};
 	public enum WaiterState
 	{available, busy};
 	public WaiterState state = WaiterState.available;
@@ -68,10 +68,8 @@ public class WaiterAgent extends Agent {
 
 	public void msgPleaseSeatCustomer(CustomerAgent cust, int tableNumber)
 	{
-		print("waiter is adding " + cust.name + " to the list of waiting customers");
-		Customer cc = new Customer(cust,tableNumber, CustomerState.waiting);
-		
-		myCustomers.add(cc);
+		print("waiter is adding " + cust.name + " to the list of waiting customers");	
+		myCustomers.add(new Customer(cust,tableNumber, CustomerState.waiting));
 		System.out.println(myCustomers.size());
 		stateChanged();
 	}
@@ -89,15 +87,17 @@ public class WaiterAgent extends Agent {
 		stateChanged();
 	}
 	
-	public void msgHereIsChoice(CustomerAgent cust, String choice)
+	public void msgHereIsChoice(CustomerAgent cust)
 	{
+		System.out.println("A:" + cust);
 		for (Customer c : myCustomers)
 		{
-			if (c.cust==cust && c.choice==choice)
+			if (c.cust==cust && c.cust.choice.equals(cust.choice))
 			{
-				print("the waiter assigns the customer's choice" + choice + "to customer" + cust.name);
-				c.state=CustomerState.orderComplete;
-				c.choice=choice;
+				print("the waiter assigns the customer's choice" + c.choice + "to customer" + cust.name);
+				
+				c.state=CustomerState.ordered;
+				c.choice=cust.choice;
 			}
 		}
 		stateChanged();
@@ -160,14 +160,16 @@ public class WaiterAgent extends Agent {
 		{
 			if (cust.state==CustomerState.readyToOrder)
 			{
+				cust.state = CustomerState.takingOrder;
 				TakeOrder(cust);
 				return true;
 			}
 		}
 		for (Customer cust : myCustomers) 
 		{
-			if (cust.state==CustomerState.orderComplete)
+			if (cust.state==CustomerState.ordered)
 			{
+				cust.state=CustomerState.sendOrderToCook;
 				GiveCook(cust);
 				return true;
 			}
@@ -176,6 +178,7 @@ public class WaiterAgent extends Agent {
 		{
 			if (cust.state==CustomerState.deliver)
 			{
+				cust.state=CustomerState.delivering;
 				Deliver(cust);
 				return true;
 			}
@@ -184,6 +187,7 @@ public class WaiterAgent extends Agent {
 		{
 			if (cust.state==CustomerState.done)
 			{
+				cust.state=CustomerState.cleaningUp;
 				CleanUp(cust);
 				return true;
 			}
@@ -223,6 +227,7 @@ public class WaiterAgent extends Agent {
 		print("waiter " + name + " is taking customer " + c.cust.name + " order");
 		//DoGoToTable(cust.tableNumber);
 		c.cust.msgWhatWouldYouLike();
+		//c.state = CustomerState.ordered;
 	}
 	
 	private void GiveCook(Customer c)
@@ -230,7 +235,7 @@ public class WaiterAgent extends Agent {
 		//DoGiveCook(c);
 		print("the waiter gives customer " + c.cust.name + " order to the cook to prepare");
 		cook.msgHereIsOrder(this, c.choice, c.tableNumber);
-		c.state=CustomerState.orderComplete;
+	
 	}
 	
 	private void Deliver(Customer c)
@@ -269,6 +274,16 @@ public class WaiterAgent extends Agent {
 		return hostGui;
 	}
 	
+	public void setCook(CookAgent cook)
+	{
+		this.cook=cook;
+	}
+	
+	public void setHost(HostAgent host)
+	{
+		this.host=host;
+	}
+	
 	private class Table {
 		CustomerAgent occupiedBy;
 		int tableNumber;
@@ -296,6 +311,7 @@ public class WaiterAgent extends Agent {
 		public String toString() {
 			return "table " + tableNumber;
 		}
+		
 	}
 }
 

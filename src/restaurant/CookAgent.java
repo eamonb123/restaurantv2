@@ -76,7 +76,7 @@ public class CookAgent extends Agent {
 			
 	protected boolean pickAndExecuteAnAction() {
 		for (Order order : orders) 
-		{
+		{	
 			if (order.s==state.pending)
 			{
 				CookIt(order);
