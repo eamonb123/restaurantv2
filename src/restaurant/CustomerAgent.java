@@ -190,9 +190,8 @@ public class CustomerAgent extends Agent {
 	
 	private void LeaveTable()
 	{
-		print("customer " + name + "notifies the waiter that he is done eating the " + choice);
+		print("customer " + name + " notifies the waiter that he is done eating the " + choice);
 		waiter.msgDoneEating(this);
-		print("leaving the restaurant");
 		print("customer " + name + " is now leaving the restaurant");
 		customerGui.DoExitRestaurant();
 	}

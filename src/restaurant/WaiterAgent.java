@@ -94,7 +94,7 @@ public class WaiterAgent extends Agent {
 		{
 			if (c.cust==cust && c.cust.choice.equals(cust.choice))
 			{
-				print("the waiter assigns the customer's choice" + c.choice + "to customer" + cust.name);
+				print("the waiter assigns the customer's choice" + c.cust.choice + "to customer" + cust.name);
 				
 				c.state=CustomerState.ordered;
 				c.choice=cust.choice;
