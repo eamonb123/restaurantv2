@@ -43,7 +43,7 @@ public class WaiterAgent extends Agent {
 			this.state=state;
 		}
 	}
-	List<Customer> myCustomers = new ArrayList<Customer>();
+	public List<Customer> myCustomers = new ArrayList<Customer>();
 	private String name;
 	private Semaphore atTable = new Semaphore(0,true);
 	//public boolean isServing=false;
@@ -68,8 +68,11 @@ public class WaiterAgent extends Agent {
 
 	public void msgPleaseSeatCustomer(CustomerAgent cust, int tableNumber)
 	{
-		print("waiter is adding" + cust.name + "to the list of waiting customers");
-		myCustomers.add(new Customer(cust, tableNumber, CustomerState.waiting));
+		print("waiter is adding " + cust.name + " to the list of waiting customers");
+		Customer cc = new Customer(cust,tableNumber, CustomerState.waiting);
+		
+		myCustomers.add(cc);
+		System.out.println(myCustomers.size());
 		stateChanged();
 	}
 	
@@ -79,6 +82,7 @@ public class WaiterAgent extends Agent {
 		{
 			if (c.cust==cust)
 			{
+				print("change customer " + cust.name + " state to readyToOrder");
 				c.state=CustomerState.readyToOrder;
 			}
 		}

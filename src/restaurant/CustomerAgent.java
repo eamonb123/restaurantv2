@@ -30,8 +30,9 @@ public class CustomerAgent extends Agent {
 	}
 	// agent correspondents
 	private HostAgent host;
-	private WaiterAgent waiter = new WaiterAgent("bob");
-
+	//private WaiterAgent waiter = new WaiterAgent("bob");
+	private WaiterAgent waiter = null;
+	
 	//    private boolean isHungry = false; //hack for gui
 	public enum AgentState
 	{DoingNothing, WaitingInRestaurant, BeingSeated, Ordered, finishing, leaving};
@@ -79,7 +80,7 @@ public class CustomerAgent extends Agent {
 		this.menuOptions=menuOptions;
 		this.tableNumber=tableNumber;
 		event = AgentEvent.followHost;
-		print("following host to table");
+		print("customer " + name + " following host to table " + tableNumber);
 		stateChanged();
 	}
 	
@@ -167,7 +168,11 @@ public class CustomerAgent extends Agent {
 		print("customer " + name + " is being seated and going to table " + tableNumber);
 		//int number= host.tableNumber();
 		customerGui.DoGoToSeat(tableNumber);
-		print(" customer " + name + " is now ready to order");
+		while(customerGui.xPos != customerGui.xDestination || customerGui.yPos != customerGui.yDestination)
+		{
+			
+		}
+		print("customer " + name + " is now ready to order");
 		waiter.msgReadyToOrder(this);
 	}
 	
@@ -243,6 +248,10 @@ public class CustomerAgent extends Agent {
 
 	public CustomerGui getGui() {
 		return customerGui;
+	}
+	
+	public void setWaiter(WaiterAgent w){
+		waiter = w;
 	}
 }
 

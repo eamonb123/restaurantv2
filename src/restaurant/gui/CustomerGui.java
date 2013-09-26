@@ -16,8 +16,8 @@ public class CustomerGui implements Gui{
 	//private HostAgent host;
 	RestaurantGui gui;
 
-	private int xPos, yPos;
-	private int xDestination, yDestination;
+	public int xPos, yPos;
+	public int xDestination, yDestination;
 	private enum Command {noCommand, GoToSeat, LeaveRestaurant};
 	private Command command=Command.noCommand;
 
