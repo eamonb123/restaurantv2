@@ -16,7 +16,7 @@ import java.util.TimerTask;
  * Restaurant customer agent.
  */
 public class CustomerAgent extends Agent {
-	private String name;
+	public String name;
 	private int hungerLevel = 5;        // determines length of meal
     String choice;
     int tableNumber;
@@ -30,7 +30,7 @@ public class CustomerAgent extends Agent {
 	}
 	// agent correspondents
 	private HostAgent host;
-	private WaiterAgent waiter;
+	private WaiterAgent waiter = new WaiterAgent("bob");
 
 	//    private boolean isHungry = false; //hack for gui
 	public enum AgentState
@@ -68,29 +68,26 @@ public class CustomerAgent extends Agent {
 	// Messages
 
 	public void gotHungry() {//from animation
-		print("I'm hungry");
+		print("Customer is hungry");
 		event = AgentEvent.gotHungry;
 		stateChanged();
 	}
 
 	public void msgFollowMeToTable(WaiterAgent waiter, List<String> menuOptions, int tableNumber)
 	{
+		print("customer " + name + " has recived the message to sit at table " + tableNumber);
 		this.menuOptions=menuOptions;
 		this.tableNumber=tableNumber;
 		event = AgentEvent.followHost;
-		//print("moving toward table");
+		print("following host to table");
 		stateChanged();
 	}
 	
-//	public void msgSeated()
-//	{
-//		event = AgentEvent.sitDown;
-//		stateChanged();
-//	}
 	
 	public void msgWhatWouldYouLike()
 	{
 		choice = CustomerChoice();
+		print("customer " + name + " decides he wants " + choice);
 		event = AgentEvent.readyToGiveOrder;
 		stateChanged();
 	}
@@ -129,7 +126,6 @@ public class CustomerAgent extends Agent {
 	 */
 	protected boolean pickAndExecuteAnAction() {
 		//	CustomerAgent is a finite state machine
-
 		if (event == AgentEvent.gotHungry && state == AgentState.DoingNothing ){
 			state = AgentState.WaitingInRestaurant;
 			goToRestaurant();
@@ -162,32 +158,38 @@ public class CustomerAgent extends Agent {
 	// Actions
 	
 	private void goToRestaurant() {
-		Do("Going to restaurant");
+		print("Customer " + name + " is going to restaurant");
+		print("Customer " + name + " is telling the host he is hungry");
 		host.msgIWantToEat(this);
 	}
 	
 	private void SitDown() {
-		Do("Being seated. Going to table");
+		print("customer " + name + " is being seated and going to table " + tableNumber);
 		//int number= host.tableNumber();
 		customerGui.DoGoToSeat(tableNumber);
+		print(" customer " + name + " is now ready to order");
 		waiter.msgReadyToOrder(this);
 	}
 	
 	private void OrderFood()
 	{
+		print("customer " + name + " tells the waiter he wants " + choice);
 		waiter.msgHereIsChoice(this, choice);
 	}
 	
 	
 	private void ConsumeFood() //currently every food takes same amount of time to eat
 	{
+		print("customer " + name + " eats the food for 5 seconds before being done");
 		EatFood();
 	}
 	
 	private void LeaveTable()
 	{
+		print("customer " + name + "notifies the waiter that he is done eating the " + choice);
 		waiter.msgDoneEating(this);
 		print("leaving the restaurant");
+		print("customer " + name + " is now leaving the restaurant");
 		customerGui.DoExitRestaurant();
 	}
 	

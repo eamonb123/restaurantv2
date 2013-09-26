@@ -59,17 +59,15 @@ public class CookAgent extends Agent {
 	
 	//Messages
 	
-	public void HereIsOrder(WaiterAgent waiter, String choice, int tableNumber)
+	public void msgHereIsOrder(WaiterAgent waiter, String choice, int tableNumber)
 	{
+		
 		Order order = new Order(waiter, choice, tableNumber, state.pending);
+		print("the cook recieves the order " + order.choice + " and puts it on a list of orders");
 		orders.add(order);
 		stateChanged();
 	}
 	
-	public void TimerDone(Order order)
-	{
-		order.s=state.done;
-	}
 
 	
 	/**
@@ -102,9 +100,10 @@ public class CookAgent extends Agent {
 	private void CookIt(Order order) //can cook multiple things at a time with no decrease in speed
 	{
 		//DoCooking(order);
+		print("the cook begins cooking the " + order.choice);
 		order.s = state.cooking; //put this inside timer class when u implement it
 		CookingTimer(order);
-		TimerDone(order);
+		print("the cook is done cooking the " + order.choice);
 		order.s = state.done;
 	}
 	
@@ -124,6 +123,7 @@ public class CookAgent extends Agent {
 	private void PlateIt(Order order)
 	{
 		//DoPlating(order);
+		print("the cook notifies the waiter that the " + order.choice + " is ready to be served to the customer");
 		order.waiter.msgOrderIsReady(order.choice, order.tableNumber);
 		orders.remove(order);
 	}

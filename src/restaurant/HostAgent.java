@@ -52,8 +52,8 @@ public class HostAgent extends Agent {
 	// Messages
 
 	public void msgIWantToEat(CustomerAgent cust) {
+		print("Host is adding customer" + cust.name + "to the waiting customer list");
 		waitingCustomers.add(cust);
-		print("added customer");
 		stateChanged();
 	}
 
@@ -106,7 +106,8 @@ public class HostAgent extends Agent {
 
 	private void callWaiter(CustomerAgent cust, Table table)
 	{
-		waiterList.get(0).msgPleaseSeatCustomer(cust, table.tableNumber);
+		print("Host is sending message to the waiter to sit customer named " + cust.name);
+		waiterList.get(0).msgPleaseSeatCustomer(cust, table.tableNumber); //grabbing the only waiter
 		table.isOccupied=true;
 	}
 	

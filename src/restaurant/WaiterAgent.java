@@ -22,7 +22,7 @@ public class WaiterAgent extends Agent {
 	private CookAgent cook;
 	private HostAgent host;
 	public enum CustomerState
-	{nothing, waiting, seated, readyToOrder, askedForOrder, orderComplete, deliver, eating, done};
+	{nothing, waiting, seated, readyToOrder, orderComplete, deliver, eating, done};
 	public enum WaiterState
 	{available, busy};
 	public WaiterState state = WaiterState.available;
@@ -68,8 +68,8 @@ public class WaiterAgent extends Agent {
 
 	public void msgPleaseSeatCustomer(CustomerAgent cust, int tableNumber)
 	{
+		print("waiter is adding" + cust.name + "to the list of waiting customers");
 		myCustomers.add(new Customer(cust, tableNumber, CustomerState.waiting));
-		print("whats up");
 		stateChanged();
 	}
 	
@@ -91,6 +91,7 @@ public class WaiterAgent extends Agent {
 		{
 			if (c.cust==cust && c.choice==choice)
 			{
+				print("the waiter assigns the customer's choice" + choice + "to customer" + cust.name);
 				c.state=CustomerState.orderComplete;
 				c.choice=choice;
 			}
@@ -161,7 +162,7 @@ public class WaiterAgent extends Agent {
 		}
 		for (Customer cust : myCustomers) 
 		{
-			if (cust.state==CustomerState.askedForOrder)
+			if (cust.state==CustomerState.orderComplete)
 			{
 				GiveCook(cust);
 				return true;
@@ -204,6 +205,8 @@ public class WaiterAgent extends Agent {
 
 	private void SeatCustomer(Customer c) 
 	{
+		print("waiter is now currently busy helping customer " + c.cust.name);
+		print("waiter is asking customer " + c.cust.name + " to follow him to table " + c.tableNumber);
 		state = WaiterState.busy;
 		c.cust.msgFollowMeToTable(this, menuOptions, c.tableNumber);
 		//DoSeatCustomer(c);
@@ -213,27 +216,31 @@ public class WaiterAgent extends Agent {
 	
 	private void TakeOrder(Customer c)
 	{
+		print("waiter " + name + " is taking customer " + c.cust.name + " order");
 		//DoGoToTable(cust.tableNumber);
-		c.state=CustomerState.askedForOrder;
 		c.cust.msgWhatWouldYouLike();
 	}
 	
 	private void GiveCook(Customer c)
 	{
 		//DoGiveCook(c);
-		cook.HereIsOrder(this, c.choice, c.tableNumber);
+		print("the waiter gives customer " + c.cust.name + " order to the cook to prepare");
+		cook.msgHereIsOrder(this, c.choice, c.tableNumber);
 		c.state=CustomerState.orderComplete;
 	}
 	
 	private void Deliver(Customer c)
 	{
 		//DoGoToCustomer(c);
+		print("waiter " + name + " delivers the " + c.choice + " to customer " + c.cust.name);
 		c.cust.msgHereIsYourFood(c.choice);
 	}
 	
 	private void CleanUp(Customer c)
 	{
+		print("the waiter lets the host know that the table which customer " + c.cust.name + " sat at is now empty");
 		host.msgTableIsFree(c.tableNumber);
+		print("the waiter is now available to help the next customer");
 		state = WaiterState.available;
 	}
 	
