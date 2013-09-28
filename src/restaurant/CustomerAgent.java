@@ -79,6 +79,7 @@ public class CustomerAgent extends Agent {
 		print("customer " + name + " has recived the message to sit at table " + tableNumber);
 		this.menuOptions=menuOptions;
 		this.tableNumber=tableNumber;
+		customerGui.DoGoToSeat(tableNumber);
 		event = AgentEvent.followHost;
 		print("customer " + name + " following host to table " + tableNumber);
 		stateChanged();
@@ -169,7 +170,6 @@ public class CustomerAgent extends Agent {
 		customerGui.DoGoToSeat(tableNumber);
 		while(customerGui.xPos != customerGui.xDestination || customerGui.yPos != customerGui.yDestination)
 		{
-			
 		}
 		print("customer " + name + " is now ready to order");
 		waiter.msgReadyToOrder(this);

@@ -2,7 +2,7 @@ package restaurant;
 
 import agent.Agent;
 import restaurant.HostAgent.Table;
-import restaurant.gui.HostGui;
+import restaurant.gui.WaiterGui;
 
 import java.awt.Point;
 import java.util.*;
@@ -26,7 +26,7 @@ public class CookAgent extends Agent {
 	}
 	private String name; 
 	private boolean isServing=false;
-	public HostGui hostGui = null;
+	public WaiterGui hostGui = null;
 	public class Order
 	{
 		WaiterAgent waiter;
@@ -50,7 +50,7 @@ public class CookAgent extends Agent {
 		for (String choice : menuOptions)
 		{
 			cookingTime.put(choice, time);
-			time+=1000;
+			time+=2000;
 		}
     }
 
@@ -146,11 +146,11 @@ public class CookAgent extends Agent {
 
 	//utilities
 
-	public void setGui(HostGui gui) {
+	public void setGui(WaiterGui gui) {
 		hostGui = gui;
 	}
 
-	public HostGui getGui() {
+	public WaiterGui getGui() {
 		return hostGui;
 	}
 

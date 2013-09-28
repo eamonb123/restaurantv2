@@ -3,7 +3,7 @@ package restaurant;
 import agent.Agent;
 import restaurant.CustomerAgent.AgentState;
 import restaurant.HostAgent.Table;
-import restaurant.gui.HostGui;
+import restaurant.gui.WaiterGui;
 
 import java.util.*;
 import java.util.concurrent.Semaphore;
@@ -47,7 +47,7 @@ public class WaiterAgent extends Agent {
 	private String name;
 	private Semaphore atTable = new Semaphore(0,true);
 	//public boolean isServing=false;
-	public HostGui hostGui = null;
+	public WaiterGui waiterGui = null;
 
 	public WaiterAgent(String name) {
 		super();
@@ -217,7 +217,7 @@ public class WaiterAgent extends Agent {
 		print("waiter is asking customer " + c.cust.name + " to follow him to table " + c.tableNumber);
 		state = WaiterState.busy;
 		c.cust.msgFollowMeToTable(this, menuOptions, c.tableNumber);
-		//DoSeatCustomer(c);
+		waiterGui.DoSeatCustomer(c.tableNumber);
 		c.state=CustomerState.seated;
 	}
 	
@@ -260,18 +260,18 @@ public class WaiterAgent extends Agent {
 		//Notice how we print "customer" directly. It's toString method will do it.
 		//Same with "table"
 		print("Seating " + customer + " at " + table);
-		hostGui.DoBringToTable(customer);
+		waiterGui.DoBringToTable(customer);
 
 	}
 
 	//utilities
 
-	public void setGui(HostGui gui) {
-		hostGui = gui;
+	public void setGui(WaiterGui gui) {
+		waiterGui = gui;
 	}
 
-	public HostGui getGui() {
-		return hostGui;
+	public WaiterGui getGui() {
+		return waiterGui;
 	}
 	
 	public void setCook(CookAgent cook)

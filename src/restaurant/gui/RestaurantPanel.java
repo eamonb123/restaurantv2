@@ -19,22 +19,21 @@ public class RestaurantPanel extends JPanel {
 
     //Host, cook, waiters and customers
     private HostAgent host = new HostAgent("Sarah");
-    private HostGui hostGui = new HostGui(host);
     private CookAgent cook = new CookAgent();
     private WaiterAgent waiter = new WaiterAgent("Matt");
+    private WaiterGui waiterGui = new WaiterGui(host);
 
     private Vector<CustomerAgent> customers = new Vector<CustomerAgent>();
 
     private JPanel restLabel = new JPanel();
     private ListPanel customerPanel = new ListPanel(this, "Customers");
     private JPanel group = new JPanel();
-
     private RestaurantGui gui; //reference to main gui
 
     public RestaurantPanel(RestaurantGui gui) {
         this.gui = gui;
-        host.setGui(hostGui);
-        gui.animationPanel.addGui(hostGui);
+        waiter.setGui(waiterGui);
+        gui.animationPanel.addGui(waiterGui);
         host.setWaiter(waiter);
         waiter.setCook(cook);
         waiter.setHost(host);

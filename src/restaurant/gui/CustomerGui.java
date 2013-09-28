@@ -18,7 +18,7 @@ public class CustomerGui implements Gui{
 
 	public int xPos, yPos;
 	public int xDestination, yDestination;
-	private enum Command {noCommand, GoToSeat, LeaveRestaurant};
+	public enum Command {noCommand, GoToSeat, LeaveRestaurant};
 	private Command command=Command.noCommand;
 
 	public CustomerGui(CustomerAgent c, RestaurantGui gui){ //HostAgent m) {

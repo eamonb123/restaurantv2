@@ -44,9 +44,10 @@ public class RestaurantGui extends JFrame implements ActionListener {
         animationFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         animationFrame.setBounds(100+WINDOWX, 50 , WINDOWX+100, WINDOWY+100);
         animationFrame.setVisible(true);
-    	animationFrame.add(animationPanel); 
     	
-    	setBounds(50, 50, WINDOWX, WINDOWY);
+        add(animationPanel); 
+    	
+    	setBounds(50, 50, WINDOWX+300, WINDOWY+200);
 
         //setLayout(new BoxLayout((Container) getContentPane(),BoxLayout.Y_AXIS));
         setLayout(new GridLayout(2, 2));
@@ -78,7 +79,7 @@ public class RestaurantGui extends JFrame implements ActionListener {
         organizer.add(infoPanel, BorderLayout.NORTH);
         
         imageLabel = new JLabel (image);
-        organizer.add(imageLabel, BorderLayout.SOUTH);
+       // organizer.add(imageLabel, BorderLayout.SOUTH);
         
         add(organizer);
     }

@@ -2,7 +2,7 @@ package restaurant;
 
 import agent.Agent;
 import restaurant.WaiterAgent.WaiterState;
-import restaurant.gui.HostGui;
+import restaurant.gui.WaiterGui;
 
 import java.util.*;
 import java.util.concurrent.Semaphore;
@@ -33,7 +33,7 @@ public class HostAgent extends Agent {
 		}
 	}
 	private Semaphore atTable = new Semaphore(0,true);
-	public HostGui hostGui = null;
+	public WaiterGui hostGui = null;
 	public HostAgent(String name) {
 		super();
 		this.name = name;
@@ -138,11 +138,11 @@ public class HostAgent extends Agent {
 		return tableNum;
 	}
 	
-	public void setGui(HostGui gui) {
+	public void setGui(WaiterGui gui) {
 		hostGui = gui;
 	}
 
-	public HostGui getGui() {
+	public WaiterGui getGui() {
 		return hostGui;
 	}
 
