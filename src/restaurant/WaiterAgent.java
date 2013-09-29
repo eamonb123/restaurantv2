@@ -5,6 +5,7 @@ import restaurant.CustomerAgent.AgentState;
 import restaurant.HostAgent.Table;
 import restaurant.gui.WaiterGui;
 
+import java.awt.Point;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
@@ -21,6 +22,7 @@ public class WaiterAgent extends Agent {
 	public Collection<Table> tables;
 	private CookAgent cook;
 	private HostAgent host;
+	private Point location = new Point();
 	public enum CustomerState
 	{nothing, waiting, seated, readyToOrder, takingOrder, ordered, sendOrderToCook, deliver, delivering, eating, cleaningUp, done};
 	public enum WaiterState
@@ -66,11 +68,17 @@ public class WaiterAgent extends Agent {
 
 	//Messages
 
-	public void msgPleaseSeatCustomer(CustomerAgent cust, int tableNumber)
+	public void msgPleaseSeatCustomer(CustomerAgent cust, int tableNumber, Point loc)
 	{
 		print("waiter is adding " + cust.name + " to the list of waiting customers");	
+		location=loc;
 		myCustomers.add(new Customer(cust,tableNumber, CustomerState.waiting));
-		System.out.println(myCustomers.size());
+		stateChanged();
+	}
+	
+	public void msgAtTable() {//from animation
+		//print("msgAtTable() called");
+		atTable.release();// = true;
 		stateChanged();
 	}
 	
@@ -137,11 +145,7 @@ public class WaiterAgent extends Agent {
 //		}
 //	}
 
-//	public void msgAtTable() {//from animation
-//		//print("msgAtTable() called");
-//		atTable.release();// = true;
-//		stateChanged();
-//	}
+
 	
 	/**
 	 * Scheduler.  Determine what action is called for, and do it.
@@ -216,8 +220,8 @@ public class WaiterAgent extends Agent {
 		print("waiter is now currently busy helping customer " + c.cust.name);
 		print("waiter is asking customer " + c.cust.name + " to follow him to table " + c.tableNumber);
 		state = WaiterState.busy;
-		c.cust.msgFollowMeToTable(this, menuOptions, c.tableNumber);
-		waiterGui.DoSeatCustomer(c.tableNumber);
+		c.cust.msgFollowMeToTable(this, menuOptions, c.tableNumber, location);
+		waiterGui.DoSeatCustomer(location);
 		c.state=CustomerState.seated;
 	}
 	

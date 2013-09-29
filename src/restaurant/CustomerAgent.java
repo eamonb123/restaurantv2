@@ -4,6 +4,7 @@ import restaurant.gui.CustomerGui;
 import restaurant.gui.RestaurantGui;
 import agent.Agent;
 
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -20,6 +21,7 @@ public class CustomerAgent extends Agent {
 	private int hungerLevel = 5;        // determines length of meal
     String choice;
     int tableNumber;
+	private Point location = new Point();
 	Timer timer = new Timer();
 	private CustomerGui customerGui;
 	public List<String> menuOptions = new ArrayList<String>();
@@ -74,12 +76,12 @@ public class CustomerAgent extends Agent {
 		stateChanged();
 	}
 
-	public void msgFollowMeToTable(WaiterAgent waiter, List<String> menuOptions, int tableNumber)
+	public void msgFollowMeToTable(WaiterAgent waiter, List<String> menuOptions, int tableNumber, Point loc)
 	{
 		print("customer " + name + " has recived the message to sit at table " + tableNumber);
 		this.menuOptions=menuOptions;
 		this.tableNumber=tableNumber;
-		customerGui.DoGoToSeat(tableNumber);
+		location=loc;
 		event = AgentEvent.followHost;
 		print("customer " + name + " following host to table " + tableNumber);
 		stateChanged();
@@ -107,6 +109,8 @@ public class CustomerAgent extends Agent {
 		{
 			event = AgentEvent.eating;
 		}
+		else 
+			print("you got my order wrong!");
 		stateChanged();
 	}
 	
@@ -166,13 +170,27 @@ public class CustomerAgent extends Agent {
 	
 	private void SitDown() {
 		print("customer " + name + " is being seated and going to table " + tableNumber);
-		//int number= host.tableNumber();
-		customerGui.DoGoToSeat(tableNumber);
+		customerGui.DoGoToSeat(location);
 		while(customerGui.xPos != customerGui.xDestination || customerGui.yPos != customerGui.yDestination)
 		{
 		}
-		print("customer " + name + " is now ready to order");
+		print("the waiter hands " + name + " the menu");
+		print(name + " is deciding what to order...");
+		decidingOrder();
+		print(name + " is ready to order");
 		waiter.msgReadyToOrder(this);
+	}
+	
+	private void decidingOrder()
+	{
+		try
+		{
+			Thread.sleep(8000);
+		}
+		catch(Exception e)
+		{
+			System.out.println("Exception caught");
+		}
 	}
 	
 	private void OrderFood()

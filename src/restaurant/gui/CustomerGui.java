@@ -86,8 +86,7 @@ public class CustomerGui implements Gui{
     	}
     }
 	
-	public void DoGoToSeat(int tableNumber) {
-		Point location = tableMap.get(tableNumber); 
+	public void DoGoToSeat(Point location) {
 		xDestination = location.x;
 		yDestination = location.y;
 		command = Command.GoToSeat;

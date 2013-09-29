@@ -4,6 +4,7 @@ import agent.Agent;
 import restaurant.WaiterAgent.WaiterState;
 import restaurant.gui.WaiterGui;
 
+import java.awt.Point;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 
@@ -23,6 +24,8 @@ public class HostAgent extends Agent {
 	public List<WaiterAgent> waiterList = new ArrayList<WaiterAgent>();
 	//note that tables is typed with Collection semantics.
 	//Later we will see how it is implemented
+    private int xPosition=100;
+    private int yPosition=250;
 	private String name; 
 	public class Table {
 		int tableNumber;
@@ -49,6 +52,18 @@ public class HostAgent extends Agent {
 	}
 	
 	
+	//MAPPING TABLE NUMBERS TO COORDINATES
+    HashMap<Integer, Point> tableMap = new HashMap<Integer, Point>();
+    {
+    	for (int i=1; i<=NTABLES; i++)
+    	{
+    		Point location = new Point(xPosition, yPosition);
+    		tableMap.put(i,location);
+    		xPosition+=150;
+    	}
+    }
+    
+    
 	// Messages
 
 	public void msgIWantToEat(CustomerAgent cust) {
@@ -108,19 +123,20 @@ public class HostAgent extends Agent {
 	{
 		print("Host is sending message to the waiter to sit customer " + cust.name);
 		cust.setWaiter(waiterList.get(0));
-		waiterList.get(0).msgPleaseSeatCustomer(cust, table.tableNumber); //grabbing the only waiter
+		Point location=tableMap.get(table.tableNumber);
+		waiterList.get(0).msgPleaseSeatCustomer(cust, table.tableNumber, location); //grabbing the only waiter
 		table.isOccupied=true;
 	}
 	
 	
 	// The animation DoXYZ() routines
-	private void DoSeatCustomer(CustomerAgent customer, Table table) {
-		//Notice how we print "customer" directly. It's toString method will do it.
-		//Same with "table"
-		print("Seating " + customer + " at " + table);
-		hostGui.DoBringToTable(customer);
-
-	}
+//	private void DoSeatCustomer(CustomerAgent customer, Table table) {
+//		//Notice how we print "customer" directly. It's toString method will do it.
+//		//Same with "table"
+//		print("Seating " + customer + " at " + table);
+//		hostGui.DoBringToTable(customer);
+//
+//	}
 
 	//utilities
 
