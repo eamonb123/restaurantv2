@@ -93,11 +93,13 @@ public class HostAgent extends Agent {
 	protected boolean pickAndExecuteAnAction() {
 		if (!waitingCustomers.isEmpty())
 		{
+			WaiterAgent waiter = leastBusyWaiter(waiterList);
 			for (Table table : myTables)
 			{
-				if (!table.isOccupied && waiterList.get(0).state==WaiterState.available)
+				//if (!table.isOccupied && waiterList.get(0).state==WaiterState.available)
+				if(!table.isOccupied)
 				{
-					callWaiter(waitingCustomers.get(0), table);
+					callWaiter(waitingCustomers.get(0), waiter, table);
 					waitingCustomers.remove(0);
 					return true;
 				}
@@ -119,12 +121,12 @@ public class HostAgent extends Agent {
 	// Actions
 
 
-	private void callWaiter(CustomerAgent cust, Table table)
+	private void callWaiter(CustomerAgent cust, WaiterAgent waiter, Table table)
 	{
 		print("Host is sending message to the waiter to sit customer " + cust.name);
-		cust.setWaiter(waiterList.get(0));
+		cust.setWaiter(waiter);
 		Point location=tableMap.get(table.tableNumber);
-		waiterList.get(0).msgPleaseSeatCustomer(cust, table.tableNumber, location); //grabbing the only waiter
+		waiter.msgPleaseSeatCustomer(cust, table.tableNumber, location); //grabbing the only waiter
 		table.isOccupied=true;
 	}
 	
@@ -140,18 +142,19 @@ public class HostAgent extends Agent {
 
 	//utilities
 
-	public int tableNumber()
+	WaiterAgent leastBusyWaiter(List<WaiterAgent> waiterList)
 	{
-		int tableNum=0;
-		for (Table table : myTables) 
+		int numOfCustomers=waiterList.get(0).myCustomers.size();
+		WaiterAgent freeWaiter = waiterList.get(0);
+		for(WaiterAgent waiter : waiterList)
 		{
-			if (!table.isOccupied) 
+			if (waiter.myCustomers.size()<numOfCustomers)
 			{
-				tableNum=table.tableNumber;
-				break;
+				numOfCustomers=waiter.myCustomers.size();
+				freeWaiter=waiter;
 			}
 		}
-		return tableNum;
+		return freeWaiter;
 	}
 	
 	public void setGui(WaiterGui gui) {

@@ -73,13 +73,14 @@ public class WaiterAgent extends Agent {
 		print("waiter is adding " + cust.name + " to the list of waiting customers");	
 		location=loc;
 		myCustomers.add(new Customer(cust,tableNumber, CustomerState.waiting));
+		System.out.println(myCustomers.size());
 		stateChanged();
 	}
 	
-	public void msgAtTable() {//from animation
-		print("msgAtTable() called");
-		stateChanged();
-	}
+//	public void msgAtTable() {//from animation
+//		print("msgAtTable() called");
+//		stateChanged();
+//	}
 	
 	public void msgReadyToOrder(CustomerAgent cust)
 	{
@@ -155,6 +156,7 @@ public class WaiterAgent extends Agent {
 		{
 			if (cust.state==CustomerState.waiting)
 			{
+				System.out.println("hey");
 				SeatCustomer(cust);
 				return true;
 			}

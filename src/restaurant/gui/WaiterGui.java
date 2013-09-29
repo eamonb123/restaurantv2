@@ -33,7 +33,7 @@ public class WaiterGui implements Gui {
             yPos--;
         if (xPos == xDestination && yPos == yDestination) 
         {
-        	waiter.msgAtTable();
+        	//waiter.msgAtTable();
         }
     }
 
