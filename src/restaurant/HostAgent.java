@@ -1,7 +1,6 @@
 package restaurant;
 
 import agent.Agent;
-import restaurant.WaiterAgent.WaiterState;
 import restaurant.gui.WaiterGui;
 
 import java.awt.Point;
@@ -16,17 +15,13 @@ import java.util.concurrent.Semaphore;
 //the HostAgent. A Host is the manager of a restaurant who sees that all
 //is proceeded as he wishes.
 public class HostAgent extends Agent {
-	static int NTABLES=4;//a global for the number of tables.
-	//Notice that we implement waitingCustomers using ArrayList, but type it
-	//with List semantics.
+	static int NTABLES=3;
 	public List<CustomerAgent> waitingCustomers = new ArrayList<CustomerAgent>();
 	public List<WaiterAgent> waiterList = new ArrayList<WaiterAgent>();
 	public Collection<Table> myTables;
-	//note that tables is typed with Collection semantics.
-	//Later we will see how it is implemented
     private int xPosition=100;
     private int yPosition=250;
-	private String name; 
+    private String name;
 	public class Table {
 		int tableNumber;
 		int xPos;
@@ -35,12 +30,10 @@ public class HostAgent extends Agent {
 			this.tableNumber = tableNumber;
 		}
 	}
-	private Semaphore atTable = new Semaphore(0,true);
-	public WaiterGui hostGui = null;
+	public WaiterGui waiterGui = null;
 	public HostAgent(String name) {
 		super();
 		this.name = name;
-		// make some tables
 		myTables = new ArrayList<Table>(NTABLES);
 		int xPos = 200;
 		for (int ix = 1; ix <= NTABLES; ix++) {
@@ -51,8 +44,6 @@ public class HostAgent extends Agent {
 		}
 	}
 	
-	
-	//MAPPING TABLE NUMBERS TO COORDINATES
     HashMap<Integer, Point> tableMap = new HashMap<Integer, Point>();
     {
     	for (int i=1; i<=NTABLES; i++)
@@ -109,17 +100,8 @@ public class HostAgent extends Agent {
 	}
 	
 
-//	for (Customer cust : waitingCustomers) 
-//	{
-//		for (Table t : myTable) 
-//		{
-//			if (cust.s=waiting && t==NULL && !w.isBusy())
-//				CallWaiter(cust, t.tableNumber);
-//		}
-//	}
 
 	// Actions
-
 
 	private void callWaiter(CustomerAgent cust, WaiterAgent waiter, Table table)
 	{
@@ -131,14 +113,6 @@ public class HostAgent extends Agent {
 	}
 	
 	
-	// The animation DoXYZ() routines
-//	private void DoSeatCustomer(CustomerAgent customer, Table table) {
-//		//Notice how we print "customer" directly. It's toString method will do it.
-//		//Same with "table"
-//		print("Seating " + customer + " at " + table);
-//		hostGui.DoBringToTable(customer);
-//
-//	}
 
 	//utilities
 
@@ -158,11 +132,11 @@ public class HostAgent extends Agent {
 	}
 	
 	public void setGui(WaiterGui gui) {
-		hostGui = gui;
+		waiterGui = gui;
 	}
 
 	public WaiterGui getGui() {
-		return hostGui;
+		return waiterGui;
 	}
 
 	public void setWaiter(WaiterAgent waiter)

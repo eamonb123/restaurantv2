@@ -12,12 +12,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * Restaurant Host Agent
  */
-//We only have 2 types of agents in this prototype. A customer and an agent that
-//does all the rest. Rather than calling the other agent a waiter, we called him
-//the HostAgent. A Host is the manager of a restaurant who sees that all
-//is proceeded as he wishes.
+
 public class CookAgent extends Agent {
-	static int NTABLES=3;//a global for the number of tables.
 	WaiterAgent waiter;
 	List<String> menuOptions = new ArrayList<String>();{
 	    menuOptions.add("chicken");
@@ -25,7 +21,6 @@ public class CookAgent extends Agent {
 	    menuOptions.add("lamb");
 	}
 	private String name; 
-	private boolean isServing=false;
 	public WaiterGui hostGui = null;
 	public class Order
 	{
@@ -55,7 +50,6 @@ public class CookAgent extends Agent {
     }
 
 
-	
 	
 	//Messages
 	
@@ -128,20 +122,6 @@ public class CookAgent extends Agent {
 		orders.remove(order);
 	}
 	
-//	
-//	timer.start(run(timerDone(o)))
-//	{
-//		o.state=cooking;
-//		cookingtime.get(o.choice);
-//	}
-//	
-//	plateIt(Order o)
-//	{
-//		doPlating(o);
-//		o.w.orderDone(o.choice, o.table);
-//		orders.remove(o);
-//	}
-	
 
 
 	//utilities
@@ -154,41 +134,7 @@ public class CookAgent extends Agent {
 		return hostGui;
 	}
 
-//	private class Order
-//	{
-//		Waiter w;
-//		String choice;
-//		int tableNum;
-//		state s;
-//	}
 	
-	private class Table {
-		CustomerAgent occupiedBy;
-		int tableNumber;
-		int xPos;
-		Table(int tableNumber) {
-			this.tableNumber = tableNumber;
-		}
-
-		void setOccupant(CustomerAgent cust) {
-			occupiedBy = cust;
-		}
-
-		void setUnoccupied() {
-			occupiedBy = null;
-		}
-
-		CustomerAgent getOccupant() {
-			return occupiedBy;
-		}
-
-		boolean isOccupied() {
-			return occupiedBy != null;
-		}
-
-		public String toString() {
-			return "table " + tableNumber;
-		}
-	}
+	
 }
 

@@ -12,22 +12,25 @@ import java.util.concurrent.Semaphore;
 /**
  * Restaurant Host Agent
  */
-//We only have 2 types of agents in this prototype. A customer and an agent that
-//does all the rest. Rather than calling the other agent a waiter, we called him
-//the HostAgent. A Host is the manager of a restaurant who sees that all
-//is proceeded as he wishes.
+
 public class WaiterAgent extends Agent {
-	//	public List<CustomerAgent> waitingCustomers = new ArrayList<CustomerAgent>();
-	static int NTABLES=3;//a global for the number of tables.
 	public Collection<Table> tables;
 	private CookAgent cook;
 	private HostAgent host;
 	private Point location = new Point();
+	public List<Customer> myCustomers = new ArrayList<Customer>();
 	public enum CustomerState
 	{nothing, waiting, seated, readyToOrder, takingOrder, ordered, sendOrderToCook, deliver, delivering, eating, cleaningUp, done};
-	public enum WaiterState
-	{available, busy};
-	public WaiterState state = WaiterState.available;
+//	public enum WaiterState
+//	{available, busy};
+//	public WaiterState state = WaiterState.available;
+	public boolean isBusy()
+	{
+		if (myCustomers.size()!=0)
+			return true;
+		else 
+			return false;
+	}
 	List<String> menuOptions = new ArrayList<String>();{
 	    menuOptions.add("chicken");
 	    menuOptions.add("beef");
@@ -45,24 +48,13 @@ public class WaiterAgent extends Agent {
 			this.state=state;
 		}
 	}
-	public List<Customer> myCustomers = new ArrayList<Customer>();
 	private String name;
 	private Semaphore atTable = new Semaphore(0,true);
-	//public boolean isServing=false;
 	public WaiterGui waiterGui = null;
 
 	public WaiterAgent(String name) {
 		super();
 		this.name = name;
-		// make some tables
-		tables = new ArrayList<Table>(NTABLES);
-		int xPos = 200;
-		for (int ix = 1; ix <= NTABLES; ix++) {
-			Table newTable = new Table(ix);
-			newTable.xPos = xPos;
-			tables.add(newTable);//how you add to a collections
-			xPos+=150;
-		}
 	}
 	
 
@@ -73,7 +65,6 @@ public class WaiterAgent extends Agent {
 		print("waiter is adding " + cust.name + " to the list of waiting customers");	
 		location=loc;
 		myCustomers.add(new Customer(cust,tableNumber, CustomerState.waiting));
-		System.out.println(myCustomers.size());
 		stateChanged();
 	}
 	
@@ -134,16 +125,6 @@ public class WaiterAgent extends Agent {
 		}
 		stateChanged();
 	}
-
-//	public void msgLeavingTable(CustomerAgent cust) {
-//		for (Table table : tables) {
-//			if (table.getOccupant() == cust) {
-//				print(cust + " leaving " + table);
-//				table.setUnoccupied();
-//				stateChanged();
-//			}
-//		}
-//	}
 
 
 	
@@ -221,7 +202,7 @@ public class WaiterAgent extends Agent {
 	{
 		print("waiter is now currently busy helping customer " + c.cust.name);
 		print("waiter is asking customer " + c.cust.name + " to follow him to table " + c.tableNumber);
-		state = WaiterState.busy;
+		//state = WaiterState.busy;
 //		try 
 //		{
 //            atTable.acquire();
@@ -268,19 +249,11 @@ public class WaiterAgent extends Agent {
 		print("the waiter lets the host know that the table which customer " + c.cust.name + " sat at is now empty");
 		host.msgTableIsFree(c.tableNumber);
 		print("the waiter is now available to help the next customer");
-		state = WaiterState.available;
+		//state = WaiterState.available;
 	}
 	
 
 
-	// The animation DoXYZ() routines
-//	private void DoSeatCustomer(CustomerAgent customer, Table table) {
-//		//Notice how we print "customer" directly. It's toString method will do it.
-//		//Same with "table"
-//		print("Seating " + customer + " at " + table);
-//		waiterGui.DoBringToTable(customer);
-//
-//	}
 
 	//utilities
 
