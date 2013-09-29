@@ -16,6 +16,7 @@ public class AnimationPanel extends JPanel implements ActionListener {
     private final int WINDOWY = 350;
     private int xPos=100;
     private int yPos=250;
+    int NTABLES = 3;
     private int Width=50;
     private int Height=50;
     private Image bufferImage;
@@ -38,7 +39,6 @@ public class AnimationPanel extends JPanel implements ActionListener {
 
     public void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D)g;
-        int NTABLES = 4;
         //Clear the screen by painting a rectangle the size of the frame
         g2.setColor(getBackground());
         g2.fillRect(0, 0, WINDOWX, WINDOWY );

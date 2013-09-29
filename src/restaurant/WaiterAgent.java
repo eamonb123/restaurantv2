@@ -77,8 +77,7 @@ public class WaiterAgent extends Agent {
 	}
 	
 	public void msgAtTable() {//from animation
-		//print("msgAtTable() called");
-		atTable.release();// = true;
+		print("msgAtTable() called");
 		stateChanged();
 	}
 	
@@ -196,6 +195,7 @@ public class WaiterAgent extends Agent {
 				return true;
 			}
 		}
+		//waiterGui.goToHome();
 		return false;
 	}
 	
@@ -220,6 +220,18 @@ public class WaiterAgent extends Agent {
 		print("waiter is now currently busy helping customer " + c.cust.name);
 		print("waiter is asking customer " + c.cust.name + " to follow him to table " + c.tableNumber);
 		state = WaiterState.busy;
+//		try 
+//		{
+//            atTable.acquire();
+//        } 
+//		catch (InterruptedException e) 
+//        {
+//            // no action - expected when stopping or when deadline changed
+//        } 
+//		catch (Exception e) 
+//        {
+//            print("Unexpected exception caught in Agent thread:", e);
+//        }
 		c.cust.msgFollowMeToTable(this, menuOptions, c.tableNumber, location);
 		waiterGui.DoSeatCustomer(location);
 		c.state=CustomerState.seated;
@@ -260,13 +272,13 @@ public class WaiterAgent extends Agent {
 
 
 	// The animation DoXYZ() routines
-	private void DoSeatCustomer(CustomerAgent customer, Table table) {
-		//Notice how we print "customer" directly. It's toString method will do it.
-		//Same with "table"
-		print("Seating " + customer + " at " + table);
-		waiterGui.DoBringToTable(customer);
-
-	}
+//	private void DoSeatCustomer(CustomerAgent customer, Table table) {
+//		//Notice how we print "customer" directly. It's toString method will do it.
+//		//Same with "table"
+//		print("Seating " + customer + " at " + table);
+//		waiterGui.DoBringToTable(customer);
+//
+//	}
 
 	//utilities
 

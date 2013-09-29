@@ -12,8 +12,6 @@ public class WaiterGui implements Gui {
     private WaiterAgent waiter = null;
     private int xPos = -20, yPos = -20;//default waiter position
     private int xDestination = -20, yDestination = -20;//default start position
-    private int xPosition=100;
-    private int yPosition=250;
     
     public static final int xTable = 200;
     public static final int yTable = 250;
@@ -35,10 +33,16 @@ public class WaiterGui implements Gui {
             yPos--;
         if (xPos == xDestination && yPos == yDestination) 
         {
-        	//waiter.msgAtTable(xDestination, yDestination);
+        	waiter.msgAtTable();
         }
     }
 
+    public void goToHome()
+    {
+    	xDestination=40;
+    	yDestination=40;
+    }
+    
     public void draw(Graphics2D g) {
         g.setColor(Color.MAGENTA);
         g.fillRect(xPos, yPos, 20, 20);
@@ -53,17 +57,6 @@ public class WaiterGui implements Gui {
         yDestination = yTable - 20;
     }
    
-    
-//	//MAPPING TABLE NUMBERS TO COORDINATES ON THE GUI
-//    HashMap<Integer, Point> tableMap = new HashMap<Integer, Point>();
-//    {
-//    	for (int i=1; i<=3; i++)
-//    	{
-//    		Point location = new Point(xPosition, yPosition);
-//    		tableMap.put(i,location);
-//    		xPosition+=150;
-//    	}
-//    }
     
     public void DoSeatCustomer(Point location)
     {

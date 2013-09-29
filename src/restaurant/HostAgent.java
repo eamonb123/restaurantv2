@@ -20,8 +20,8 @@ public class HostAgent extends Agent {
 	//Notice that we implement waitingCustomers using ArrayList, but type it
 	//with List semantics.
 	public List<CustomerAgent> waitingCustomers = new ArrayList<CustomerAgent>();
-	public Collection<Table> myTables;
 	public List<WaiterAgent> waiterList = new ArrayList<WaiterAgent>();
+	public Collection<Table> myTables;
 	//note that tables is typed with Collection semantics.
 	//Later we will see how it is implemented
     private int xPosition=100;
