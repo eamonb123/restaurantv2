@@ -36,12 +36,19 @@ public class RestaurantPanel extends JPanel {
         this.gui = gui;
         waiter.setGui(waiterGui);
         gui.animationPanel.addGui(waiterGui);
+//      while (!waiters.isEmpty())
+//      {
+//        	
+//        	host.setWaiter(waiters.get(0));
+//        	waiters.remove(0);
+//      }
         host.setWaiter(waiter);
         waiter.setCook(cook);
         waiter.setHost(host);
         host.startThread();
         cook.startThread();
         waiter.startThread();
+        
         
         
         

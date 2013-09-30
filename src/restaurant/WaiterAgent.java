@@ -291,6 +291,11 @@ public class WaiterAgent extends Agent {
 		this.host=host;
 	}
 	
+	public HostAgent getHost()
+	{
+		return host;
+	}
+	
 	private class Table {
 		CustomerAgent occupiedBy;
 		int tableNumber;
