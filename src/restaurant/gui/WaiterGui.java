@@ -10,6 +10,8 @@ import java.util.*;
 
 public class WaiterGui implements Gui {
     private WaiterAgent waiter = null;
+	//private HostAgent host;
+	RestaurantGui gui;
 	static int NTABLES=3;
     //private int xPos = -20, yPos = -20;//default waiter position
 	private int xPos = -20, yPos = -20;
@@ -37,6 +39,16 @@ public class WaiterGui implements Gui {
     	}
     }    
 
+	public WaiterGui(WaiterAgent w, RestaurantGui gui){ 
+		waiter = w;
+		xPos = -20;
+		yPos = -20;
+//		xDestination = -40;
+//		yDestination = -40;
+		//maitreD = m;
+		this.gui = gui;
+	}
+    
     public void updatePosition() {
     	if (xPos < xDestination)
             xPos++;

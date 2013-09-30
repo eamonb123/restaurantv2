@@ -20,7 +20,8 @@ public class ListPanel extends JPanel implements ActionListener {
                     JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     private JPanel view = new JPanel();
     private List<JButton> list = new ArrayList<JButton>();
-    private JButton addPersonB = new JButton("Add");
+    private JButton addCustomerButton = new JButton("Add");
+    private JButton addWaiterButton = new JButton("Add");
     private JTextField textField = new JTextField(30);
     private JCheckBox alwaysHungry = new JCheckBox();
 
@@ -40,11 +41,20 @@ public class ListPanel extends JPanel implements ActionListener {
         alwaysHungry.addActionListener(this);
         setLayout(new BoxLayout((Container) this, BoxLayout.Y_AXIS));
         add(new JLabel("<html><pre> <u>" + type + "</u><br></pre></html>"));
-        addPersonB.addActionListener(this);
+        
         textField.setMaximumSize(textField.getPreferredSize());
         add(textField);
-        add(alwaysHungry);
-        add(addPersonB);
+        if (type.equals("Customers"))
+        {
+        	add(alwaysHungry);
+        	addCustomerButton.addActionListener(this);
+        	add(addCustomerButton);
+        }
+        if (type.equals("Waiters"))
+        {
+        	addWaiterButton.addActionListener(this);
+        	add(addWaiterButton);
+        }
         view.setLayout(new BoxLayout((Container) view, BoxLayout.Y_AXIS));
         pane.setViewportView(view);
         add(pane);
@@ -55,8 +65,10 @@ public class ListPanel extends JPanel implements ActionListener {
      * Handles the event of the add button being pressed
      */
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == addPersonB) {
-        	// Chapter 2.19 describes showInputDialog()
+        if (e.getSource() == addCustomerButton) {
+            addPerson(textField.getText());
+        }
+        if (e.getSource() == addWaiterButton) {
             addPerson(textField.getText());
         }
         else {
@@ -81,7 +93,6 @@ public class ListPanel extends JPanel implements ActionListener {
         if (name != null) {
             JButton button = new JButton(name);
             button.setBackground(Color.white);
-
             Dimension paneSize = pane.getSize();
             Dimension buttonSize = new Dimension(paneSize.width - 20,
                     (int) (paneSize.height / 7));

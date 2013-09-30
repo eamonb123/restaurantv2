@@ -24,6 +24,7 @@ public class RestaurantPanel extends JPanel {
     private WaiterGui waiterGui = new WaiterGui(waiter);
 
     private Vector<CustomerAgent> customers = new Vector<CustomerAgent>();
+    private Vector<WaiterAgent> waiters = new Vector<WaiterAgent>();
 
     private JPanel restLabel = new JPanel();
     private ListPanel customerPanel = new ListPanel(this, "Customers");
@@ -110,6 +111,16 @@ public class RestaurantPanel extends JPanel {
     		c.setGui(g);
     		customers.add(c);
     		c.startThread();
+    	}
+    	if (type.equals("Waiters")) {
+    		WaiterAgent w = new WaiterAgent(name);	
+    		WaiterGui g = new WaiterGui(w, gui);
+    		gui.animationPanel.addGui(g);// dw
+    		//add a new waiter here
+    		w.setHost(host);
+    		w.setGui(g);
+    		waiters.add(w);
+    		w.startThread();
     	}
     }
 }
