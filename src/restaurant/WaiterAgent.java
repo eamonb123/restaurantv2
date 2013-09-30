@@ -64,7 +64,7 @@ public class WaiterAgent extends Agent {
 		print("msgAtTable() called");
 		//CustomerState.readyToOrder;
 		atTable.release();
-		print("releasing");
+//		print("releasing");
 		stateChanged();
 	}
 	
@@ -195,7 +195,7 @@ public class WaiterAgent extends Agent {
 		//state = WaiterState.busy;
 		waiterGui.PickUpCustomer();
 		try {
-			print("acquiring");
+//			print("acquiring");
 			atTable.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -203,7 +203,7 @@ public class WaiterAgent extends Agent {
 		c.cust.msgFollowMeToTable(this, menuOptions, c.tableNumber, location);
 		waiterGui.DoSeatCustomer(location);
 		try {
-			print("acquiring");
+//			print("acquiring");
 			atTable.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -217,7 +217,7 @@ public class WaiterAgent extends Agent {
 		print("waiter " + name + " is taking customer " + c.cust.name + " order");
 		waiterGui.DoGoToTable(c.tableNumber);
 		try {
-			print("acquiring");
+//			print("acquiring");
 			atTable.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -230,7 +230,7 @@ public class WaiterAgent extends Agent {
 	{
 		waiterGui.DoGiveCook();
 		try {
-			print("acquiring");
+//			print("acquiring");
 			atTable.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -244,14 +244,14 @@ public class WaiterAgent extends Agent {
 	{
 		waiterGui.PickUpOrder();
 		try {
-			print("acquiring");
+//			print("acquiring");
 			atTable.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		waiterGui.DoGoToCustomer(c.tableNumber);
 		try {
-			print("acquiring");
+//			print("acquiring");
 			atTable.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();

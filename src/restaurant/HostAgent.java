@@ -118,18 +118,24 @@ public class HostAgent extends Agent {
 
 	WaiterAgent leastBusyWaiter(List<WaiterAgent> waiterList)
 	{
-		int numOfCustomers=waiterList.get(0).myCustomers.size();
-		WaiterAgent freeWaiter = new WaiterAgent("scott");
-		freeWaiter = waiterList.get(0);
-		for(WaiterAgent waiter : waiterList)
+		if (waiterList.isEmpty()) 
+			return null;
+		else
 		{
-			if (waiter.myCustomers.size()<numOfCustomers)
+			int numOfCustomers=waiterList.get(0).myCustomers.size();
+			WaiterAgent freeWaiter = new WaiterAgent("scott");
+			freeWaiter = waiterList.get(0);
+			for(WaiterAgent waiter : waiterList)
 			{
-				numOfCustomers=waiter.myCustomers.size();
-				freeWaiter=waiter;
+				if (waiter.myCustomers.size()<numOfCustomers)
+				{
+					numOfCustomers=waiter.myCustomers.size();
+					freeWaiter=waiter;
+				}
 			}
+			return freeWaiter;
 		}
-		return freeWaiter;
+
 	}
 	
 	public void setGui(WaiterGui gui) {
