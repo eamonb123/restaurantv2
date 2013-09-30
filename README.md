@@ -12,7 +12,8 @@
   + [Agent Roadmap](http://www-scf.usc.edu/~csci201/readings/agent-roadmap.html)
   
  ###How to run
-  You can simply run the code by clicking the green arrow. 
+  You can simply run the code by clicking the green arrow in Eclipe.
+  To 
   
   
  ###Problems
@@ -21,3 +22,4 @@ a waiter and then create a customer for them to interact.
 + There are no image icons on the waiters and customers. I did not know how to have the strings follow them
 and stay directly on top of them the entire time
 + There is a potential semaphore issue that runs in an infinite loop when all the customers leave and all the tables are empty
++ I could not get the pause button to work

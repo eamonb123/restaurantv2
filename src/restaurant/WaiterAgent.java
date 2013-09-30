@@ -62,7 +62,7 @@ public class WaiterAgent extends Agent {
 
 	public void msgAtTable() {//from animation
 		print("msgAtTable() called");
-		//CustomerState.readyToOrder;
+		//CustomerState.readyToOrder;s
 		atTable.release();
 //		print("releasing");
 		stateChanged();
@@ -74,6 +74,7 @@ public class WaiterAgent extends Agent {
 		location=loc;
 		myCustomers.add(new Customer(cust,tableNumber, CustomerState.waiting));
 		stateChanged();
+		//System.out.println("test");
 	}
 
 	
