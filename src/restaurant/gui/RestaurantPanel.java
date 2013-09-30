@@ -27,6 +27,7 @@ public class RestaurantPanel extends JPanel {
 
     private JPanel restLabel = new JPanel();
     private ListPanel customerPanel = new ListPanel(this, "Customers");
+    private ListPanel waiterPanel = new ListPanel(this, "Waiters");
     private JPanel group = new JPanel();
     private RestaurantGui gui; //reference to main gui
 
@@ -47,6 +48,7 @@ public class RestaurantPanel extends JPanel {
         group.setLayout(new GridLayout(1, 2, 10, 10));
 
         group.add(customerPanel);
+        group.add(waiterPanel);
 
         initRestLabel();
         add(restLabel);

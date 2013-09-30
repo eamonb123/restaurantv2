@@ -11,11 +11,13 @@ import java.util.*;
 public class WaiterGui implements Gui {
     private WaiterAgent waiter = null;
 	static int NTABLES=3;
-    private int xPos = -20, yPos = -20;//default waiter position
+    //private int xPos = -20, yPos = -20;//default waiter position
+	private int xPos = -20, yPos = -20;
     private int xDestination = -20, yDestination = -20;//default start position
     private boolean isMoving=false;
-    Point cookLocation = new Point(-20, -20);
+    Point cookLocation = new Point(-20, 100);
     Point homeBase = new Point(260, 100);
+    Point customerLine = new Point(-20,-20);
     public static final int xTable = 100;
     public static final int yTable = 250;
 
@@ -54,8 +56,7 @@ public class WaiterGui implements Gui {
 
     public void goToHome()
     {
-    	xDestination=40;
-    	yDestination=40;
+    	MoveToPosition(homeBase);
     }
     
     public void draw(Graphics2D g) {
@@ -79,6 +80,11 @@ public class WaiterGui implements Gui {
 		yDestination = location.y;
     }
     
+    public void PickUpCustomer()
+    {
+    	MoveToPosition(customerLine);
+    }
+    
     public void DoSeatCustomer(Point location)
     {
     	isMoving=true;
@@ -95,6 +101,17 @@ public class WaiterGui implements Gui {
     public void DoGiveCook()
     {
     	MoveToPosition(cookLocation);
+    }
+    
+    public void PickUpOrder()
+    {
+    	MoveToPosition(cookLocation);
+    }
+    
+    public void DoGoToCustomer(int tableNumber)
+    {
+    	Point location = tableMap.get(tableNumber);
+    	MoveToPosition(location);
     }
     
     public void DoLeaveCustomer() {

@@ -62,7 +62,6 @@ public class WaiterAgent extends Agent {
 
 	public void msgAtTable() {//from animation
 		print("msgAtTable() called");
-		waiterState = WaiterState.atSeat;
 		//CustomerState.readyToOrder;
 		atTable.release();
 		print("releasing");
@@ -99,7 +98,6 @@ public class WaiterAgent extends Agent {
 			if (c.cust==cust && c.cust.choice.equals(cust.choice))
 			{
 				print("the waiter assigns the customer's choice " + c.cust.choice + " to customer " + cust.name);
-				
 				c.customerState=CustomerState.ordered;
 				c.choice=cust.choice;
 			}
@@ -182,7 +180,7 @@ public class WaiterAgent extends Agent {
 				return true;
 			}
 		}
-		//waiterGui.goToHome();
+		waiterGui.goToHome();
 		return false;
 	}
 	
@@ -195,6 +193,13 @@ public class WaiterAgent extends Agent {
 		print("waiter is now currently busy helping customer " + c.cust.name);
 		print("waiter is asking customer " + c.cust.name + " to follow him to table " + c.tableNumber);
 		//state = WaiterState.busy;
+		waiterGui.PickUpCustomer();
+		try {
+			print("acquiring");
+			atTable.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		c.cust.msgFollowMeToTable(this, menuOptions, c.tableNumber, location);
 		waiterGui.DoSeatCustomer(location);
 		try {
@@ -237,7 +242,20 @@ public class WaiterAgent extends Agent {
 	
 	private void Deliver(Customer c)
 	{
-		//DoGoToCustomer(c);
+		waiterGui.PickUpOrder();
+		try {
+			print("acquiring");
+			atTable.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		waiterGui.DoGoToCustomer(c.tableNumber);
+		try {
+			print("acquiring");
+			atTable.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		print("waiter " + name + " delivers the " + c.choice + " to customer " + c.cust.name);
 		c.cust.msgHereIsYourFood(c.choice);
 	}
