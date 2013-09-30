@@ -59,7 +59,7 @@ public class AnimationPanel extends JPanel implements ActionListener {
 
         for(Gui gui : guis) {
             if (gui.isPresent()) {
-                gui.draw(g2); //g2.drawString(string, x, y);
+            	gui.draw(g2); //g2.drawString(string, x, y)
             }
         }
     }

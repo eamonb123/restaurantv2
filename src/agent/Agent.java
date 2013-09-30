@@ -10,7 +10,7 @@ import java.util.concurrent.*;
 public abstract class Agent {
     Semaphore stateChange = new Semaphore(1, true);//binary semaphore, fair
     private AgentThread agentThread;
-
+    public boolean pause=false;
     protected Agent() {
     }
 
@@ -40,6 +40,21 @@ public abstract class Agent {
         return StringUtil.shortName(this);
     }
 
+    public void pause()
+    {
+    	if (pause==true)
+    	{
+    		try {
+				stateChange.acquire();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
+    		
+    }
+    		
+    
     /**
      * The simulated action code
      */
@@ -54,6 +69,7 @@ public abstract class Agent {
         print(msg, null);
     }
 
+    
     /**
      * Print message with exception stack trace
      */

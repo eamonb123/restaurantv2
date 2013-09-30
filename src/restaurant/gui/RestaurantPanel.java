@@ -20,8 +20,8 @@ public class RestaurantPanel extends JPanel {
     //Host, cook, waiters and customers
     private HostAgent host = new HostAgent("Sarah");
     private CookAgent cook = new CookAgent();
-    private WaiterAgent waiter = new WaiterAgent("Matt");
-    private WaiterGui waiterGui = new WaiterGui(waiter);
+//    private WaiterAgent waiter = new WaiterAgent("Matt");
+//    private WaiterGui waiterGui = new WaiterGui(waiter);
 
     private Vector<CustomerAgent> customers = new Vector<CustomerAgent>();
     private Vector<WaiterAgent> waiters = new Vector<WaiterAgent>();
@@ -30,24 +30,25 @@ public class RestaurantPanel extends JPanel {
     private ListPanel customerPanel = new ListPanel(this, "Customers");
     private ListPanel waiterPanel = new ListPanel(this, "Waiters");
     private JPanel group = new JPanel();
+    private JButton pause = new JButton("pause");
+    private JButton restart = new JButton("restart");
     private RestaurantGui gui; //reference to main gui
 
     public RestaurantPanel(RestaurantGui gui) {
         this.gui = gui;
-        waiter.setGui(waiterGui);
-        gui.animationPanel.addGui(waiterGui);
-//      while (!waiters.isEmpty())
-//      {
-//        	
-//        	host.setWaiter(waiters.get(0));
-//        	waiters.remove(0);
-//      }
-        host.setWaiter(waiter);
-        waiter.setCook(cook);
-        waiter.setHost(host);
+//        waiter.setGui(waiterGui);
+//        gui.animationPanel.addGui(waiterGui);
+//        pause.addActionListener(gui);
+//        restart.addActionListener(gui);
+//        add(pause);
+//        add(restart);
+
+//        host.setWaiter(waiter);
+//        waiter.setCook(cook);
+//        waiter.setHost(host);
         host.startThread();
         cook.startThread();
-        waiter.startThread();
+//        waiter.startThread();
         
         
         
@@ -63,6 +64,31 @@ public class RestaurantPanel extends JPanel {
         add(group);
     }
 
+//    public void actionPerformed(ActionEvent e) {
+//    	 if (e.getSource() == pause) {
+//    		 for(CustomerAgent customer: customers)
+//    	        {
+//    	        	customer.pauseIt();
+//    	        }
+//	        for (WaiterAgent waiter: waiters)
+//    	        {
+//    	        	waiter.pauseIt();
+//    	        }
+//         }
+//    	 if(e.getSource() == restart)
+//    	 {
+//    		 for(CustomerAgent customer: customers)
+//    	        {
+//    	        	customer.restartIt();
+//    	        }
+//	        for (WaiterAgent waiter: waiters)
+//    	        {
+//    	        	waiter.restartIt();
+//    	        }
+//    	 }
+//    }
+    
+    
     /**
      * Sets up the restaurant label that includes the menu,
      * and host and cook information
@@ -122,10 +148,12 @@ public class RestaurantPanel extends JPanel {
     	if (type.equals("Waiters")) {
     		WaiterAgent w = new WaiterAgent(name);	
     		WaiterGui g = new WaiterGui(w, gui);
-    		gui.animationPanel.addGui(g);// dw
+    		gui.animationPanel.addGui(g);
     		//add a new waiter here
+    		host.setWaiter(w);
     		w.setHost(host);
     		w.setGui(g);
+    		w.setCook(cook);
     		waiters.add(w);
     		w.startThread();
     	}

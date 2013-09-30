@@ -13,7 +13,6 @@ public class RestaurantGui extends JFrame implements ActionListener {
     /* The GUI has two frames, the control frame (in variable gui) 
      * and the animation frame, (in variable animationFrame within gui)
      */
-	JFrame animationFrame = new JFrame("Restaurant Animation");
 	AnimationPanel animationPanel = new AnimationPanel();
 	
     /* restPanel holds 2 panels
@@ -41,9 +40,6 @@ public class RestaurantGui extends JFrame implements ActionListener {
         int WINDOWX = 650;
         int WINDOWY = 450;
 
-        animationFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        animationFrame.setBounds(100+WINDOWX, 50 , WINDOWX+100, WINDOWY+100);
-        animationFrame.setVisible(true);
     	
         add(animationPanel); 
     	
