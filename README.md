@@ -34,9 +34,9 @@
   
   
  ###Problems
-+If you create a customer before your create a waiter, that customer is forever lost. You must first create 
+ -If you create a customer before your create a waiter, that customer is forever lost. You must first create 
 a waiter and then create a customer for them to interact. 
-+ There are no image icons on the waiters and customers. I did not know how to have the strings follow them
+-There are no image icons on the waiters and customers. I did not know how to have the strings follow them
 and stay directly on top of them the entire time
-+ There is a potential semaphore issue that runs in an infinite loop when all the customers leave and all the tables are empty
-+ I could not get the pause button to work
+- There is a potential semaphore issue that runs in an infinite loop when all the customers leave and all the tables are empty
+- I could not get the pause button to work
