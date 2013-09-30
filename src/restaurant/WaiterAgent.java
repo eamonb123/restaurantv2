@@ -21,9 +21,9 @@ public class WaiterAgent extends Agent {
 	public List<Customer> myCustomers = new ArrayList<Customer>();
 	public enum CustomerState
 	{nothing, waiting, seated, readyToOrder, takingOrder, ordered, sendOrderToCook, deliver, delivering, eating, cleaningUp, done};
-//	public enum WaiterState
-//	{available, busy};
-//	public WaiterState state = WaiterState.available;
+	public enum WaiterState
+	{nothing, atSeat};
+	public WaiterState waiterState = WaiterState.nothing;
 	public boolean isBusy()
 	{
 		if (myCustomers.size()!=0)
@@ -41,15 +41,15 @@ public class WaiterAgent extends Agent {
 		CustomerAgent cust;
 		int tableNumber;
 		String choice;
-		CustomerState state = CustomerState.nothing;
+		CustomerState customerState = CustomerState.nothing;
 		Customer(CustomerAgent cust, int tableNumber, CustomerState state) {
 			this.cust=cust;
 			this.tableNumber=tableNumber;
-			this.state=state;
+			this.customerState=state;
 		}
 	}
 	private String name;
-	private Semaphore atTable = new Semaphore(0,true);
+	private Semaphore atTable = new Semaphore(0);
 	public WaiterGui waiterGui = null;
 
 	public WaiterAgent(String name) {
@@ -60,6 +60,15 @@ public class WaiterAgent extends Agent {
 
 	//Messages
 
+	public void msgAtTable() {//from animation
+		print("msgAtTable() called");
+		waiterState = WaiterState.atSeat;
+		//CustomerState.readyToOrder;
+		atTable.release();
+		print("releasing");
+		stateChanged();
+	}
+	
 	public void msgPleaseSeatCustomer(CustomerAgent cust, int tableNumber, Point loc)
 	{
 		print("waiter is adding " + cust.name + " to the list of waiting customers");	
@@ -67,11 +76,7 @@ public class WaiterAgent extends Agent {
 		myCustomers.add(new Customer(cust,tableNumber, CustomerState.waiting));
 		stateChanged();
 	}
-	
-//	public void msgAtTable() {//from animation
-//		print("msgAtTable() called");
-//		stateChanged();
-//	}
+
 	
 	public void msgReadyToOrder(CustomerAgent cust)
 	{
@@ -80,7 +85,7 @@ public class WaiterAgent extends Agent {
 			if (c.cust==cust)
 			{
 				print("change customer " + cust.name + " state to readyToOrder");
-				c.state=CustomerState.readyToOrder;
+				c.customerState=CustomerState.readyToOrder;
 			}
 		}
 		stateChanged();
@@ -93,9 +98,9 @@ public class WaiterAgent extends Agent {
 		{
 			if (c.cust==cust && c.cust.choice.equals(cust.choice))
 			{
-				print("the waiter assigns the customer's choice" + c.cust.choice + "to customer" + cust.name);
+				print("the waiter assigns the customer's choice " + c.cust.choice + " to customer " + cust.name);
 				
-				c.state=CustomerState.ordered;
+				c.customerState=CustomerState.ordered;
 				c.choice=cust.choice;
 			}
 		}
@@ -108,7 +113,7 @@ public class WaiterAgent extends Agent {
 		{
 			if (c.choice==choice && c.tableNumber==tableNumber)
 			{
-				c.state=CustomerState.deliver;
+				c.customerState=CustomerState.deliver;
 			}
 		}
 		stateChanged();
@@ -120,7 +125,7 @@ public class WaiterAgent extends Agent {
 		{
 			if (c.cust==cust)
 			{
-				c.state=CustomerState.done;
+				c.customerState=CustomerState.done;
 			}
 		}
 		stateChanged();
@@ -135,45 +140,44 @@ public class WaiterAgent extends Agent {
 	protected boolean pickAndExecuteAnAction() {
 		for (Customer cust : myCustomers) 
 		{
-			if (cust.state==CustomerState.waiting)
+			if (cust.customerState==CustomerState.waiting)
 			{
-				System.out.println("hey");
 				SeatCustomer(cust);
 				return true;
 			}
 		}
 		for (Customer cust : myCustomers) 
 		{
-			if (cust.state==CustomerState.readyToOrder)
+			if (cust.customerState==CustomerState.readyToOrder)
 			{
-				cust.state = CustomerState.takingOrder;
+				cust.customerState = CustomerState.takingOrder;
 				TakeOrder(cust);
 				return true;
 			}
 		}
 		for (Customer cust : myCustomers) 
 		{
-			if (cust.state==CustomerState.ordered)
+			if (cust.customerState==CustomerState.ordered)
 			{
-				cust.state=CustomerState.sendOrderToCook;
+				cust.customerState=CustomerState.sendOrderToCook;
 				GiveCook(cust);
 				return true;
 			}
 		}
 		for (Customer cust : myCustomers) 
 		{
-			if (cust.state==CustomerState.deliver)
+			if (cust.customerState==CustomerState.deliver)
 			{
-				cust.state=CustomerState.delivering;
+				cust.customerState=CustomerState.delivering;
 				Deliver(cust);
 				return true;
 			}
 		}
 		for (Customer cust : myCustomers) 
 		{
-			if (cust.state==CustomerState.done)
+			if (cust.customerState==CustomerState.done)
 			{
-				cust.state=CustomerState.cleaningUp;
+				cust.customerState=CustomerState.cleaningUp;
 				CleanUp(cust);
 				return true;
 			}
@@ -182,19 +186,7 @@ public class WaiterAgent extends Agent {
 		return false;
 	}
 	
-	public int tableNumber()
-	{
-		int tableNum=0;
-		for (Table table : tables) 
-		{
-			if (!table.isOccupied()) 
-			{
-				tableNum=table.tableNumber;
-				break;
-			}
-		}
-		return tableNum;
-	}
+
 
 	// Actions
 
@@ -203,35 +195,41 @@ public class WaiterAgent extends Agent {
 		print("waiter is now currently busy helping customer " + c.cust.name);
 		print("waiter is asking customer " + c.cust.name + " to follow him to table " + c.tableNumber);
 		//state = WaiterState.busy;
-//		try 
-//		{
-//            atTable.acquire();
-//        } 
-//		catch (InterruptedException e) 
-//        {
-//            // no action - expected when stopping or when deadline changed
-//        } 
-//		catch (Exception e) 
-//        {
-//            print("Unexpected exception caught in Agent thread:", e);
-//        }
 		c.cust.msgFollowMeToTable(this, menuOptions, c.tableNumber, location);
 		waiterGui.DoSeatCustomer(location);
-		c.state=CustomerState.seated;
+		try {
+			print("acquiring");
+			atTable.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		c.customerState=CustomerState.seated;
 	}
 	
 	
 	private void TakeOrder(Customer c)
 	{
 		print("waiter " + name + " is taking customer " + c.cust.name + " order");
-		//DoGoToTable(cust.tableNumber);
+		waiterGui.DoGoToTable(c.tableNumber);
+		try {
+			print("acquiring");
+			atTable.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		c.cust.msgWhatWouldYouLike();
 		//c.state = CustomerState.ordered;
 	}
 	
 	private void GiveCook(Customer c)
 	{
-		//DoGiveCook(c);
+		waiterGui.DoGiveCook();
+		try {
+			print("acquiring");
+			atTable.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		print("the waiter gives customer " + c.cust.name + " order to the cook to prepare");
 		cook.msgHereIsOrder(this, c.choice, c.tableNumber);
 	

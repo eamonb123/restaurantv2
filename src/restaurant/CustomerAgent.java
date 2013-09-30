@@ -185,7 +185,7 @@ public class CustomerAgent extends Agent {
 	{
 		try
 		{
-			Thread.sleep(8000);
+			Thread.sleep(4000);
 		}
 		catch(Exception e)
 		{
