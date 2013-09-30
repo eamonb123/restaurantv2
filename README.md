@@ -13,7 +13,24 @@
   
  ###How to run
   You can simply run the code by clicking the green arrow in Eclipe.
-  To 
+  To run it in Eclipse after cloning the project, do the same as you would to open up the project for Lab1
+"import the restaurant application:
+
+    File -> New -> Other
+
+    Choose Java Project from Existing Ant Buildfile
+
+    Click on the Browse button
+
+    Navigate to the git repository you cloned in the previous section
+
+    Choose the build.xml file.
+
+    [IMP]: Check the Link to the buildfile in the file system box
+
+    Press Finish
+"
+
   
   
  ###Problems
