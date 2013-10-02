@@ -17,7 +17,7 @@ public class WaiterAgent extends Agent {
 	public Collection<Table> tables;
 	private CookAgent cook;
 	private HostAgent host;
-	private Point location = new Point();
+	//private Point location = new Point();
 	public List<Customer> myCustomers = new ArrayList<Customer>();
 	public enum CustomerState
 	{nothing, waiting, seated, readyToOrder, takingOrder, ordered, sendOrderToCook, deliver, delivering, eating, cleaningUp, done};
@@ -41,11 +41,13 @@ public class WaiterAgent extends Agent {
 		CustomerAgent cust;
 		int tableNumber;
 		String choice;
+		Point location = new Point();
 		CustomerState customerState = CustomerState.nothing;
-		Customer(CustomerAgent cust, int tableNumber, CustomerState state) {
+		Customer(CustomerAgent cust, int tableNumber, CustomerState state, Point location) {
 			this.cust=cust;
 			this.tableNumber=tableNumber;
 			this.customerState=state;
+			this.location=location;
 		}
 	}
 	private String name;
@@ -71,8 +73,7 @@ public class WaiterAgent extends Agent {
 	public void msgPleaseSeatCustomer(CustomerAgent cust, int tableNumber, Point loc)
 	{
 		print("waiter is adding " + cust.name + " to the list of waiting customers");	
-		location=loc;
-		myCustomers.add(new Customer(cust,tableNumber, CustomerState.waiting));
+		myCustomers.add(new Customer(cust, tableNumber, CustomerState.waiting, loc));
 		stateChanged();
 		//System.out.println("test");
 	}
@@ -201,8 +202,8 @@ public class WaiterAgent extends Agent {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		c.cust.msgFollowMeToTable(this, menuOptions, c.tableNumber, location);
-		waiterGui.DoSeatCustomer(location);
+		c.cust.msgFollowMeToTable(this, menuOptions, c.tableNumber, c.location);
+		waiterGui.DoSeatCustomer(c.location);
 		try {
 //			print("acquiring");
 			atTable.acquire();

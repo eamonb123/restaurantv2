@@ -21,8 +21,8 @@ public class CustomerAgent extends Agent {
 	private int hungerLevel = 5;        // determines length of meal
     String choice;
     int tableNumber;
-	private Point location = new Point();
 	Timer timer = new Timer();
+	private Point location = new Point();
 	private CustomerGui customerGui;
 	public List<String> menuOptions = new ArrayList<String>();
 	public class Menu {
