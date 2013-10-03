@@ -70,10 +70,12 @@ public class WaiterAgent extends Agent {
 		stateChanged();
 	}
 	
+	
 	public void msgPleaseSeatCustomer(CustomerAgent cust, int tableNumber, Point loc)
 	{
-		print("waiter is adding " + cust.name + " to the list of waiting customers");	
+		print("waiter is adding " + cust.name + " to the list of waiting customers");
 		myCustomers.add(new Customer(cust, tableNumber, CustomerState.waiting, loc));
+		
 		stateChanged();
 		//System.out.println("test");
 	}
@@ -182,7 +184,7 @@ public class WaiterAgent extends Agent {
 				return true;
 			}
 		}
-		waiterGui.goToHome();
+		//waiterGui.goToHome();
 		return false;
 	}
 	

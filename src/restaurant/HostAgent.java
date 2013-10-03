@@ -84,15 +84,24 @@ public class HostAgent extends Agent {
 	protected boolean pickAndExecuteAnAction() {
 		if (!waitingCustomers.isEmpty())
 		{
-			WaiterAgent waiter = leastBusyWaiter(waiterList);
-			for (Table table : myTables)
+			if (waiterList.isEmpty())
 			{
-				//if (!table.isOccupied && waiterList.get(0).state==WaiterState.available)
-				if(!table.isOccupied)
+				print("waiter list is empty");
+			}
+			else
+			{	
+				WaiterAgent waiter = leastBusyWaiter(waiterList);
+				for (Table table : myTables)
 				{
-					callWaiter(waitingCustomers.get(0), waiter, table);
-					waitingCustomers.remove(0);
-					return true;
+					//if (!table.isOccupied && waiterList.get(0).state==WaiterState.available)
+					if(!table.isOccupied)
+					{
+						CustomerAgent customer = waitingCustomers.get(0);
+						customer.msgWakeUp();
+						callWaiter(customer, waiter, table);
+						waitingCustomers.remove(0);
+						return true;
+					}
 				}
 			}
 		}

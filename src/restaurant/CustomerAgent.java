@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Semaphore;
  
 /**
  * Restaurant customer agent.
@@ -21,6 +22,7 @@ public class CustomerAgent extends Agent {
 	private int hungerLevel = 5;        // determines length of meal
     String choice;
     int tableNumber;
+	public Semaphore waiting = new Semaphore(0);
 	Timer timer = new Timer();
 	private Point location = new Point();
 	private CustomerGui customerGui;
@@ -37,12 +39,13 @@ public class CustomerAgent extends Agent {
 	
 	//    private boolean isHungry = false; //hack for gui
 	public enum AgentState
-	{DoingNothing, WaitingInRestaurant, BeingSeated, Ordered, finishing, leaving};
+	{DoingNothing, WaitingToBeSeated, BeingSeated, Ordered, finishing, leaving};
 	private AgentState state = AgentState.DoingNothing;//The start state
 
-	public enum AgentEvent 
+	public enum AgentEvent // you're doing the event, so you are "state". ex. you got hungry, so you arrive at the restaurant. you walked in the restaurant, so you are waiting to be seated
 	{none, gotHungry, followHost, readyToGiveOrder, eating, doneEating};
 	AgentEvent event = AgentEvent.none;
+	
 
 	/**
 	 * Constructor for CustomerAgent class
@@ -71,11 +74,28 @@ public class CustomerAgent extends Agent {
 	// Messages
 
 	public void gotHungry() {//from animation
-		print("Customer is hungry");
+		print(name + " is hungry");
 		event = AgentEvent.gotHungry;
 		stateChanged();
 	}
-
+	
+	public void msgWakeUp()
+	{
+		print("releasing customer semaphore");
+		//CustomerState.readyToOrder;s
+		waiting.release();
+//		print("releasing");
+		stateChanged();
+	}
+	
+//	public void msgWalkIntoRestaurant()
+//	{
+//		print(name + " is walking into restaurant");
+//		event = AgentEvent.WalkedInRestaurant;
+//		stateChanged();
+//	}
+	
+	
 	public void msgFollowMeToTable(WaiterAgent waiter, List<String> menuOptions, int tableNumber, Point loc)
 	{
 		print("customer " + name + " has recived the message to sit at table " + tableNumber);
@@ -133,11 +153,11 @@ public class CustomerAgent extends Agent {
 	protected boolean pickAndExecuteAnAction() {
 		//	CustomerAgent is a finite state machine
 		if (event == AgentEvent.gotHungry && state == AgentState.DoingNothing ){
-			state = AgentState.WaitingInRestaurant;
+			state = AgentState.WaitingToBeSeated;
 			goToRestaurant();
 			return true;
 		}
-		if (event == AgentEvent.followHost && state == AgentState.WaitingInRestaurant ){
+		if (event == AgentEvent.followHost && state == AgentState.WaitingToBeSeated ){
 			state = AgentState.BeingSeated;
 			SitDown();
 			return true;
@@ -165,8 +185,16 @@ public class CustomerAgent extends Agent {
 	private void goToRestaurant() {
 		print("Customer " + name + " is going to restaurant");
 		print("Customer " + name + " is telling the host he is hungry");
+		//msgWalkIntoRestaurant();
 		host.msgIWantToEat(this);
+		try {
+			print("acquiring customer semaphore");
+			waiting.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
+	
 	
 	private void SitDown() {
 		print("customer " + name + " is being seated and going to table " + tableNumber);
