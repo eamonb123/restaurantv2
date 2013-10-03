@@ -16,7 +16,9 @@ public class WaiterGui implements Gui {
     //private int xPos = -20, yPos = -20;//default waiter position
 	public int xPos = -20, yPos = -20;
     private int xDestination = -20, yDestination = -20;//default start position
-    private boolean isMoving=false;
+    public boolean isMoving=false;
+    public boolean deliveringFood=false;
+    public String order;
     Point cookLocation = new Point(-20, 100);
     Point homeBase = new Point(260, 100);
     Point customerLine = new Point(-20,-20);
@@ -66,6 +68,7 @@ public class WaiterGui implements Gui {
         }
     }
 
+    
     public void goToHome()
     {
     	MoveToPosition(homeBase);
@@ -74,6 +77,11 @@ public class WaiterGui implements Gui {
     public void draw(Graphics2D g) {
         g.setColor(Color.MAGENTA);
         g.fillRect(xPos, yPos, 20, 20);
+    }
+    
+    public void drawOrder(Graphics2D g, String order) {
+        g.setColor(Color.BLACK);
+    	g.drawString(order, xPos, yPos);
     }
 
     public boolean isPresent() {
@@ -120,8 +128,10 @@ public class WaiterGui implements Gui {
     	MoveToPosition(cookLocation);
     }
     
-    public void DoGoToCustomer(int tableNumber)
+    public void DoGoToCustomer(int tableNumber, String order)
     {
+    	this.order = order;
+    	deliveringFood = true;
     	Point location = tableMap.get(tableNumber);
     	MoveToPosition(location);
     }

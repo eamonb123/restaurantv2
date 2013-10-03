@@ -252,7 +252,7 @@ public class WaiterAgent extends Agent {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		waiterGui.DoGoToCustomer(c.tableNumber);
+		waiterGui.DoGoToCustomer(c.tableNumber, c.choice);
 		try {
 //			print("acquiring");
 			atTable.acquire();
@@ -260,6 +260,7 @@ public class WaiterAgent extends Agent {
 			e.printStackTrace();
 		}
 		print("waiter " + name + " delivers the " + c.choice + " to customer " + c.cust.name);
+		waiterGui.deliveringFood=false;
 		c.cust.msgHereIsYourFood(c.choice);
 	}
 	

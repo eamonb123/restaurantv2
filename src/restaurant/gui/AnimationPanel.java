@@ -2,6 +2,7 @@ package restaurant.gui;
 
 import javax.swing.*;
 
+import restaurant.CustomerAgent;
 import restaurant.HostAgent;
 
 import java.awt.*;
@@ -28,7 +29,7 @@ public class AnimationPanel extends JPanel implements ActionListener {
     	setSize(WINDOWX, WINDOWY);
         setVisible(true);
         bufferSize = this.getSize();
-        Timer timer = new Timer(20, this );
+        Timer timer = new Timer(10, this );
     	timer.start();
     }
 
@@ -60,6 +61,23 @@ public class AnimationPanel extends JPanel implements ActionListener {
             if (gui.isPresent()) {
             	gui.draw(g2); //
             	//g2.drawString("hello", 30, 30);
+                Graphics2D stringOrder = (Graphics2D)g;
+            	if (gui instanceof WaiterGui)
+            	{
+            		WaiterGui waiterGui = (WaiterGui) gui;
+            		if (waiterGui.deliveringFood)
+            		{
+            			waiterGui.drawOrder(stringOrder, waiterGui.order);
+            		}
+            	}
+            	else if (gui instanceof CustomerGui)
+            	{
+            		CustomerGui customerGui = (CustomerGui) gui;
+            		if (customerGui.waitingForOrder)
+            		{
+            			customerGui.drawOrder(stringOrder, customerGui.order + "?");
+            		}
+            	}
             }
         }
     }

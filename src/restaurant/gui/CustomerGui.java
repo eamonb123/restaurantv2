@@ -12,6 +12,8 @@ public class CustomerGui implements Gui{
 	private boolean isHungry = false;
 	private int xPosition=100;
 	private int yPosition=250;
+	public boolean waitingForOrder = false;
+	public String order;
 
 	//private HostAgent host;
 	RestaurantGui gui;
@@ -59,7 +61,11 @@ public class CustomerGui implements Gui{
 		g.fillRect(xPos, yPos, 20, 20);
 	}
 	
-	
+    public void drawOrder(Graphics2D g, String order) {
+        g.setColor(Color.BLACK);
+    	g.drawString(order, xPos, yPos);
+    }
+    
 
 	public boolean isPresent() {
 		return isPresent;

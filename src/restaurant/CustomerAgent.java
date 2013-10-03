@@ -224,12 +224,15 @@ public class CustomerAgent extends Agent {
 	private void OrderFood()
 	{
 		print("customer " + name + " tells the waiter he wants " + choice);
+		customerGui.waitingForOrder = true;
+		customerGui.order = choice;
 		waiter.msgHereIsChoice(this);
 	}
 	
 	
 	private void ConsumeFood() //currently every food takes same amount of time to eat
 	{
+		customerGui.waitingForOrder=false;
 		print("customer " + name + " eats the food for 5 seconds before being done");
 		EatFood();
 	}
