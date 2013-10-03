@@ -11,7 +11,8 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class AnimationPanel extends JPanel implements ActionListener {
-	
+	private WaiterGui waiterGui;
+	private CustomerGui customerGui;
     private final int WINDOWX = 450;
     private final int WINDOWY = 350;
     private int xPos=100;
@@ -26,10 +27,8 @@ public class AnimationPanel extends JPanel implements ActionListener {
     public AnimationPanel() {
     	setSize(WINDOWX, WINDOWY);
         setVisible(true);
-        
         bufferSize = this.getSize();
- 
-    	Timer timer = new Timer(20, this );
+        Timer timer = new Timer(20, this );
     	timer.start();
     }
 
@@ -59,7 +58,8 @@ public class AnimationPanel extends JPanel implements ActionListener {
 
         for(Gui gui : guis) {
             if (gui.isPresent()) {
-            	gui.draw(g2); //g2.drawString(string, x, y)
+            	gui.draw(g2); //
+            	//g2.drawString("hello", 30, 30);
             }
         }
     }

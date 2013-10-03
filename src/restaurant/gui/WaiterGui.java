@@ -14,7 +14,7 @@ public class WaiterGui implements Gui {
 	RestaurantGui gui;
 	static int NTABLES=3;
     //private int xPos = -20, yPos = -20;//default waiter position
-	private int xPos = -20, yPos = -20;
+	public int xPos = -20, yPos = -20;
     private int xDestination = -20, yDestination = -20;//default start position
     private boolean isMoving=false;
     Point cookLocation = new Point(-20, 100);

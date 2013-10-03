@@ -138,8 +138,7 @@ public class RestaurantPanel extends JPanel {
     		CustomerGui g = new CustomerGui(c, gui);
     		if (alwaysHungry.isSelected())
     			g.setHungry();
-    		gui.animationPanel.addGui(g);// dw
-    		//add a new waiter here
+    		gui.animationPanel.addGui(g);
     		c.setHost(host);
     		c.setGui(g);
     		customers.add(c);
@@ -149,7 +148,6 @@ public class RestaurantPanel extends JPanel {
     		WaiterAgent w = new WaiterAgent(name);	
     		WaiterGui g = new WaiterGui(w, gui);
     		gui.animationPanel.addGui(g);
-    		//add a new waiter here
     		host.setWaiter(w);
     		host.msgWakeUp();
     		w.setHost(host);

@@ -326,7 +326,5 @@ public class WaiterAgent extends Agent {
 		public String toString() {
 			return "table " + tableNumber;
 		}
-		
 	}
 }
-
