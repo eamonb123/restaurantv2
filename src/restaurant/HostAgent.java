@@ -63,6 +63,10 @@ public class HostAgent extends Agent {
 		stateChanged();
 	}
 
+	public void msgWakeUp()
+	{
+		stateChanged();
+	}
 
 	public void msgTableIsFree(int tableNumber) {//from animation
 		//print("msgAtTable() called");
@@ -80,20 +84,18 @@ public class HostAgent extends Agent {
 	/**
 	 * Scheduler.  Determine what action is called for, and do it.
 	 */
-	
 	protected boolean pickAndExecuteAnAction() {
 		if (!waitingCustomers.isEmpty())
 		{
 			if (waiterList.isEmpty())
 			{
-				print("waiter list is empty");
+				print("waiter list is empty. customers waiting in line");
 			}
 			else
-			{	
+			{
 				WaiterAgent waiter = leastBusyWaiter(waiterList);
 				for (Table table : myTables)
 				{
-					//if (!table.isOccupied && waiterList.get(0).state==WaiterState.available)
 					if(!table.isOccupied)
 					{
 						CustomerAgent customer = waitingCustomers.get(0);

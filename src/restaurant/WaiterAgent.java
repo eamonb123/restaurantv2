@@ -75,7 +75,6 @@ public class WaiterAgent extends Agent {
 	{
 		print("waiter is adding " + cust.name + " to the list of waiting customers");
 		myCustomers.add(new Customer(cust, tableNumber, CustomerState.waiting, loc));
-		
 		stateChanged();
 		//System.out.println("test");
 	}
