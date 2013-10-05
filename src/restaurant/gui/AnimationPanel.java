@@ -69,6 +69,10 @@ public class AnimationPanel extends JPanel implements ActionListener {
             		{
             			waiterGui.drawOrder(stringOrder, waiterGui.order);
             		}
+            		if (waiterGui.reOrdering)
+            		{
+            			waiterGui.drawOrder(stringOrder, "currrenty out of " + waiterGui.order);
+            		}
             	}
             	else if (gui instanceof CustomerGui)
             	{

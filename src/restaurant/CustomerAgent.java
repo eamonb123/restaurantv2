@@ -79,6 +79,7 @@ public class CustomerAgent extends Agent {
 		stateChanged();
 	}
 	
+	
 	public void msgWakeUp()
 	{
 		print("releasing customer semaphore");
@@ -87,13 +88,6 @@ public class CustomerAgent extends Agent {
 //		print("releasing");
 		stateChanged();
 	}
-	
-//	public void msgWalkIntoRestaurant()
-//	{
-//		print(name + " is walking into restaurant");
-//		event = AgentEvent.WalkedInRestaurant;
-//		stateChanged();
-//	}
 	
 	
 	public void msgFollowMeToTable(WaiterAgent waiter, List<String> menuOptions, int tableNumber, Point loc)
@@ -108,36 +102,34 @@ public class CustomerAgent extends Agent {
 	}
 	
 	
-	public void msgWhatWouldYouLike()
+	public void msgWhatWouldYouLike(List<String> menu)
 	{
-		choice = CustomerChoice();
+		choice = CustomerChoice(menu);
 		print("customer " + name + " decides he wants " + choice);
 		event = AgentEvent.readyToOrder;
 		stateChanged();
 	}
 	
-	private String CustomerChoice()
+	private String CustomerChoice(List<String> menu)
 	{
 		Random random = new Random();
-		int index = random.nextInt(menuOptions.size());
-		return menuOptions.get(index);
+		int index = random.nextInt(menu.size());
+		return menu.get(index);
 	}
 	
 	public void msgReOrder(List<String> menu)
 	{
 		print("customer is reordering");
 		choice = reOrderChoice(menu);
-		System.out.println(menu.size());
 		event = AgentEvent.readyToReorder;
-		//state = AgentState.BeingSeated;
 		stateChanged();
 	}
 	
 	private String reOrderChoice(List<String> menu)
 	{
 		Random random = new Random();
-		int index = random.nextInt(menuOptions.size());
-		return menuOptions.get(index);
+		int index = random.nextInt(menu.size());
+		return menu.get(index);
 	}
 	
 	public void msgHereIsYourFood(String food)

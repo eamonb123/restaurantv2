@@ -18,6 +18,7 @@ public class WaiterGui implements Gui {
     private int xDestination = -20, yDestination = -20;//default start position
     public boolean isMoving=false;
     public boolean deliveringFood=false;
+    public boolean reOrdering=false;
     public String order;
     Point cookLocation = new Point(-20, 100);
     Point homeBase = new Point(260, 100);
@@ -126,12 +127,22 @@ public class WaiterGui implements Gui {
     public void PickUpOrder()
     {
     	MoveToPosition(cookLocation);
+    	reOrdering=false;
     }
     
     public void DoGoToCustomer(int tableNumber, String order)
     {
     	this.order = order;
     	deliveringFood = true;
+    	Point location = tableMap.get(tableNumber);
+    	MoveToPosition(location);
+    }
+    
+    public void WalkingToReorderingCustomer(int tableNumber, String order)
+    {
+    	this.order = order;
+    	deliveringFood = true;
+    	reOrdering=true;
     	Point location = tableMap.get(tableNumber);
     	MoveToPosition(location);
     }

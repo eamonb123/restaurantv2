@@ -31,7 +31,7 @@ public class WaiterAgent extends Agent {
 		else 
 			return false;
 	}
-	List<String> menu = new ArrayList<String>();
+	//List<String> menu = new ArrayList<String>();
 	List<String> menuOptions = new ArrayList<String>();{
 	    menuOptions.add("chicken");
 	    menuOptions.add("beef");
@@ -116,8 +116,8 @@ public class WaiterAgent extends Agent {
 			if (c.choice.equals(choice) && c.tableNumber==tableNumber)
 			{
 				print("the waiter receives a message from the cook saying they are out of " + choice);
-				menu = menuOptions;
-				menu.remove(choice);
+				//menu = menuOptions;
+				menuOptions.remove(choice);
 				c.customerState=CustomerState.reOrder;
 			}
 		}
@@ -250,21 +250,21 @@ public class WaiterAgent extends Agent {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		c.cust.msgWhatWouldYouLike();
+		c.cust.msgWhatWouldYouLike(menuOptions);
 		//c.state = CustomerState.ordered;
 	}
 	
 	private void reOrder(Customer c)
 	{
 		print("the waiter is now approaching the customer asking him to reorder");
-		waiterGui.DoGoToCustomer(c.tableNumber, c.choice);
+		waiterGui.WalkingToReorderingCustomer(c.tableNumber, c.choice);
 		try {
 //			print("acquiring");
 			atTable.acquire();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		c.cust.msgReOrder(menu);
+		c.cust.msgReOrder(menuOptions);
 	}
 	
 	private void GiveCook(Customer c)
