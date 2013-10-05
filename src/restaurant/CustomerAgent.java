@@ -39,11 +39,11 @@ public class CustomerAgent extends Agent {
 	
 	//    private boolean isHungry = false; //hack for gui
 	public enum AgentState
-	{DoingNothing, WaitingToBeSeated, BeingSeated, Ordered, finishing, leaving};
+	{DoingNothing, WaitingToBeSeated, BeingSeated, Ordered, reOrder, finishing, leaving};
 	private AgentState state = AgentState.DoingNothing;//The start state
 
 	public enum AgentEvent // you're doing the event, so you are "state". ex. you got hungry, so you arrive at the restaurant. you walked in the restaurant, so you are waiting to be seated
-	{none, gotHungry, followHost, readyToGiveOrder, eating, doneEating};
+	{none, gotHungry, followHost, readyToOrder, readyToReorder, eating, doneEating};
 	AgentEvent event = AgentEvent.none;
 	
 
@@ -112,11 +112,28 @@ public class CustomerAgent extends Agent {
 	{
 		choice = CustomerChoice();
 		print("customer " + name + " decides he wants " + choice);
-		event = AgentEvent.readyToGiveOrder;
+		event = AgentEvent.readyToOrder;
 		stateChanged();
 	}
 	
 	private String CustomerChoice()
+	{
+		Random random = new Random();
+		int index = random.nextInt(menuOptions.size());
+		return menuOptions.get(index);
+	}
+	
+	public void msgReOrder(List<String> menu)
+	{
+		print("customer is reordering");
+		choice = reOrderChoice(menu);
+		System.out.println(menu.size());
+		event = AgentEvent.readyToReorder;
+		//state = AgentState.BeingSeated;
+		stateChanged();
+	}
+	
+	private String reOrderChoice(List<String> menu)
 	{
 		Random random = new Random();
 		int index = random.nextInt(menuOptions.size());
@@ -162,15 +179,25 @@ public class CustomerAgent extends Agent {
 			SitDown();
 			return true;
 		}
-		if (event == AgentEvent.readyToGiveOrder && state == AgentState.BeingSeated ){
+		if (event == AgentEvent.readyToOrder && state == AgentState.BeingSeated ){
 			state = AgentState.Ordered;
 			OrderFood();
 			return true;
 		}
-		if (event == AgentEvent.eating && state == AgentState.Ordered ){
-			state = AgentState.finishing;
-			ConsumeFood();
-			return true;
+		if (state == AgentState.Ordered)
+		{
+			if (event == AgentEvent.readyToReorder)
+			{
+				event = AgentEvent.none;
+				OrderFood();
+				return true;
+			}
+			if (event == AgentEvent.eating)
+			{
+				state = AgentState.finishing;
+				ConsumeFood();
+				return true;
+			}
 		}
 		if (event == AgentEvent.doneEating && state == AgentState.finishing ){
 			state = AgentState.leaving;

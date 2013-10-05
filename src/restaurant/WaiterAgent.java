@@ -20,7 +20,7 @@ public class WaiterAgent extends Agent {
 	//private Point location = new Point();
 	public List<Customer> myCustomers = new ArrayList<Customer>();
 	public enum CustomerState
-	{nothing, waiting, seated, readyToOrder, takingOrder, ordered, sendOrderToCook, deliver, delivering, eating, cleaningUp, done};
+	{nothing, waiting, seated, readyToOrder, takingOrder, ordered, reOrder, reOrdering, sendOrderToCook, deliver, delivering, eating, done, cleaningUp};
 	public enum WaiterState
 	{nothing, atSeat};
 	public WaiterState waiterState = WaiterState.nothing;
@@ -31,6 +31,7 @@ public class WaiterAgent extends Agent {
 		else 
 			return false;
 	}
+	List<String> menu = new ArrayList<String>();
 	List<String> menuOptions = new ArrayList<String>();{
 	    menuOptions.add("chicken");
 	    menuOptions.add("beef");
@@ -108,11 +109,26 @@ public class WaiterAgent extends Agent {
 		stateChanged();
 	}
 	
+	public void msgOutOfFood(String choice, int tableNumber)
+	{
+		for (Customer c : myCustomers)
+		{
+			if (c.choice.equals(choice) && c.tableNumber==tableNumber)
+			{
+				print("the waiter receives a message from the cook saying they are out of " + choice);
+				menu = menuOptions;
+				menu.remove(choice);
+				c.customerState=CustomerState.reOrder;
+			}
+		}
+		stateChanged();
+	}
+	
 	public void msgOrderIsReady(String choice, int tableNumber)
 	{
 		for (Customer c : myCustomers)
 		{
-			if (c.choice==choice && c.tableNumber==tableNumber)
+			if (c.choice.equals(choice) && c.tableNumber==tableNumber)
 			{
 				c.customerState=CustomerState.deliver;
 			}
@@ -162,6 +178,15 @@ public class WaiterAgent extends Agent {
 			{
 				cust.customerState=CustomerState.sendOrderToCook;
 				GiveCook(cust);
+				return true;
+			}
+		}
+		for (Customer cust : myCustomers) 
+		{
+			if (cust.customerState==CustomerState.reOrder)
+			{
+				cust.customerState=CustomerState.reOrdering;
+				reOrder(cust);
 				return true;
 			}
 		}
@@ -227,6 +252,19 @@ public class WaiterAgent extends Agent {
 		}
 		c.cust.msgWhatWouldYouLike();
 		//c.state = CustomerState.ordered;
+	}
+	
+	private void reOrder(Customer c)
+	{
+		print("the waiter is now approaching the customer asking him to reorder");
+		waiterGui.DoGoToCustomer(c.tableNumber, c.choice);
+		try {
+//			print("acquiring");
+			atTable.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		c.cust.msgReOrder(menu);
 	}
 	
 	private void GiveCook(Customer c)

@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 public class CookAgent extends Agent {
 	WaiterAgent waiter;
+	
 	List<String> menuOptions = new ArrayList<String>();{
 	    menuOptions.add("chicken");
 	    menuOptions.add("beef");
@@ -36,16 +37,43 @@ public class CookAgent extends Agent {
 			this.s=s;
 		}
 	}
+	public class Food
+	{
+		String type;
+		int cookingTime;
+		int amount;
+		int lowThreshold;
+		int capacity;
+		OrderState orderState;
+		Food(String type, int cookingTime, int amount, int lowThreshold, int capacity, OrderState orderstate)
+		{
+			this.type=type;
+			this.cookingTime=cookingTime;
+			this.amount=amount;
+			this.lowThreshold=lowThreshold;
+			this.capacity=capacity;
+			this.orderState= orderstate;
+		}
+	}
 	public List<Order> orders = new ArrayList<Order>();
+	public enum OrderState
+	{nothing};
 	public enum state
 	{pending, cooking, done, finished};
-	HashMap<String, Integer> cookingTime = new HashMap<String, Integer>();
+	HashMap<String, Integer> cookingTimes = new HashMap<String, Integer>();
     {
     	int time=2000;
 		for (String choice : menuOptions)
 		{
-			cookingTime.put(choice, time);
+			cookingTimes.put(choice, time);
 			time+=2000;
+		}
+    }
+    HashMap<String, Food> foods = new HashMap<String, Food>();
+    {
+    	for (String choice : menuOptions)
+		{
+			foods.put(choice, new Food(choice, cookingTimes.get(choice), 0, 2, 10, OrderState.nothing));
 		}
     }
 
@@ -55,7 +83,6 @@ public class CookAgent extends Agent {
 	
 	public void msgHereIsOrder(WaiterAgent waiter, String choice, int tableNumber)
 	{
-		
 		Order order = new Order(waiter, choice, tableNumber, state.pending);
 		print("the cook recieves the order " + order.choice + " and puts it on a list of orders");
 		orders.add(order);
@@ -73,7 +100,7 @@ public class CookAgent extends Agent {
 		{	
 			if (order.s==state.pending)
 			{
-				CookIt(order);
+				TryToCookFood(order);
 				return true;
 			}
 		}
@@ -91,8 +118,22 @@ public class CookAgent extends Agent {
 
 	// Actions
 
-	private void CookIt(Order order) //can cook multiple things at a time with no decrease in speed
+	private void TryToCookFood(Order order) //can cook multiple things at a time with no decrease in speed
 	{
+		Food f = foods.get(order.choice);
+		if (f.amount==0)
+		{
+			print("the cook tells the waiter that they are out of " + order.choice);
+			order.waiter.msgOutOfFood(order.choice, order.tableNumber);
+			orders.remove(order);
+			return;
+		}
+		f.amount--;
+		if (f.amount <= f.lowThreshold)
+		{
+			print("ordering food that is low");
+			//OrderFoodThatIsLow();
+		}
 		//DoCooking(order);
 		print("the cook begins cooking the " + order.choice);
 		order.s = state.cooking; //put this inside timer class when u implement it
@@ -103,7 +144,7 @@ public class CookAgent extends Agent {
 	
 	private void CookingTimer(Order order)
 	{
-		int time = cookingTime.get(order.choice);
+		int time = cookingTimes.get(order.choice);
 		try
 		{
 			Thread.sleep(time);
