@@ -73,7 +73,7 @@ public class CookAgent extends Agent {
     {
     	for (String choice : menuOptions)
 		{
-			foods.put(choice, new Food(choice, cookingTimes.get(choice), 0, 2, 10, OrderState.nothing));
+			foods.put(choice, new Food(choice, cookingTimes.get(choice), 2, 2, 10, OrderState.nothing));
 		}
     }
 

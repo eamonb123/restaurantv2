@@ -218,13 +218,11 @@ public class CustomerAgent extends Agent {
 	private void SitDown() {
 		print("customer " + name + " is being seated and going to table " + tableNumber);
 		customerGui.DoGoToSeat(location);
-		while(customerGui.xPos != customerGui.xDestination || customerGui.yPos != customerGui.yDestination)
-		{
-		}
 		print("the waiter hands " + name + " the menu");
 		print(name + " is deciding what to order...");
 		decidingOrder();
 		print(name + " is ready to order");
+		customerGui.decidedOrder = true;
 		waiter.msgReadyToOrder(this);
 	}
 	
@@ -232,7 +230,7 @@ public class CustomerAgent extends Agent {
 	{
 		try
 		{
-			Thread.sleep(4000);
+			Thread.sleep(6000);
 		}
 		catch(Exception e)
 		{
@@ -245,6 +243,7 @@ public class CustomerAgent extends Agent {
 		print("customer " + name + " tells the waiter he wants " + choice);
 		customerGui.waitingForOrder = true;
 		customerGui.order = choice;
+		customerGui.decidedOrder = false;
 		waiter.msgHereIsChoice(this);
 	}
 	

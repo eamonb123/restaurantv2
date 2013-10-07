@@ -13,6 +13,7 @@ public class CustomerGui implements Gui{
 	private int xPosition=100;
 	private int yPosition=250;
 	public boolean waitingForOrder = false;
+	public boolean decidedOrder = false;
 	public String order;
 
 	//private HostAgent host;
