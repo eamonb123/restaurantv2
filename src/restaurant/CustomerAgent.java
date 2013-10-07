@@ -251,6 +251,7 @@ public class CustomerAgent extends Agent {
 	private void ConsumeFood() //currently every food takes same amount of time to eat
 	{
 		customerGui.waitingForOrder=false;
+		customerGui.acceptedOrder=true;
 		print("customer " + name + " eats the food for 5 seconds before being done");
 		EatFood();
 	}
@@ -258,6 +259,7 @@ public class CustomerAgent extends Agent {
 	private void LeaveTable()
 	{
 		print("customer " + name + " notifies the waiter that he is done eating the " + choice);
+		customerGui.acceptedOrder=false;
 		waiter.msgDoneEating(this);
 		print("customer " + name + " is now leaving the restaurant");
 		customerGui.DoExitRestaurant();

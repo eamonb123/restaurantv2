@@ -85,10 +85,10 @@ public class AnimationPanel extends JPanel implements ActionListener {
             		{
             			customerGui.drawOrder(stringOrder, customerGui.order + "?");
             		}
-//            		if (customerGui.receivedOrder)
-//            		{
-//            			customerGui.receivedOrder(stringOrder, customerGui.order + "?");
-//            		}
+            		if (customerGui.acceptedOrder)
+            		{
+            			customerGui.eatingOrder(stringOrder, "eating " + customerGui.order + "...");
+            		}
             	}
             }
         }

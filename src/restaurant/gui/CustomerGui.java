@@ -14,6 +14,7 @@ public class CustomerGui implements Gui{
 	private int yPosition=250;
 	public boolean waitingForOrder = false;
 	public boolean decidedOrder = false;
+	public boolean acceptedOrder = false;
 	public String order;
 
 	//private HostAgent host;
@@ -64,6 +65,11 @@ public class CustomerGui implements Gui{
 	
     public void drawOrder(Graphics2D g, String order) {
         g.setColor(Color.BLACK);
+    	g.drawString(order, xPos, yPos);
+    }
+    
+    public void eatingOrder(Graphics2D g, String order) {
+        g.setColor(Color.RED);
     	g.drawString(order, xPos, yPos);
     }
     
