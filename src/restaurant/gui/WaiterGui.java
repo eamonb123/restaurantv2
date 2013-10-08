@@ -63,7 +63,7 @@ public class WaiterGui implements Gui {
             yPos--;
         if (xPos == xDestination && yPos == yDestination && isMoving==true) 
         {
-        	MoveToPosition(homeBase);
+        	DoMoveToPosition(homeBase);
         	waiter.msgAtTable();
         	isMoving=false;
         }
@@ -72,7 +72,7 @@ public class WaiterGui implements Gui {
     
     public void goToHome()
     {
-    	MoveToPosition(homeBase);
+    	DoMoveToPosition(homeBase);
     }
     
     public void draw(Graphics2D g) {
@@ -94,7 +94,7 @@ public class WaiterGui implements Gui {
 //        yDestination = yTable - 20;
 //    }
    
-    public void MoveToPosition(Point location)
+    public void DoMoveToPosition(Point location)
     {
     	isMoving=true;
     	xDestination = location.x;
@@ -103,7 +103,7 @@ public class WaiterGui implements Gui {
     
     public void PickUpCustomer()
     {
-    	MoveToPosition(customerLine);
+    	DoMoveToPosition(customerLine);
     }
     
     public void DoSeatCustomer(Point location)
@@ -116,17 +116,17 @@ public class WaiterGui implements Gui {
     public void DoGoToTable(int tableNumber)
     {
     	Point location = tableMap.get(tableNumber);
-    	MoveToPosition(location);
+    	DoMoveToPosition(location);
     }
     
     public void DoGiveCook()
     {
-    	MoveToPosition(cookLocation);
+    	DoMoveToPosition(cookLocation);
     }
     
-    public void PickUpOrder()
+    public void DoPickUpOrder()
     {
-    	MoveToPosition(cookLocation);
+    	DoMoveToPosition(cookLocation);
     	reOrdering=false;
     }
     
@@ -135,7 +135,7 @@ public class WaiterGui implements Gui {
     	this.order = order;
     	deliveringFood = true;
     	Point location = tableMap.get(tableNumber);
-    	MoveToPosition(location);
+    	DoMoveToPosition(location);
     }
     
     public void WalkingToReorderingCustomer(int tableNumber, String order)
@@ -144,7 +144,7 @@ public class WaiterGui implements Gui {
     	deliveringFood = true;
     	reOrdering=true;
     	Point location = tableMap.get(tableNumber);
-    	MoveToPosition(location);
+    	DoMoveToPosition(location);
     }
     
     public void DoLeaveCustomer() {

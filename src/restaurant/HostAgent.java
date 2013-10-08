@@ -1,6 +1,7 @@
 package restaurant;
 
 import agent.Agent;
+import restaurant.WaiterAgent.Customer;
 import restaurant.gui.WaiterGui;
 
 import java.awt.Point;
@@ -16,13 +17,32 @@ import java.util.concurrent.Semaphore;
 //is proceeded as he wishes.
 public class HostAgent extends Agent {
 	static int NTABLES=3;
-	public List<CustomerAgent> waitingCustomers = new ArrayList<CustomerAgent>();
-	public List<WaiterAgent> waiterList = new ArrayList<WaiterAgent>();
+	public List<CustomerAgent> myWaitingCustomers = new ArrayList<CustomerAgent>();
+	public List<WaiterAgent> myWaiters = new ArrayList<WaiterAgent>();
 	public Collection<Table> myTables;
+	public WaiterGui waiterGui = null;
     private int xPosition=100;
     private int yPosition=250;
     private String name;
-	public class Table {
+	public class Waiter
+	{
+		WaiterAgent waiter;
+		List<Customer> customers = new ArrayList<Customer>();
+		boolean isBusy()
+		{
+			if (customers.size()!=0)
+				return true;
+			else 
+				return false;
+		}
+	}
+	public class Customer
+	{
+		CustomerAgent customer;
+		
+	}
+    public class Table 
+    {
 		int tableNumber;
 		int xPos;
 		boolean isOccupied=false;
@@ -30,7 +50,7 @@ public class HostAgent extends Agent {
 			this.tableNumber = tableNumber;
 		}
 	}
-	public WaiterGui waiterGui = null;
+    
 	public HostAgent(String name) {
 		super();
 		this.name = name;
@@ -59,7 +79,7 @@ public class HostAgent extends Agent {
 
 	public void msgIWantToEat(CustomerAgent cust) {
 		print("Host is adding customer " + cust.name + " to the waiting customer list");
-		waitingCustomers.add(cust);
+		myWaitingCustomers.add(cust);
 		stateChanged();
 	}
 
@@ -85,23 +105,23 @@ public class HostAgent extends Agent {
 	 * Scheduler.  Determine what action is called for, and do it.
 	 */
 	protected boolean pickAndExecuteAnAction() {
-		if (!waitingCustomers.isEmpty())
+		if (!myWaitingCustomers.isEmpty())
 		{
-			if (waiterList.isEmpty())
+			if (myWaiters.isEmpty())
 			{
 				print("waiter list is empty. customers waiting in line");
 			}
 			else
 			{
-				WaiterAgent waiter = leastBusyWaiter(waiterList);
+				WaiterAgent waiter = leastBusyWaiter(myWaiters);
 				for (Table table : myTables)
 				{
 					if(!table.isOccupied)
 					{
-						CustomerAgent customer = waitingCustomers.get(0);
+						CustomerAgent customer = myWaitingCustomers.get(0);
 						customer.msgWakeUp();
 						callWaiter(customer, waiter, table);
-						waitingCustomers.remove(0);
+						myWaitingCustomers.remove(0);
 						return true;
 					}
 				}
@@ -159,7 +179,7 @@ public class HostAgent extends Agent {
 
 	public void setWaiter(WaiterAgent waiter)
 	{
-		waiterList.add(waiter);
+		myWaiters.add(waiter);
 	}
 }
 

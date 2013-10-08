@@ -14,9 +14,10 @@ import java.util.concurrent.Semaphore;
  */
 
 public class WaiterAgent extends Agent {
-	public Collection<Table> tables;
+	//public Collection<Table> tables;
 	private CookAgent cook;
 	private HostAgent host;
+	public WaiterGui waiterGui = null;
 	//private Point location = new Point();
 	public List<Customer> myCustomers = new ArrayList<Customer>();
 	public enum CustomerState
@@ -53,7 +54,7 @@ public class WaiterAgent extends Agent {
 	}
 	private String name;
 	private Semaphore atTable = new Semaphore(0);
-	public WaiterGui waiterGui = null;
+
 
 	public WaiterAgent(String name) {
 		super();
@@ -283,7 +284,7 @@ public class WaiterAgent extends Agent {
 	
 	private void Deliver(Customer c)
 	{
-		waiterGui.PickUpOrder();
+		waiterGui.DoPickUpOrder();
 		try {
 //			print("acquiring");
 			atTable.acquire();

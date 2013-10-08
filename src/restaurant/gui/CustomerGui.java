@@ -1,6 +1,7 @@
 package restaurant.gui;
 import restaurant.CustomerAgent;
 import restaurant.HostAgent;
+import restaurant.CustomerAgent.AgentEvent;
 
 import java.awt.*;
 import java.util.HashMap;
