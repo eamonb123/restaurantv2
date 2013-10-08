@@ -126,7 +126,7 @@ public class HostAgent extends Agent {
 					if(!table.isOccupied)
 					{
 						Customer customer = myWaitingCustomers.get(0);
-						customer.cust.msgWakeUp();
+						customer.cust.msgSemaphoreRelease();
 						leastBusyWaiter.customers.add(customer);
 						callWaiter(customer.cust, leastBusyWaiter.waiter, table);
 						myWaitingCustomers.remove(0);

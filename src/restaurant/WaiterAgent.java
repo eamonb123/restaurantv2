@@ -20,6 +20,7 @@ public class WaiterAgent extends Agent {
 	public WaiterGui waiterGui = null;
 	//private Point location = new Point();
 	public List<Customer> myCustomers = new ArrayList<Customer>();
+	//List<Customer> myCustomers = Collections.synchronizedList(new ArrayList<Customer>());
 	public enum CustomerState
 	{nothing, waiting, seated, readyToOrder, takingOrder, ordered, reOrder, reOrdering, sendOrderToCook, deliver, delivering, eating, done, cleaningUp};
 	public enum WaiterState
@@ -156,6 +157,7 @@ public class WaiterAgent extends Agent {
 	 */
 	
 	protected boolean pickAndExecuteAnAction() {
+		//synchronized(customers){
 		for (Customer cust : myCustomers) 
 		{
 			if (cust.customerState==CustomerState.waiting)
@@ -164,6 +166,7 @@ public class WaiterAgent extends Agent {
 				return true;
 			}
 		}
+		//}
 		for (Customer cust : myCustomers) 
 		{
 			if (cust.customerState==CustomerState.readyToOrder)

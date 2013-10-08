@@ -80,7 +80,7 @@ public class CustomerAgent extends Agent {
 	}
 	
 	
-	public void msgWakeUp()
+	public void msgSemaphoreRelease()
 	{
 		print("releasing customer semaphore");
 		//CustomerState.readyToOrder;s
