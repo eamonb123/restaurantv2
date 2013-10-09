@@ -21,7 +21,7 @@ public class WaiterGui implements Gui {
     public boolean reOrdering=false;
     public String order;
     Point cookLocation = new Point(-20, 100);
-    Point homeBase = new Point(260, -20);
+    Point homeBase = new Point(260, 100);
     Point customerLine = new Point(-20,-20);
     public static final int xTable = 100;
     public static final int yTable = 250;

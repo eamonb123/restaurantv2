@@ -22,7 +22,7 @@ public class RestaurantPanel extends JPanel {
     private CookAgent cook = new CookAgent();
 //    private WaiterAgent waiter = new WaiterAgent("Matt");
 //    private WaiterGui waiterGui = new WaiterGui(waiter);
-
+    private boolean paused;
     private Vector<CustomerAgent> customers = new Vector<CustomerAgent>();
     private Vector<WaiterAgent> waiters = new Vector<WaiterAgent>();
 
@@ -64,29 +64,41 @@ public class RestaurantPanel extends JPanel {
         add(group);
     }
 
-//    public void actionPerformed(ActionEvent e) {
-//    	 if (e.getSource() == pause) {
-//    		 for(CustomerAgent customer: customers)
-//    	        {
-//    	        	customer.pauseIt();
-//    	        }
-//	        for (WaiterAgent waiter: waiters)
-//    	        {
-//    	        	waiter.pauseIt();
-//    	        }
-//         }
-//    	 if(e.getSource() == restart)
-//    	 {
-//    		 for(CustomerAgent customer: customers)
-//    	        {
-//    	        	customer.restartIt();
-//    	        }
-//	        for (WaiterAgent waiter: waiters)
-//    	        {
-//    	        	waiter.restartIt();
-//    	        }
-//    	 }
-//    }
+    public void actionPerformed(ActionEvent e) {
+    	if (e.getSource() == pause) 
+    	{
+    		if (!paused)
+    		{
+    			paused=true;
+    			for(CustomerAgent customer: customers)
+    			{
+	    	        customer.pause();
+    			}
+		        for (WaiterAgent waiter: waiters)
+		        {
+	    	        waiter.pause();
+	    	    }
+		        host.pause();
+		        cook.pause();
+    		}
+    		else
+    		{
+    			paused=false;
+    			for(CustomerAgent customer: customers)
+    			{
+    				customer.restart();
+    			}
+		        for (WaiterAgent waiter: waiters)
+	    	    {
+		        	waiter.restart();
+	    	    }
+		        host.restart();
+		        cook.restart();
+    		}
+    	}
+    }
+    
+
     
     
     /**

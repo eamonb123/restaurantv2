@@ -9,6 +9,7 @@ import java.util.concurrent.*;
  */
 public abstract class Agent {
     Semaphore stateChange = new Semaphore(1, true);//binary semaphore, fair
+    Semaphore pauseButton = new Semaphore (0);
     private AgentThread agentThread;
     public boolean pause=false;
     protected Agent() {
@@ -42,16 +43,13 @@ public abstract class Agent {
 
     public void pause()
     {
-    	if (pause==true)
-    	{
-    		try {
-				stateChange.acquire();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-    	}
-    		
+    	pause=true;
+    }
+    
+    public void restart()
+    {
+    	pause=false;
+    	pauseButton.release();
     }
     		
     
@@ -127,7 +125,11 @@ public abstract class Agent {
                 try {
                     // The agent sleeps here until someone calls, stateChanged(),
                     // which causes a call to stateChange.give(), which wakes up agent.
-                    stateChange.acquire();
+                    if (pause)
+                    {
+                    	pauseButton.acquire();
+                    }
+                	stateChange.acquire();
                     //The next while clause is the key to the control flow.
                     //When the agent wakes up it will call respondToStateChange()
                     //repeatedly until it returns FALSE.
