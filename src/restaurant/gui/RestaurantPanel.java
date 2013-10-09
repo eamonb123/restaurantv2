@@ -3,6 +3,7 @@ package restaurant.gui;
 import restaurant.CookAgent;
 import restaurant.CustomerAgent;
 import restaurant.HostAgent;
+import restaurant.MarketAgent;
 import restaurant.WaiterAgent;
 
 import javax.swing.*;
@@ -20,6 +21,7 @@ public class RestaurantPanel extends JPanel {
     //Host, cook, waiters and customers
     private HostAgent host = new HostAgent("Sarah");
     private CookAgent cook = new CookAgent();
+    private MarketAgent market = new MarketAgent();
 //    private WaiterAgent waiter = new WaiterAgent("Matt");
 //    private WaiterGui waiterGui = new WaiterGui(waiter);
     private boolean paused;
@@ -46,8 +48,11 @@ public class RestaurantPanel extends JPanel {
 //        host.setWaiter(waiter);
 //        waiter.setCook(cook);
 //        waiter.setHost(host);
+        cook.setMarket(market);
+        market.setCook(cook);
         host.startThread();
         cook.startThread();
+        market.startThread();
 //        waiter.startThread();
         
         

@@ -2,6 +2,7 @@ package restaurant;
 
 import agent.Agent;
 import restaurant.HostAgent.Table;
+import restaurant.HostAgent.Waiter;
 import restaurant.gui.WaiterGui;
 
 import java.awt.Point;
@@ -15,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 public class CookAgent extends Agent {
 	WaiterAgent waiter;
-	
+	MarketAgent market;
 	List<String> menuOptions = new ArrayList<String>();{
 	    menuOptions.add("chicken");
 	    menuOptions.add("beef");
@@ -73,7 +74,7 @@ public class CookAgent extends Agent {
     {
     	for (String choice : menuOptions)
 		{
-			foods.put(choice, new Food(choice, cookingTimes.get(choice), 2, 2, 10, OrderState.nothing));
+			foods.put(choice, new Food(choice, cookingTimes.get(choice), 0, 2, 10, OrderState.nothing));
 		}
     }
 
@@ -131,8 +132,9 @@ public class CookAgent extends Agent {
 		f.amount--;
 		if (f.amount <= f.lowThreshold)
 		{
-			print("ordering food that is low");
-			//OrderFoodThatIsLow();
+			print("food is low. the cook is ordering food from the market to restock inventory");
+			OrderFoodThatIsLow();
+			return;
 		}
 		//DoCooking(order);
 		print("the cook begins cooking the " + order.choice);
@@ -155,6 +157,25 @@ public class CookAgent extends Agent {
 		}
 	}
 	
+	private void OrderFoodThatIsLow()
+	{
+	    HashMap<String, Integer> groceryList = new HashMap<String, Integer>();
+		for (Map.Entry<String, Food> entry : foods.entrySet()) 
+		{
+			int foodCurrentAmount = entry.getValue().amount;
+			int foodLowThreshold = entry.getValue().lowThreshold;
+		    if (foodCurrentAmount < foodLowThreshold)
+		    {
+		    	String foodName = entry.getValue().type;
+		    	int foodOrderSize = entry.getValue().capacity;
+		    	groceryList.put(foodName, foodOrderSize);
+		    }
+		}
+		print("the cook sends a message to the market and sends the grocery list over");
+		market.msgOrderRestock(groceryList);
+	}
+	
+	
 	private void PlateIt(Order order)
 	{
 		//DoPlating(order);
@@ -174,8 +195,12 @@ public class CookAgent extends Agent {
 	public WaiterGui getGui() {
 		return hostGui;
 	}
-
 	
+	
+	public void setMarket(MarketAgent market)
+	{
+		this.market=market;
+	}
 	
 }
 
