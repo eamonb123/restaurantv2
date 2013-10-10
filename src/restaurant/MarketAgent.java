@@ -1,6 +1,8 @@
 package restaurant;
 
 import agent.Agent;
+import restaurant.CookAgent.Food;
+import restaurant.CookAgent.state;
 import restaurant.CustomerAgent.AgentEvent;
 import restaurant.CustomerAgent.AgentState;
 import restaurant.HostAgent.Table;
@@ -17,50 +19,24 @@ import java.util.concurrent.TimeUnit;
 
 public class MarketAgent extends Agent {
 	CookAgent cook;
-	
-
 	private String name; 
-	public class Order
+	public class IncomingOrder
 	{
-		WaiterAgent waiter;
-		String choice;
-		int tableNumber;
-		state s;
-		Order(WaiterAgent waiter, String choice, int tableNumber, state s)
+		CookAgent cook;
+	    HashMap<String, Integer> groceryList = new HashMap<String, Integer>();
+	    reStockingState state;
+		IncomingOrder(CookAgent cook,  HashMap<String, Integer> groceryList, reStockingState state)
 		{
-			this.waiter=waiter;
-			this.choice=choice;
-			this.tableNumber=tableNumber;
-			this.s=s;
+			this.cook=cook;
+			this.groceryList=groceryList;
+			this.state=state;	
 		}
 	}
-	public class Food
-	{
-		String type;
-		int cookingTime;
-		int amount;
-		int lowThreshold;
-		int capacity;
-		OrderState orderState;
-		Food(String type, int cookingTime, int amount, int lowThreshold, int capacity, OrderState orderstate)
-		{
-			this.type=type;
-			this.cookingTime=cookingTime;
-			this.amount=amount;
-			this.lowThreshold=lowThreshold;
-			this.capacity=capacity;
-			this.orderState= orderstate;
-		}
-	}
-
-	public List<Order> orders = new ArrayList<Order>();
-	public enum OrderState
-	{nothing};
-	public enum state
-	{pending, cooking, done, finished};
+//	public enum OrderState
+//	{nothing};
 	public enum reStockingState
-	{none, restocking};
-	private reStockingState state = reStockingState.none;
+	{none, restocking, fufilledOrder, failedToFufillOrder};
+	public List<IncomingOrder> orders = new ArrayList<IncomingOrder>();
 	List<String> menuOptions = new ArrayList<String>();{
 	    menuOptions.add("chicken");
 	    menuOptions.add("beef");
@@ -70,7 +46,7 @@ public class MarketAgent extends Agent {
     {
 		for (String choice : menuOptions)
 		{
-			inventory.put(choice, 20);
+			inventory.put(choice, 500);
 		}
     }
 
@@ -78,10 +54,10 @@ public class MarketAgent extends Agent {
 	
 	//Messages
 	
-	public void msgOrderRestock(HashMap<String, Integer> groceryList)
+	public void msgOrderRestock(CookAgent cook, HashMap<String, Integer> groceryList)
 	{
-		state = reStockingState.restocking;
 		print("the market recieves the grocery list and changes it's state to restocking");
+		orders.add(new IncomingOrder(cook, groceryList, reStockingState.restocking));
 		stateChanged();
 	}
 	
@@ -92,10 +68,13 @@ public class MarketAgent extends Agent {
 	 */	
 			
 	protected boolean pickAndExecuteAnAction() {
-		if (state == reStockingState.restocking)
-		{	
-			ShipOrder();
-			return true;
+		for (IncomingOrder order: orders)
+		{
+			if (order.state==reStockingState.restocking)
+			{
+				TryToShipOrder(order, inventory);
+				return true;
+			}
 		}
 		return false;
 	}
@@ -103,9 +82,30 @@ public class MarketAgent extends Agent {
 
 	// Actions
 
-	private void ShipOrder()
+	private void TryToShipOrder(IncomingOrder incomingOrder, HashMap<String, Integer> inventoryList)
 	{
-		print("shipping order");
+		print("trying to ship order");
+		HashMap<String, Integer> groceryList = incomingOrder.groceryList;
+		for (Map.Entry<String, Integer> grocery : groceryList.entrySet())
+		{
+			for (Map.Entry<String, Integer> inventory : inventoryList.entrySet())
+			{
+				if (grocery.getKey().equals(inventory.getKey())) //if the grocerylist item equals the inventory item
+				{	
+					if (inventory.getValue()>grocery.getValue())//if the inventory has enough supplies for the order
+					{
+						grocery.setValue(grocery.getValue());
+						inventory.setValue(inventory.getValue()-grocery.getValue());
+					}
+					else //inventory does not have enough supplies
+					{
+						grocery.setValue(grocery.getValue()-inventory.getValue());
+						incomingOrder.cook.msgFufilledPartialOrder(groceryList);
+					}
+				}	
+			}
+		}
+		incomingOrder.cook.msgFufilledCompleteOrder(groceryList);
 	}
 	
 

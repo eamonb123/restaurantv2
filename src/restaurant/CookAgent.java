@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class CookAgent extends Agent {
-	WaiterAgent waiter;
+	//WaiterAgent waiter;
 	MarketAgent market;
 	List<String> menuOptions = new ArrayList<String>();{
 	    menuOptions.add("chicken");
@@ -90,6 +90,27 @@ public class CookAgent extends Agent {
 		stateChanged();
 	}
 	
+	public void msgFufilledPartialOrder(HashMap<String, Integer> groceryList)
+	{
+		stateChanged();
+	}
+	
+	public void msgFufilledCompleteOrder(HashMap<String, Integer> groceryList)
+	{
+		print("cook is getting the message that the market fufilled his order.");
+		for (Map.Entry<String, Food>  food: foods.entrySet())
+		{
+			for (Map.Entry<String, Integer> list: groceryList.entrySet())
+			{
+				if (food.getKey().equals(list.getKey()))
+				{
+					food.getValue().amount=list.getValue();
+				}
+			}
+		}
+		print("cook has completely resupplied his stock of food");
+		stateChanged();
+	}
 
 	
 	/**
@@ -143,19 +164,7 @@ public class CookAgent extends Agent {
 		print("the cook is done cooking the " + order.choice);
 		order.s = state.done;
 	}
-	
-	private void CookingTimer(Order order)
-	{
-		int time = cookingTimes.get(order.choice);
-		try
-		{
-			Thread.sleep(time);
-		}
-		catch(Exception e)
-		{
-			System.out.println("Exception caught");
-		}
-	}
+
 	
 	private void OrderFoodThatIsLow()
 	{
@@ -172,7 +181,7 @@ public class CookAgent extends Agent {
 		    }
 		}
 		print("the cook sends a message to the market and sends the grocery list over");
-		market.msgOrderRestock(groceryList);
+		market.msgOrderRestock(this, groceryList);
 	}
 	
 	
@@ -184,7 +193,19 @@ public class CookAgent extends Agent {
 		orders.remove(order);
 	}
 	
-
+	
+	private void CookingTimer(Order order)
+	{
+		int time = cookingTimes.get(order.choice);
+		try
+		{
+			Thread.sleep(time);
+		}
+		catch(Exception e)
+		{
+			System.out.println("Exception caught");
+		}
+	}
 
 	//utilities
 
