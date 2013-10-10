@@ -86,6 +86,7 @@ public class MarketAgent extends Agent {
 	{
 		print("trying to ship order");
 		HashMap<String, Integer> groceryList = incomingOrder.groceryList;
+//		System.out.println(groceryList);
 		for (Map.Entry<String, Integer> grocery : groceryList.entrySet())
 		{
 			for (Map.Entry<String, Integer> inventory : inventoryList.entrySet())
@@ -105,6 +106,7 @@ public class MarketAgent extends Agent {
 				}	
 			}
 		}
+		incomingOrder.state= reStockingState.fufilledOrder;
 		incomingOrder.cook.msgFufilledCompleteOrder(groceryList);
 	}
 	

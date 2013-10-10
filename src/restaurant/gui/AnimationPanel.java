@@ -29,7 +29,7 @@ public class AnimationPanel extends JPanel implements ActionListener {
     	setSize(WINDOWX, WINDOWY);
         setVisible(true);
         bufferSize = this.getSize();
-        Timer timer = new Timer(10, this );
+        Timer timer = new Timer(3, this );
     	timer.start();
     }
 

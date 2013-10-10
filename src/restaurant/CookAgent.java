@@ -98,12 +98,14 @@ public class CookAgent extends Agent {
 	public void msgFufilledCompleteOrder(HashMap<String, Integer> groceryList)
 	{
 		print("cook is getting the message that the market fufilled his order.");
+//		System.out.println(groceryList);
 		for (Map.Entry<String, Food>  food: foods.entrySet())
 		{
 			for (Map.Entry<String, Integer> list: groceryList.entrySet())
 			{
 				if (food.getKey().equals(list.getKey()))
 				{
+//					System.out.println(list.getValue());
 					food.getValue().amount=list.getValue();
 				}
 			}
@@ -122,7 +124,7 @@ public class CookAgent extends Agent {
 		{	
 			if (order.s==state.pending)
 			{
-				TryToCookFood(order);
+				TryToCookFood(order);				
 				return true;
 			}
 		}
@@ -143,6 +145,13 @@ public class CookAgent extends Agent {
 	private void TryToCookFood(Order order) //can cook multiple things at a time with no decrease in speed
 	{
 		Food f = foods.get(order.choice);
+		System.out.println("wazzup");
+		if (f.amount <= f.lowThreshold)
+		{
+			print("food is low. the cook is ordering food from the market to restock inventory");
+			OrderFoodThatIsLow();
+			return;
+		}
 		if (f.amount==0)
 		{
 			print("the cook tells the waiter that they are out of " + order.choice);
@@ -151,12 +160,6 @@ public class CookAgent extends Agent {
 			return;
 		}
 		f.amount--;
-		if (f.amount <= f.lowThreshold)
-		{
-			print("food is low. the cook is ordering food from the market to restock inventory");
-			OrderFoodThatIsLow();
-			return;
-		}
 		//DoCooking(order);
 		print("the cook begins cooking the " + order.choice);
 		order.s = state.cooking; //put this inside timer class when u implement it
@@ -168,6 +171,7 @@ public class CookAgent extends Agent {
 	
 	private void OrderFoodThatIsLow()
 	{
+		System.out.println("HEY");
 	    HashMap<String, Integer> groceryList = new HashMap<String, Integer>();
 		for (Map.Entry<String, Food> entry : foods.entrySet()) 
 		{
@@ -180,6 +184,7 @@ public class CookAgent extends Agent {
 		    	groceryList.put(foodName, foodOrderSize);
 		    }
 		}
+		System.out.println(groceryList);
 		print("the cook sends a message to the market and sends the grocery list over");
 		market.msgOrderRestock(this, groceryList);
 	}
