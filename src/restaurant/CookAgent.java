@@ -60,7 +60,7 @@ public class CookAgent extends Agent {
 	public enum OrderState
 	{nothing};
 	public enum state
-	{pending, cooking, done, finished};
+	{pending, cooking, orderingFood, done};
 	HashMap<String, Integer> cookingTimes = new HashMap<String, Integer>();
     {
     	int time=2000;
@@ -94,6 +94,7 @@ public class CookAgent extends Agent {
 	public void msgShippingFood(HashMap<String, Integer> incomingOrder)
 	{
 		print("cook is getting the message that the market fufilled his order.");
+		boolean incompleteShipping=false;
 		for (Map.Entry<String, Food>  cookFood: foods.entrySet())
 		{
 			for (Map.Entry<String, Integer> marketFood: incomingOrder.entrySet())
@@ -103,13 +104,22 @@ public class CookAgent extends Agent {
 					cookFood.getValue().currentAmount+=marketFood.getValue();
 					if (cookFood.getValue().currentAmount<cookFood.getValue().capacity)
 					{
-						
+						incompleteShipping=true;
 					}
 				}
 			}
 		}
-		print("cook has completely resupplied his stock of food");
-		stateChanged();
+		if (incompleteShipping)
+		{
+			print("not all the requested materials were shipped by the market");
+			OrderFoodThatIsLow();
+		}
+		else
+		{
+			print("cook has completely resupplied his stock of food");
+			stateChanged();
+		}
+		//stateChanged(); //!!KSAJDKSJDH
 	}
 	
 
@@ -144,11 +154,11 @@ public class CookAgent extends Agent {
 	private void TryToCookFood(Order order) //can cook multiple things at a time with no decrease in speed
 	{
 		Food f = foods.get(order.choice);
-		System.out.println("wazzup");
 		if (f.currentAmount <= f.lowThreshold)
 		{
 			print("food is low. the cook is ordering food from the market to restock inventory");
 			OrderFoodThatIsLow();
+			order.s = state.orderingFood;
 			return;
 		}
 		if (f.currentAmount==0)
@@ -170,17 +180,16 @@ public class CookAgent extends Agent {
 	
 	private void OrderFoodThatIsLow()
 	{
-		System.out.println("HEY");
 	    HashMap<String, Integer> groceryList = new HashMap<String, Integer>();
 		for (Map.Entry<String, Food> food : foods.entrySet()) 
 		{
-		    if (food.getValue().currentAmount < food.getValue().lowThreshold)
+		    if (food.getValue().currentAmount < food.getValue().capacity)
 		    {
 		    	groceryList.put(food.getKey(), food.getValue().capacity-food.getValue().currentAmount);
 		    }
 		}
-		//System.out.println(groceryList);
-		print("the cook sends a message to the market and sends the grocery list over");
+		System.out.println(groceryList);
+		print("the cook sends a message to the market with the grocery list");
 		market.msgOrderRestock(this, groceryList);
 	}
 	

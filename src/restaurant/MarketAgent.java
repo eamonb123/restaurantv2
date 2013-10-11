@@ -35,7 +35,7 @@ public class MarketAgent extends Agent {
 //	public enum OrderState
 //	{nothing};
 	public enum reStockingState
-	{none, restocking, fufilledOrder, failedToFufillOrder};
+	{none, restocking, fufillingOrder, failedToFufillOrder};
 	public List<IncomingOrder> orders = new ArrayList<IncomingOrder>();
 	List<String> menuOptions = new ArrayList<String>();{
 	    menuOptions.add("chicken");
@@ -46,7 +46,7 @@ public class MarketAgent extends Agent {
     {
 		for (String choice : menuOptions)
 		{
-			inventory.put(choice, 500);
+			inventory.put(choice, 4);
 		}
     }
 
@@ -84,8 +84,8 @@ public class MarketAgent extends Agent {
 
 	private void TryToShipOrder(IncomingOrder incomingOrder, HashMap<String, Integer> inventoryList)
 	{
-		boolean partialOrder = false;
-		print("trying to ship order");
+		//boolean partialOrder = false;
+		print("the market is now trying to ship order");
 //		System.out.println(groceryList);
 		HashMap<String, Integer> groceryList = incomingOrder.incomingList;
 		for (Map.Entry<String, Integer> groceryItem : incomingOrder.incomingList.entrySet())
@@ -100,23 +100,15 @@ public class MarketAgent extends Agent {
 					}
 					else //inventory does not have enough supplies
 					{
-						partialOrder=true;
 						groceryItem.setValue(marketItem.getValue());
+						marketItem.setValue(0);
 					}
 				}	
 			}
 		}
-		if(partialOrder)
-		{
-			incomingOrder.cook.msgFufilledPartialOrder(groceryList);
-			incomingOrder.state= reStockingState.failedToFufillOrder;
-		}
-		else
-		{
-			incomingOrder.cook.msgFufilledCompleteOrder(groceryList);
-			incomingOrder.state= reStockingState.fufilledOrder;
-		}
-		
+		incomingOrder.state = reStockingState.fufillingOrder;
+		print("the market is shipping the food to the cook");
+		incomingOrder.cook.msgShippingFood(groceryList);
 	}
 	
 
