@@ -91,10 +91,28 @@ public class CookAgent extends Agent {
 	}
 	
 	
-	public void msgShippingFood(HashMap<String, Integer> incomingOrder)
+	public void msgFufilledCompleteOrder(HashMap<String, Integer> incomingOrder)
 	{
-		print("cook is getting the message that the market fufilled his order.");
-		boolean incompleteShipping=false;
+		print("cook is getting the message that the market fufilled the order.");
+		for (Map.Entry<String, Food>  cookFood: foods.entrySet())
+		{
+			for (Map.Entry<String, Integer> marketFood: incomingOrder.entrySet())
+			{
+				if (cookFood.getKey().equals(marketFood.getKey()))
+				{
+					cookFood.getValue().currentAmount+=marketFood.getValue();
+				}
+			}
+		}
+		print("cook has completely resupplied his stock of food");
+		stateChanged();
+		//stateChanged(); //!!KSAJDKSJDH
+	}
+	
+	public void msgFufilledPartialOrder(MarketAgent market, HashMap<String, Integer> incomingOrder)
+	{
+		boolean incomplete=false;
+		print("cook is getting the message that the market could NOT fully fufill the order.");
 		for (Map.Entry<String, Food>  cookFood: foods.entrySet())
 		{
 			for (Map.Entry<String, Integer> marketFood: incomingOrder.entrySet())
@@ -104,21 +122,14 @@ public class CookAgent extends Agent {
 					cookFood.getValue().currentAmount+=marketFood.getValue();
 					if (cookFood.getValue().currentAmount<cookFood.getValue().capacity)
 					{
-						incompleteShipping=true;
+						incomplete=true;
 					}
 				}
 			}
 		}
-		if (incompleteShipping)
-		{
-			print("not all the requested materials were shipped by the market");
-			OrderFoodThatIsLow();
-		}
-		else
-		{
-			print("cook has completely resupplied his stock of food");
-			stateChanged();
-		}
+		
+		print("cook grabbed everything he could but his stock is not completely full");
+		stateChanged();
 		//stateChanged(); //!!KSAJDKSJDH
 	}
 	

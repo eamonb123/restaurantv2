@@ -27,6 +27,8 @@ public class RestaurantPanel extends JPanel {
     private boolean paused;
     private Vector<CustomerAgent> customers = new Vector<CustomerAgent>();
     private Vector<WaiterAgent> waiters = new Vector<WaiterAgent>();
+    private Vector<MarketAgent> markets = new Vector<MarketAgent>();
+
 
     private JPanel restLabel = new JPanel();
     private ListPanel customerPanel = new ListPanel(this, "Customers");
@@ -38,22 +40,22 @@ public class RestaurantPanel extends JPanel {
 
     public RestaurantPanel(RestaurantGui gui) {
         this.gui = gui;
-//        waiter.setGui(waiterGui);
-//        gui.animationPanel.addGui(waiterGui);
-//        pause.addActionListener(gui);
-//        restart.addActionListener(gui);
-//        add(pause);
-//        add(restart);
 
-//        host.setWaiter(waiter);
-//        waiter.setCook(cook);
-//        waiter.setHost(host);
-        cook.setMarket(market);
+        markets.add(new MarketAgent());
+        markets.add(new MarketAgent());
+        markets.add(new MarketAgent());
+        
+        for(MarketAgent market: markets)
+        {
+        	cook.setMarket(market);
+        	market.setCook(cook);
+        	market.startThread();
+        }
+        //cook.setMarket(market);
         market.setCook(cook);
         host.startThread();
         cook.startThread();
         market.startThread();
-//        waiter.startThread();
         
         
         
