@@ -16,7 +16,9 @@ import java.util.concurrent.TimeUnit;
 
 public class CookAgent extends Agent {
 	//WaiterAgent waiter;
-	MarketAgent market;
+	public List<MarketAgent> markets = new ArrayList<MarketAgent>();
+
+	//MarketAgent market;
 	List<String> menuOptions = new ArrayList<String>();{
 	    menuOptions.add("chicken");
 	    menuOptions.add("beef");
@@ -57,6 +59,7 @@ public class CookAgent extends Agent {
 		}
 	}
 	public List<Order> orders = new ArrayList<Order>();
+	boolean incomplete=false;
 	public enum OrderState
 	{nothing};
 	public enum state
@@ -111,7 +114,6 @@ public class CookAgent extends Agent {
 	
 	public void msgFufilledPartialOrder(MarketAgent market, HashMap<String, Integer> incomingOrder)
 	{
-		boolean incomplete=false;
 		print("cook is getting the message that the market could NOT fully fufill the order.");
 		for (Map.Entry<String, Food>  cookFood: foods.entrySet())
 		{
@@ -127,8 +129,12 @@ public class CookAgent extends Agent {
 				}
 			}
 		}
-		
-		print("cook grabbed everything he could but his stock is not completely full");
+		if (incomplete)
+		{
+			print("cook grabbed everything he could but his stock is not completely full");
+			markets.remove(0);
+			OrderFoodThatIsLow();
+		}
 		stateChanged();
 		//stateChanged(); //!!KSAJDKSJDH
 	}
@@ -200,8 +206,13 @@ public class CookAgent extends Agent {
 		    }
 		}
 		System.out.println(groceryList);
+		if (markets.isEmpty())
+		{
+			print("no markets to order from. stop the cook");
+			return;
+		}
 		print("the cook sends a message to the market with the grocery list");
-		market.msgOrderRestock(this, groceryList);
+		markets.get(0).msgOrderRestock(this, groceryList);
 	}
 	
 	
@@ -240,7 +251,7 @@ public class CookAgent extends Agent {
 	
 	public void setMarket(MarketAgent market)
 	{
-		this.market=market;
+		markets.add(market);
 	}
 	
 }
