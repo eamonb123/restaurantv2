@@ -42,7 +42,7 @@ public class CookAgent extends Agent {
 	{
 		String type;
 		int cookingTime;
-		int amount;
+		int currentAmount;
 		int lowThreshold;
 		int capacity;
 		OrderState orderState;
@@ -50,7 +50,7 @@ public class CookAgent extends Agent {
 		{
 			this.type=type;
 			this.cookingTime=cookingTime;
-			this.amount=amount;
+			this.currentAmount=amount;
 			this.lowThreshold=lowThreshold;
 			this.capacity=capacity;
 			this.orderState= orderstate;
@@ -90,29 +90,28 @@ public class CookAgent extends Agent {
 		stateChanged();
 	}
 	
-	public void msgFufilledPartialOrder(HashMap<String, Integer> groceryList)
-	{
-		stateChanged();
-	}
 	
-	public void msgFufilledCompleteOrder(HashMap<String, Integer> groceryList)
+	public void msgShippingFood(HashMap<String, Integer> incomingOrder)
 	{
 		print("cook is getting the message that the market fufilled his order.");
-//		System.out.println(groceryList);
-		for (Map.Entry<String, Food>  food: foods.entrySet())
+		for (Map.Entry<String, Food>  cookFood: foods.entrySet())
 		{
-			for (Map.Entry<String, Integer> list: groceryList.entrySet())
+			for (Map.Entry<String, Integer> marketFood: incomingOrder.entrySet())
 			{
-				if (food.getKey().equals(list.getKey()))
+				if (cookFood.getKey().equals(marketFood.getKey()))
 				{
-//					System.out.println(list.getValue());
-					food.getValue().amount=list.getValue();
+					cookFood.getValue().currentAmount+=marketFood.getValue();
+					if (cookFood.getValue().currentAmount<cookFood.getValue().capacity)
+					{
+						
+					}
 				}
 			}
 		}
 		print("cook has completely resupplied his stock of food");
 		stateChanged();
 	}
+	
 
 	
 	/**
@@ -146,20 +145,20 @@ public class CookAgent extends Agent {
 	{
 		Food f = foods.get(order.choice);
 		System.out.println("wazzup");
-		if (f.amount <= f.lowThreshold)
+		if (f.currentAmount <= f.lowThreshold)
 		{
 			print("food is low. the cook is ordering food from the market to restock inventory");
 			OrderFoodThatIsLow();
 			return;
 		}
-		if (f.amount==0)
+		if (f.currentAmount==0)
 		{
 			print("the cook tells the waiter that they are out of " + order.choice);
 			order.waiter.msgOutOfFood(order.choice, order.tableNumber);
 			orders.remove(order);
 			return;
 		}
-		f.amount--;
+		f.currentAmount--;
 		//DoCooking(order);
 		print("the cook begins cooking the " + order.choice);
 		order.s = state.cooking; //put this inside timer class when u implement it
@@ -173,18 +172,14 @@ public class CookAgent extends Agent {
 	{
 		System.out.println("HEY");
 	    HashMap<String, Integer> groceryList = new HashMap<String, Integer>();
-		for (Map.Entry<String, Food> entry : foods.entrySet()) 
+		for (Map.Entry<String, Food> food : foods.entrySet()) 
 		{
-			int foodCurrentAmount = entry.getValue().amount;
-			int foodLowThreshold = entry.getValue().lowThreshold;
-		    if (foodCurrentAmount < foodLowThreshold)
+		    if (food.getValue().currentAmount < food.getValue().lowThreshold)
 		    {
-		    	String foodName = entry.getValue().type;
-		    	int foodOrderSize = entry.getValue().capacity;
-		    	groceryList.put(foodName, foodOrderSize);
+		    	groceryList.put(food.getKey(), food.getValue().capacity-food.getValue().currentAmount);
 		    }
 		}
-		System.out.println(groceryList);
+		//System.out.println(groceryList);
 		print("the cook sends a message to the market and sends the grocery list over");
 		market.msgOrderRestock(this, groceryList);
 	}

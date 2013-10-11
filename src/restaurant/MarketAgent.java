@@ -23,12 +23,12 @@ public class MarketAgent extends Agent {
 	public class IncomingOrder
 	{
 		CookAgent cook;
-	    HashMap<String, Integer> groceryList = new HashMap<String, Integer>();
+	    HashMap<String, Integer> incomingList = new HashMap<String, Integer>();
 	    reStockingState state;
-		IncomingOrder(CookAgent cook,  HashMap<String, Integer> groceryList, reStockingState state)
+		IncomingOrder(CookAgent cook,  HashMap<String, Integer> incomingList, reStockingState state)
 		{
 			this.cook=cook;
-			this.groceryList=groceryList;
+			this.incomingList=incomingList;
 			this.state=state;	
 		}
 	}
@@ -84,30 +84,39 @@ public class MarketAgent extends Agent {
 
 	private void TryToShipOrder(IncomingOrder incomingOrder, HashMap<String, Integer> inventoryList)
 	{
+		boolean partialOrder = false;
 		print("trying to ship order");
-		HashMap<String, Integer> groceryList = incomingOrder.groceryList;
 //		System.out.println(groceryList);
-		for (Map.Entry<String, Integer> grocery : groceryList.entrySet())
+		HashMap<String, Integer> groceryList = incomingOrder.incomingList;
+		for (Map.Entry<String, Integer> groceryItem : incomingOrder.incomingList.entrySet())
 		{
-			for (Map.Entry<String, Integer> inventory : inventoryList.entrySet())
+			for (Map.Entry<String, Integer> marketItem : inventoryList.entrySet())
 			{
-				if (grocery.getKey().equals(inventory.getKey())) //if the grocerylist item equals the inventory item
+				if (groceryItem.getKey().equals(marketItem.getKey())) //if the two comparing items are the same
 				{	
-					if (inventory.getValue()>grocery.getValue())//if the inventory has enough supplies for the order
+					if (marketItem.getValue()>groceryItem.getValue())//if the inventory has enough supplies for the order
 					{
-						grocery.setValue(grocery.getValue());
-						inventory.setValue(inventory.getValue()-grocery.getValue());
+						marketItem.setValue(marketItem.getValue()-groceryItem.getValue());
 					}
 					else //inventory does not have enough supplies
 					{
-						grocery.setValue(grocery.getValue()-inventory.getValue());
-						incomingOrder.cook.msgFufilledPartialOrder(groceryList);
+						partialOrder=true;
+						groceryItem.setValue(marketItem.getValue());
 					}
 				}	
 			}
 		}
-		incomingOrder.state= reStockingState.fufilledOrder;
-		incomingOrder.cook.msgFufilledCompleteOrder(groceryList);
+		if(partialOrder)
+		{
+			incomingOrder.cook.msgFufilledPartialOrder(groceryList);
+			incomingOrder.state= reStockingState.failedToFufillOrder;
+		}
+		else
+		{
+			incomingOrder.cook.msgFufilledCompleteOrder(groceryList);
+			incomingOrder.state= reStockingState.fufilledOrder;
+		}
+		
 	}
 	
 
