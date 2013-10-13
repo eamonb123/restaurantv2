@@ -43,7 +43,7 @@ public class CustomerAgent extends Agent {
 	private AgentState state = AgentState.DoingNothing;//The start state
 
 	public enum AgentEvent // you're doing the event, so you are "state". ex. you got hungry, so you arrive at the restaurant. you walked in the restaurant, so you are waiting to be seated
-	{none, gotHungry, followHost, readyToOrder, readyToReorder, eating, doneEating};
+	{none, gotHungry, followHost, readyToOrder, readyToReorder, noMenuOptions, eating, doneEating};
 	AgentEvent event = AgentEvent.none;
 	
 
@@ -110,6 +110,23 @@ public class CustomerAgent extends Agent {
 		stateChanged();
 	}
 	
+	
+	public void msgReOrder(List<String> menu)
+	{
+		print("customer is reordering");
+		if (menu.isEmpty())
+		{
+			event = AgentEvent.noMenuOptions;
+		}
+		else
+		{
+			choice = CustomerChoice(menu);
+			event = AgentEvent.readyToReorder;
+		}
+		stateChanged();
+	}
+	
+	
 	private String CustomerChoice(List<String> menu)
 	{
 		Random random = new Random();
@@ -117,20 +134,12 @@ public class CustomerAgent extends Agent {
 		return menu.get(index);
 	}
 	
-	public void msgReOrder(List<String> menu)
-	{
-		print("customer is reordering");
-		choice = reOrderChoice(menu);
-		event = AgentEvent.readyToReorder;
-		stateChanged();
-	}
-	
-	private String reOrderChoice(List<String> menu)
-	{
-		Random random = new Random();
-		int index = random.nextInt(menu.size());
-		return menu.get(index);
-	}
+//	private String reOrderChoice(List<String> menu)
+//	{
+//		Random random = new Random();
+//		int index = random.nextInt(menu.size());
+//		return menu.get(index);
+//	}
 	
 	public void msgHereIsYourFood(String food)
 	{
@@ -139,7 +148,9 @@ public class CustomerAgent extends Agent {
 			event = AgentEvent.eating;
 		}
 		else 
+		{
 			print("you got my order wrong!");
+		}
 		stateChanged();
 	}
 	
@@ -188,6 +199,12 @@ public class CustomerAgent extends Agent {
 			{
 				state = AgentState.finishing;
 				ConsumeFood();
+				return true;
+			}
+			if (event == AgentEvent.noMenuOptions)
+			{
+				state = AgentState.leaving;
+				LeaveTable();
 				return true;
 			}
 		}
@@ -260,6 +277,7 @@ public class CustomerAgent extends Agent {
 	{
 		print("customer " + name + " notifies the waiter that he is done eating the " + choice);
 		customerGui.acceptedOrder=false;
+		customerGui.waitingForOrder=false;
 		waiter.msgDoneEating(this);
 		print("customer " + name + " is now leaving the restaurant");
 		customerGui.DoExitRestaurant();

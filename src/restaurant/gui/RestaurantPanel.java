@@ -43,6 +43,7 @@ public class RestaurantPanel extends JPanel {
 
         markets.add(new MarketAgent());
         markets.add(new MarketAgent());
+        markets.add(new MarketAgent());
         
         for(MarketAgent market: markets)
         {

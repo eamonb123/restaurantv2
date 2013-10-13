@@ -34,16 +34,21 @@ public class WaiterAgent extends Agent {
 			return false;
 	}
 	//List<String> menu = new ArrayList<String>();
-	List<String> menuOptions = new ArrayList<String>();{
-	    menuOptions.add("chicken");
-	    menuOptions.add("beef");
-	    menuOptions.add("lamb");
-	}
+//	List<String> menuOptions = new ArrayList<String>();{
+//	    menuOptions.add("chicken");
+//	    menuOptions.add("beef");
+//	    menuOptions.add("lamb");
+//	}
 	public class Customer
 	{
 		CustomerAgent cust;
 		int tableNumber;
 		String choice;
+		List<String> menuOptions = new ArrayList<String>();{
+		    menuOptions.add("chicken");
+		    menuOptions.add("beef");
+		    menuOptions.add("lamb");
+		}
 		Point location = new Point();
 		CustomerState customerState = CustomerState.nothing;
 		Customer(CustomerAgent cust, int tableNumber, CustomerState state, Point location) {
@@ -118,8 +123,7 @@ public class WaiterAgent extends Agent {
 			if (c.choice.equals(choice) && c.tableNumber==tableNumber)
 			{
 				print("the waiter receives a message from the cook saying they are out of " + choice);
-				//menu = menuOptions;
-				menuOptions.remove(choice);
+				c.menuOptions.remove(choice);
 				c.customerState=CustomerState.reOrder;
 			}
 		}
@@ -232,7 +236,7 @@ public class WaiterAgent extends Agent {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		c.cust.msgFollowMeToTable(this, menuOptions, c.tableNumber, c.location);
+		c.cust.msgFollowMeToTable(this, c.menuOptions, c.tableNumber, c.location);
 		waiterGui.DoSeatCustomer(c.location);
 		try {
 //			print("acquiring");
@@ -254,7 +258,7 @@ public class WaiterAgent extends Agent {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		c.cust.msgWhatWouldYouLike(menuOptions);
+		c.cust.msgWhatWouldYouLike(c.menuOptions);
 		//c.state = CustomerState.ordered;
 	}
 	
@@ -268,7 +272,12 @@ public class WaiterAgent extends Agent {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		c.cust.msgReOrder(menuOptions);
+		if (c.menuOptions.isEmpty())
+		{
+			waiterGui.reOrdering=false;
+			waiterGui.deliveringFood=false;
+		}
+		c.cust.msgReOrder(c.menuOptions);
 	}
 	
 	private void GiveCook(Customer c)

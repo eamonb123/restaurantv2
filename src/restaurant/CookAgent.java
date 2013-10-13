@@ -15,10 +15,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class CookAgent extends Agent {
-	//WaiterAgent waiter;
 	public List<MarketAgent> markets = new ArrayList<MarketAgent>();
-
-	//MarketAgent market;
 	List<String> menuOptions = new ArrayList<String>();{
 	    menuOptions.add("chicken");
 	    menuOptions.add("beef");
@@ -79,7 +76,7 @@ public class CookAgent extends Agent {
     {
     	for (String choice : menuOptions)
 		{
-			foods.put(choice, new Food(choice, cookingTimes.get(choice), 2, 3, 10, OrderState.nothing));
+			foods.put(choice, new Food(choice, cookingTimes.get(choice), 0, 3, 10, OrderState.nothing));
 		}
     }
 
