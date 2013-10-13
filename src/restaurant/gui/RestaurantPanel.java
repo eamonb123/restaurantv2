@@ -60,45 +60,60 @@ public class RestaurantPanel extends JPanel {
 
         group.add(customerPanel);
         group.add(waiterPanel);
-
+        
+        pause.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e)
+            {
+	        	if (e.getSource() == pause) 
+	        	{
+	        		if (!paused)
+	        		{
+	        			paused=true;
+	        			for(CustomerAgent customer: customers)
+	        			{
+	    	    	        customer.pause();
+	        			}
+	    		        for (WaiterAgent waiter: waiters)
+	    		        {
+	    	    	        waiter.pause();
+	    	    	    }
+	    		        for (MarketAgent market: markets)
+	    		        {
+	    	    	        market.pause();
+	    	    	    }
+	    		        host.pause();
+	    		        cook.pause();
+	        		}
+	        		else
+	        		{
+	        			paused=false;
+	        			for(CustomerAgent customer: customers)
+	        			{
+	        				customer.restart();
+	        			}
+	    		        for (WaiterAgent waiter: waiters)
+	    	    	    {
+	    		        	waiter.restart();
+	    	    	    }
+	    		        for (MarketAgent market: markets)
+	    		        {
+	    	    	        market.restart();
+	    	    	    }
+	    		        host.restart();
+	    		        cook.restart();
+	        		}
+	        	}
+            }
+        }); 
+        
         initRestLabel();
-        add(restLabel);
+        //RESTLABEL IS THE MENU
+        //add(restLabel);
         add(group);
+        add(pause);
     }
 
-    public void actionPerformed(ActionEvent e) {
-    	if (e.getSource() == pause) 
-    	{
-    		if (!paused)
-    		{
-    			paused=true;
-    			for(CustomerAgent customer: customers)
-    			{
-	    	        customer.pause();
-    			}
-		        for (WaiterAgent waiter: waiters)
-		        {
-	    	        waiter.pause();
-	    	    }
-		        host.pause();
-		        cook.pause();
-    		}
-    		else
-    		{
-    			paused=false;
-    			for(CustomerAgent customer: customers)
-    			{
-    				customer.restart();
-    			}
-		        for (WaiterAgent waiter: waiters)
-	    	    {
-		        	waiter.restart();
-	    	    }
-		        host.restart();
-		        cook.restart();
-    		}
-    	}
-    }
+    
     
 
     
