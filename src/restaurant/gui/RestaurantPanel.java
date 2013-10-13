@@ -43,7 +43,6 @@ public class RestaurantPanel extends JPanel {
 
         markets.add(new MarketAgent());
         markets.add(new MarketAgent());
-        markets.add(new MarketAgent());
         
         for(MarketAgent market: markets)
         {
@@ -51,13 +50,8 @@ public class RestaurantPanel extends JPanel {
         	market.setCook(cook);
         	market.startThread();
         }
-        //cook.setMarket(market);
-        market.setCook(cook);
         host.startThread();
         cook.startThread();
-        market.startThread();
-        
-        
         
         
         setLayout(new GridLayout(1, 2, 20, 20));

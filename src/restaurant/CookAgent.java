@@ -79,7 +79,7 @@ public class CookAgent extends Agent {
     {
     	for (String choice : menuOptions)
 		{
-			foods.put(choice, new Food(choice, cookingTimes.get(choice), 0, 2, 10, OrderState.nothing));
+			foods.put(choice, new Food(choice, cookingTimes.get(choice), 2, 3, 10, OrderState.nothing));
 		}
     }
 
@@ -99,13 +99,13 @@ public class CookAgent extends Agent {
 	public void msgFufilledCompleteOrder(HashMap<String, Integer> incomingOrder)
 	{
 		print("cook is getting the message that the market fufilled the order.");
-		for (Map.Entry<String, Food>  cookFood: foods.entrySet())
+		for (Map.Entry<String, Food>  currentFood: foods.entrySet())
 		{
-			for (Map.Entry<String, Integer> marketFood: incomingOrder.entrySet())
+			for (Map.Entry<String, Integer> incomingFood: incomingOrder.entrySet())
 			{
-				if (cookFood.getKey().equals(marketFood.getKey()))
+				if (currentFood.getKey().equals(incomingFood.getKey()))
 				{
-					cookFood.getValue().currentAmount+=marketFood.getValue();
+					currentFood.getValue().currentAmount+=incomingFood.getValue();
 				}
 			}
 		}
@@ -119,29 +119,32 @@ public class CookAgent extends Agent {
 	public void msgFufilledPartialOrder(HashMap<String, Integer> incomingOrder)
 	{
 		print("cook is getting the message that the market could NOT fully fufill the order.");
-	    HashMap<String, Integer> newList = new HashMap<String, Integer>();
-		for (Map.Entry<String, Food>  cookFood: foods.entrySet())
+	    HashMap<String, Integer> newOutgoingList = new HashMap<String, Integer>();
+		for (Map.Entry<String, Food>  currentFood: foods.entrySet())
 		{
-			for (Map.Entry<String, Integer> marketFood: incomingOrder.entrySet())
+			for (Map.Entry<String, Integer> incomingFood: incomingOrder.entrySet())
 			{
-				if (cookFood.getKey().equals(marketFood.getKey()))
+				if (currentFood.getKey().equals(incomingFood.getKey()))
 				{
-					cookFood.getValue().currentAmount+=marketFood.getValue();
-					if (cookFood.getValue().currentAmount<cookFood.getValue().capacity)
+					currentFood.getValue().currentAmount+=incomingFood.getValue();
+					if (currentFood.getValue().currentAmount<currentFood.getValue().capacity)
 					{
-						newList.put(cookFood.getKey(), cookFood.getValue().currentAmount);
+						newOutgoingList.put(currentFood.getKey(), currentFood.getValue().capacity-currentFood.getValue().currentAmount);
 					}
 				}
 			}
 		}
-		if (marketIndex==markets.size())
+		print("new outgoing list: ");
+		System.out.println(newOutgoingList);
+		if (marketIndex==markets.size()-1)
 		{
 			print("no more markets left. The cook grabbed all the items he could but still has some he needs");
+			ordering=false;
 		}
 		else
 		{
 			marketIndex++;
-			SendOrder(newList);
+			SendOrder(newOutgoingList);
 		}
 		stateChanged();
 		//stateChanged(); //!!KSAJDKSJDH
@@ -170,10 +173,6 @@ public class CookAgent extends Agent {
 				return true;
 			}
 		}
-//		if (reOrdering)
-//		{
-//			
-//		}
 		return false;
 	}
 
@@ -183,13 +182,6 @@ public class CookAgent extends Agent {
 	private void TryToCookFood(Order order) //can cook multiple things at a time with no decrease in speed
 	{
 		Food f = foods.get(order.choice);
-		if (f.currentAmount <= f.lowThreshold)
-		{
-			print("food is low. the cook is ordering food from the market to restock inventory");
-			OrderFoodThatIsLow();
-			order.s = state.orderingFood;
-			return;
-		}
 		if (f.currentAmount==0)
 		{
 			print("the cook tells the waiter that they are out of " + order.choice);
@@ -198,6 +190,12 @@ public class CookAgent extends Agent {
 			return;
 		}
 		f.currentAmount--;
+		if (f.currentAmount <= f.lowThreshold)
+		{
+			print("food is low. the cook is ordering food from the market to restock inventory");
+			OrderFoodThatIsLow();
+			order.s = state.orderingFood;
+		}
 		//DoCooking(order);
 		print("the cook begins cooking the " + order.choice);
 		order.s = state.cooking; //put this inside timer class when u implement it
@@ -212,7 +210,7 @@ public class CookAgent extends Agent {
 		HashMap<String, Integer> groceryList = new HashMap<String, Integer>();
 		if (markets.isEmpty())
 		{
-			print("no markets to order from. stop the cook");
+			print("no markets to order from to begin with. stop the cook");
 			return;
 		}
 		for (Map.Entry<String, Food> food : foods.entrySet()) 
@@ -222,7 +220,7 @@ public class CookAgent extends Agent {
 		    	groceryList.put(food.getKey(), food.getValue().capacity-food.getValue().currentAmount);
 		    }
 		}
-		print("outgoing grocery list: " + groceryList);
+		print("the cook needs this many items from the market: " + groceryList);
 		SendOrder(groceryList);
 	}
 	
@@ -230,7 +228,7 @@ public class CookAgent extends Agent {
 	{
 		if (groceryList.isEmpty())
 		{
-			print("GROCERY LIST IS EMPTY");
+			print("GROCERY LIST IS EMPTY. something went wrong");
 			return;
 		}
 		print("the cook sends a message to the market with the grocery list");

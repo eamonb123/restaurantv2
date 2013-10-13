@@ -86,22 +86,26 @@ public class MarketAgent extends Agent {
 		print("the market is now trying to ship the order");
 		HashMap<String, Integer> groceryList = incomingOrder.incomingList;
 		HashMap<String, Integer> outgoingList = groceryList;
-		for (Map.Entry<String, Integer> groceryItem : incomingOrder.incomingList.entrySet())
+		for (Map.Entry<String, Integer> groceryItem : groceryList.entrySet())
 		{
 			for (Map.Entry<String, Integer> marketItem : inventoryList.entrySet())
 			{
 				if (groceryItem.getKey().equals(marketItem.getKey())) //if the two comparing items are the same
 				{	
-					if (marketItem.getValue()>groceryItem.getValue())//if the inventory has enough supplies for the order
+					if (marketItem.getValue()>=groceryItem.getValue())//if the inventory has enough supplies for the order
 					{
 						marketItem.setValue(marketItem.getValue()-groceryItem.getValue());
 						outgoingList.put(groceryItem.getKey(), groceryItem.getValue());
 					}
-					else if (marketItem.getValue()!=0) //inventory has some supplies but not enough
+					else if (marketItem.getValue()>0) //inventory has some supplies but not enough
 					{
 						partialOrder=true;
-						outgoingList.put(groceryItem.getKey(), marketItem.getValue());
+						outgoingList.put(groceryItem.getKey(), marketItem.getValue()); //take all the market's supplies
 						marketItem.setValue(0);
+					}
+					else if (marketItem.getValue()==0)
+					{
+						outgoingList.put(groceryItem.getKey(), 0);
 					}
 				}	
 			}
