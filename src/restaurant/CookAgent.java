@@ -60,6 +60,7 @@ public class CookAgent extends Agent {
 	}
 	public List<Order> orders = new ArrayList<Order>();
 	boolean incomplete=false;
+	boolean ordering=false;
 	public enum OrderState
 	{nothing};
 	public enum state
@@ -108,6 +109,7 @@ public class CookAgent extends Agent {
 			}
 		}
 		print("cook has completely resupplied his stock of food");
+		ordering=false;
 		stateChanged();
 		//stateChanged(); //!!KSAJDKSJDH
 	}
@@ -115,6 +117,7 @@ public class CookAgent extends Agent {
 	public void msgFufilledPartialOrder(MarketAgent market, HashMap<String, Integer> incomingOrder)
 	{
 		print("cook is getting the message that the market could NOT fully fufill the order.");
+	    HashMap<String, Integer> newList = new HashMap<String, Integer>();
 		for (Map.Entry<String, Food>  cookFood: foods.entrySet())
 		{
 			for (Map.Entry<String, Integer> marketFood: incomingOrder.entrySet())
@@ -124,17 +127,12 @@ public class CookAgent extends Agent {
 					cookFood.getValue().currentAmount+=marketFood.getValue();
 					if (cookFood.getValue().currentAmount<cookFood.getValue().capacity)
 					{
-						incomplete=true;
+						newList.put(cookFood.getKey(), cookFood.getValue().currentAmount);
 					}
 				}
 			}
 		}
-		if (incomplete)
-		{
-			print("cook grabbed everything he could but his stock is not completely full");
-			markets.remove(0);
-			OrderFoodThatIsLow();
-		}
+		SendOrder(newList);
 		stateChanged();
 		//stateChanged(); //!!KSAJDKSJDH
 	}
@@ -162,6 +160,10 @@ public class CookAgent extends Agent {
 				return true;
 			}
 		}
+//		if (reOrdering)
+//		{
+//			
+//		}
 		return false;
 	}
 
@@ -194,21 +196,31 @@ public class CookAgent extends Agent {
 		order.s = state.done;
 	}
 
-	
 	private void OrderFoodThatIsLow()
 	{
-	    HashMap<String, Integer> groceryList = new HashMap<String, Integer>();
+		ordering=true;
+		HashMap<String, Integer> groceryList = new HashMap<String, Integer>();
+		if (markets.isEmpty())
+		{
+			print("no markets to order from. stop the cook");
+			return;
+		}
 		for (Map.Entry<String, Food> food : foods.entrySet()) 
 		{
-		    if (food.getValue().currentAmount < food.getValue().capacity)
+		    if (food.getValue().currentAmount < food.getValue().lowThreshold)
 		    {
 		    	groceryList.put(food.getKey(), food.getValue().capacity-food.getValue().currentAmount);
 		    }
 		}
 		System.out.println(groceryList);
-		if (markets.isEmpty())
+		SendOrder(groceryList);
+	}
+	
+	private void SendOrder(HashMap<String, Integer> groceryList)
+	{
+		if (groceryList.isEmpty())
 		{
-			print("no markets to order from. stop the cook");
+			print("GROCERY LIST IS EMPTY");
 			return;
 		}
 		print("the cook sends a message to the market with the grocery list");

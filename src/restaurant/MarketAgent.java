@@ -98,11 +98,16 @@ public class MarketAgent extends Agent {
 					{
 						marketItem.setValue(marketItem.getValue()-groceryItem.getValue());
 					}
-					else //inventory does not have enough supplies
+					else if ((marketItem.getValue()!=0)) //inventory does not have enough supplies
 					{
+						//if (marketItem.getValue()!=0)
 						partialOrder=true;
 						groceryItem.setValue(marketItem.getValue());
 						marketItem.setValue(0);
+					}
+					else if ((marketItem.getValue()==0)) //inventory does not have enough supplies
+					{
+						print("GO TO NEXT MARKET");
 					}
 				}	
 			}
