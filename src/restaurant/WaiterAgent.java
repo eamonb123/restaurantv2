@@ -33,12 +33,7 @@ public class WaiterAgent extends Agent {
 		else 
 			return false;
 	}
-	//List<String> menu = new ArrayList<String>();
-//	List<String> menuOptions = new ArrayList<String>();{
-//	    menuOptions.add("chicken");
-//	    menuOptions.add("beef");
-//	    menuOptions.add("lamb");
-//	}
+
 	public class Customer
 	{
 		CustomerAgent cust;
