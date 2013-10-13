@@ -34,6 +34,7 @@ public class RestaurantPanel extends JPanel {
     private ListPanel customerPanel = new ListPanel(this, "Customers");
     private ListPanel waiterPanel = new ListPanel(this, "Waiters");
     private JPanel group = new JPanel();
+    private JPanel biggerGroup = new JPanel();
     private JButton pause = new JButton("pause");
     private JButton restart = new JButton("restart");
     private RestaurantGui gui; //reference to main gui
@@ -57,9 +58,14 @@ public class RestaurantPanel extends JPanel {
         
         setLayout(new GridLayout(1, 2, 20, 20));
         group.setLayout(new GridLayout(1, 2, 10, 10));
-
+        biggerGroup.setLayout(new BoxLayout(biggerGroup, BoxLayout.LINE_AXIS));
+        
         group.add(customerPanel);
         group.add(waiterPanel);
+        biggerGroup.add(group);
+        biggerGroup.add(pause);
+        biggerGroup.add(restLabel);
+        add(biggerGroup);
         
         pause.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e)
@@ -109,8 +115,7 @@ public class RestaurantPanel extends JPanel {
         initRestLabel();
         //RESTLABEL IS THE MENU
         //add(restLabel);
-        add(group);
-        add(pause);
+       // add(pause);
     }
 
     

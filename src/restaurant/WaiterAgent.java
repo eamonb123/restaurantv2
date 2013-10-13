@@ -73,6 +73,10 @@ public class WaiterAgent extends Agent {
 		stateChanged();
 	}
 	
+	public void msgTryToGoOnBreak()
+	{
+		
+	}
 	
 	public void msgPleaseSeatCustomer(CustomerAgent cust, int tableNumber, Point loc)
 	{
@@ -211,7 +215,6 @@ public class WaiterAgent extends Agent {
 				return true;
 			}
 		}
-		//waiterGui.goToHome();
 		return false;
 	}
 	
