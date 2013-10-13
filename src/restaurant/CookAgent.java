@@ -25,6 +25,7 @@ public class CookAgent extends Agent {
 	    menuOptions.add("lamb");
 	}
 	private String name; 
+	private int marketIndex=0;
 	public WaiterGui hostGui = null;
 	public class Order
 	{
@@ -110,11 +111,12 @@ public class CookAgent extends Agent {
 		}
 		print("cook has completely resupplied his stock of food");
 		ordering=false;
+		marketIndex=0;
 		stateChanged();
 		//stateChanged(); //!!KSAJDKSJDH
 	}
 	
-	public void msgFufilledPartialOrder(MarketAgent market, HashMap<String, Integer> incomingOrder)
+	public void msgFufilledPartialOrder(HashMap<String, Integer> incomingOrder)
 	{
 		print("cook is getting the message that the market could NOT fully fufill the order.");
 	    HashMap<String, Integer> newList = new HashMap<String, Integer>();
@@ -132,7 +134,15 @@ public class CookAgent extends Agent {
 				}
 			}
 		}
-		SendOrder(newList);
+		if (marketIndex==markets.size())
+		{
+			print("no more markets left. The cook grabbed all the items he could but still has some he needs");
+		}
+		else
+		{
+			marketIndex++;
+			SendOrder(newList);
+		}
 		stateChanged();
 		//stateChanged(); //!!KSAJDKSJDH
 	}
@@ -212,7 +222,7 @@ public class CookAgent extends Agent {
 		    	groceryList.put(food.getKey(), food.getValue().capacity-food.getValue().currentAmount);
 		    }
 		}
-		System.out.println(groceryList);
+		print("outgoing grocery list: " + groceryList);
 		SendOrder(groceryList);
 	}
 	
@@ -224,7 +234,7 @@ public class CookAgent extends Agent {
 			return;
 		}
 		print("the cook sends a message to the market with the grocery list");
-		markets.get(0).msgOrderRestock(this, groceryList);
+		markets.get(marketIndex).msgOrderRestock(this, groceryList);
 	}
 	
 	

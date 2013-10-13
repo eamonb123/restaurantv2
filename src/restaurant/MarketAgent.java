@@ -32,8 +32,6 @@ public class MarketAgent extends Agent {
 			this.state=state;	
 		}
 	}
-//	public enum OrderState
-//	{nothing};
 	public enum reStockingState
 	{none, restocking, fufillingOrder, failedToFufillOrder};
 	public List<IncomingOrder> orders = new ArrayList<IncomingOrder>();
@@ -85,9 +83,9 @@ public class MarketAgent extends Agent {
 	private void TryToShipOrder(IncomingOrder incomingOrder, HashMap<String, Integer> inventoryList)
 	{
 		boolean partialOrder = false;
-		print("the market is now trying to ship order");
-//		System.out.println(groceryList);
+		print("the market is now trying to ship the order");
 		HashMap<String, Integer> groceryList = incomingOrder.incomingList;
+		HashMap<String, Integer> outgoingList = groceryList;
 		for (Map.Entry<String, Integer> groceryItem : incomingOrder.incomingList.entrySet())
 		{
 			for (Map.Entry<String, Integer> marketItem : inventoryList.entrySet())
@@ -97,37 +95,28 @@ public class MarketAgent extends Agent {
 					if (marketItem.getValue()>groceryItem.getValue())//if the inventory has enough supplies for the order
 					{
 						marketItem.setValue(marketItem.getValue()-groceryItem.getValue());
+						outgoingList.put(groceryItem.getKey(), groceryItem.getValue());
 					}
-					else if ((marketItem.getValue()!=0)) //inventory does not have enough supplies
+					else if (marketItem.getValue()!=0) //inventory has some supplies but not enough
 					{
-						//if (marketItem.getValue()!=0)
 						partialOrder=true;
-						groceryItem.setValue(marketItem.getValue());
+						outgoingList.put(groceryItem.getKey(), marketItem.getValue());
 						marketItem.setValue(0);
-					}
-					else if ((marketItem.getValue()==0)) //inventory does not have enough supplies
-					{
-						print("GO TO NEXT MARKET");
 					}
 				}	
 			}
 		}
-		
 		print("the market is shipping the food to the cook");
 		if(partialOrder)
 		{
 			incomingOrder.state= reStockingState.failedToFufillOrder;
-			incomingOrder.cook.msgFufilledPartialOrder(this, groceryList);
-
+			incomingOrder.cook.msgFufilledPartialOrder(outgoingList);
 		}
 		else
 		{
 			incomingOrder.state= reStockingState.fufillingOrder;
-			incomingOrder.cook.msgFufilledCompleteOrder(groceryList);			
+			incomingOrder.cook.msgFufilledCompleteOrder(outgoingList);			
 		}
-		
-
-
 	}
 	
 
