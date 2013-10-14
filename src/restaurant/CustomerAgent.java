@@ -40,7 +40,7 @@ public class CustomerAgent extends Agent {
 	
 	//    private boolean isHungry = false; //hack for gui
 	public enum AgentState
-	{DoingNothing, WaitingToBeSeated, BeingSeated, Ordered, reOrder, payingBill, finishing, leaving};
+	{DoingNothing, WaitingToBeSeated, BeingSeated, Ordered, reOrder, finishing, leaving};
 	private AgentState state = AgentState.DoingNothing;//The start state
 
 	public enum AgentEvent // you're doing the event, so you are "state". ex. you got hungry, so you arrive at the restaurant. you walked in the restaurant, so you are waiting to be seated
@@ -155,20 +155,17 @@ public class CustomerAgent extends Agent {
 		stateChanged();
 	}
 	
-	public void msgHereIsReceipt(int bill)
-	{
-		if (bill>money)
-		{
-			System.out.println(bill);
-			print("the cost of the food is greater than the amount the customer has");
-		}
-		else
-		{
-			money -= bill;
-		}
-		state = AgentState.payingBill;
-		stateChanged();
-	}
+//	public void msgHereIsReceipt(int bill)
+//	{
+//		if (bill>money)
+//		{
+//			print("the cost of the food is greater than the amount the customer has");
+//		}
+//		else
+//		{
+//			money -= bill;
+//		}
+//	}
 	
 	public void msgAnimationFinishedGoToSeat() {
 		//from animation
@@ -215,13 +212,6 @@ public class CustomerAgent extends Agent {
 				state = AgentState.finishing;
 				ConsumeFood();
 				return true;
-			}
-			if (state == AgentState.payingBill)
-			{
-				state = AgentState.leaving;
-				LeaveTable();
-				return true;
-
 			}
 			if (event == AgentEvent.noMenuOptions)
 			{

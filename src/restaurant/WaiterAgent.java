@@ -85,7 +85,6 @@ public class WaiterAgent extends Agent {
 	public void msgYouCannotBreak()
 	{
 		print("the waiter continues to work like normal as his request to break is denied");
-		waiterState = WaiterState.continueWorking;
 		stateChanged();
 	}
 	
@@ -378,7 +377,16 @@ public class WaiterAgent extends Agent {
 	
 	private void DeliverReceipt(Customer customer)
 	{
-		customer.cust.msgHereIsReceipt(customer.bill);
+//		customer.cust.msgHereIsReceipt(customer.bill);
+		if (customer.bill>customer.cust.money)
+		{
+			print("the customer does not have enough money to pay for the food");
+		}
+		else
+		{
+			print("the customer pays the moeny for the food");
+			customer.cust.money-=customer.bill;
+		}
 	}
 	
 	private void CleanUp(Customer c)
