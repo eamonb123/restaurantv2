@@ -14,29 +14,16 @@
  ###How to run
   You can simply run the code by clicking the green arrow in Eclipe.
   To run it in Eclipse after cloning the project, do the same as you would to open up the project for Lab1
-"import the restaurant application:
 
-    File -> New -> Other
-
-    Choose Java Project from Existing Ant Buildfile
-
-    Click on the Browse button
-
-    Navigate to the git repository you cloned in the previous section
-
-    Choose the build.xml file.
-
-    [IMP]: Check the Link to the buildfile in the file system box
-
-    Press Finish
-"
+  TO TEST DIFFERENT SCENARIOS
+  - out of food: go to the cook agent and change the 3rd parameter of the Food constructor. Set it to zero and then all the foods the cook has will be set to zero. Run the code and then witness the changes
+  - low food: go to the same line as the out of food, but set a number above zero and below the threshold. when the waiter delivers that order to the cook, the cook will realize he is low in certain foods and send out an order to the market
+  - waiter on break: once you create a waiter, you can click his break checkbox on the bottom of the window. if there is more than one waiter, he will go on break, otherwise he will keep working
+  - cashier: once the customer is done eating, there will be print statements that calculate whether he can pay the meal or not. he will leave either way
 
   
   
  ###Problems
- -If you create a customer before your create a waiter, that customer is forever lost. You must first create 
-a waiter and then create a customer for them to interact. 
--There are no image icons on the waiters and customers. I did not know how to have the strings follow them
-and stay directly on top of them the entire time
-- There is a potential semaphore issue that runs in an infinite loop when all the customers leave and all the tables are empty
-- I could not get the pause button to work
+ - I currently cannot uncheck a waiter on break to get him back to work
+ - I did not yet implement the GUI for the cashier interaction but all the communication is in print statements.
+ 
