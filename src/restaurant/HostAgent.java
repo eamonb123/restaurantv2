@@ -27,6 +27,7 @@ public class HostAgent extends Agent {
 	public class Waiter
 	{
 		WaiterAgent waiter;
+		boolean wantsToGoOnBreak=false;
 		List<Customer> customers = new ArrayList<Customer>();
 		boolean isBusy()
 		{
@@ -94,6 +95,19 @@ public class HostAgent extends Agent {
 	{
 		stateChanged();
 	}
+	
+	public void msgCanIGoOnBreak(WaiterAgent askingWaiter)
+	{
+		print("the host recieved the message from the waiter asking to go on break and is considering...");
+		for(Waiter w: myWaiters)
+		{
+			if (w.waiter==askingWaiter)
+			{
+				w.wantsToGoOnBreak=true;
+			}
+		}
+		stateChanged();
+	}
 
 	public void msgTableIsFree(int tableNumber) {//from animation
 		//print("msgAtTable() called");
@@ -112,29 +126,38 @@ public class HostAgent extends Agent {
 	 * Scheduler.  Determine what action is called for, and do it.
 	 */
 	protected boolean pickAndExecuteAnAction() {
-		if (!myWaitingCustomers.isEmpty())
+		for(Waiter waiter : myWaiters)
 		{
-			if (myWaiters.isEmpty())
+			if (waiter.wantsToGoOnBreak)
 			{
-				print("waiter list is empty. customers waiting in line");
+				print("the host is deciding whether the waiter should go on break");
+				DecideIfWaiterCanBreak(waiter);
+				return true;
 			}
-			else
+		}
+//		if (!myWaitingCustomers.isEmpty())
+//		{
+		if (myWaiters.isEmpty())
+		{
+			print("waiter list is empty. customers waiting in line");
+		}
+		else
+		{
+			Waiter leastBusyWaiter = leastBusyWaiter(myWaiters);
+			for (Table table : myTables)
 			{
-				Waiter leastBusyWaiter = leastBusyWaiter(myWaiters);
-				for (Table table : myTables)
+				if(!table.isOccupied)
 				{
-					if(!table.isOccupied)
-					{
-						Customer customer = myWaitingCustomers.get(0);
-						customer.cust.msgSemaphoreRelease();
-						leastBusyWaiter.customers.add(customer);
-						callWaiter(customer.cust, leastBusyWaiter.waiter, table);
-						myWaitingCustomers.remove(0);
-						return true;
-					}
+					Customer customer = myWaitingCustomers.get(0);
+					customer.cust.msgSemaphoreRelease();
+					leastBusyWaiter.customers.add(customer);
+					callWaiter(customer.cust, leastBusyWaiter.waiter, table);
+					myWaitingCustomers.remove(0);
+					return true;
 				}
 			}
 		}
+//		}
 		return false;
 	}
 	
@@ -142,6 +165,21 @@ public class HostAgent extends Agent {
 
 	// Actions
 
+	private void DecideIfWaiterCanBreak(Waiter w)
+	{
+		if (myWaiters.size()<=1)
+		{
+			print("there is not enough waiters currently working for the waiter to go on break");
+			w.waiter.msgYouCannotBreak();
+		}
+		else
+		{
+			print("the host allows the waiter to go on break");
+			w.waiter.msgYouCanBreak();
+		}
+	}
+	
+	
 	private void callWaiter(CustomerAgent cust, WaiterAgent waiter, Table table)
 	{
 		print("Host is sending message to the waiter to sit customer " + cust.name);

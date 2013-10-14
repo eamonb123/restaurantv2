@@ -24,7 +24,7 @@ public class WaiterAgent extends Agent {
 	public enum CustomerState
 	{nothing, waiting, seated, readyToOrder, takingOrder, ordered, reOrder, reOrdering, sendOrderToCook, deliver, delivering, eating, done, cleaningUp};
 	public enum WaiterState
-	{nothing, atSeat};
+	{nothing, continueWorking, onBreak, atSeat};
 	public WaiterState waiterState = WaiterState.nothing;
 	public boolean isBusy()
 	{
@@ -75,7 +75,22 @@ public class WaiterAgent extends Agent {
 	
 	public void msgTryToGoOnBreak()
 	{
-		
+		print("the waiter wants to go on break");
+		AskToGoOnBreak();
+	}
+	
+	public void msgYouCannotBreak()
+	{
+		print("the waiter continues to work like normal as his request to break is denied");
+		waiterState = WaiterState.continueWorking;
+		stateChanged();
+	}
+	
+	public void msgYouCanBreak()
+	{
+		print("the waiter breaks for a little");
+		waiterState = WaiterState.onBreak;
+		stateChanged();
 	}
 	
 	public void msgPleaseSeatCustomer(CustomerAgent cust, int tableNumber, Point loc)
@@ -161,6 +176,11 @@ public class WaiterAgent extends Agent {
 	
 	protected boolean pickAndExecuteAnAction() {
 		//synchronized(customers){
+		if (waiterState == WaiterState.onBreak)
+		{
+			GoOnBreak();
+			return true;
+		}
 		for (Customer cust : myCustomers) 
 		{
 			if (cust.customerState==CustomerState.waiting)
@@ -222,6 +242,17 @@ public class WaiterAgent extends Agent {
 
 	// Actions
 
+	private void AskToGoOnBreak()
+	{
+		print("the waiter asks the host if he can go on break");
+		host.msgCanIGoOnBreak(this);
+	}
+	
+	private void GoOnBreak()
+	{
+		print("waiter is going on break for 30 seconds...");
+	}
+	
 	private void SeatCustomer(Customer c) 
 	{
 		print("waiter is now currently busy helping customer " + c.cust.name);
