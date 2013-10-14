@@ -21,6 +21,7 @@ public class CustomerAgent extends Agent {
 	public String name;
 	private int hungerLevel = 5;        // determines length of meal
     String choice;
+    int money = 20;
     int tableNumber;
 	public Semaphore waiting = new Semaphore(0);
 	Timer timer = new Timer();
