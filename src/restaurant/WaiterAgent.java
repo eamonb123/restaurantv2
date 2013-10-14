@@ -57,6 +57,7 @@ public class WaiterAgent extends Agent {
 	private Semaphore atTable = new Semaphore(0);
 
 
+
 	public WaiterAgent(String name) {
 		super();
 		this.name = name;
@@ -251,6 +252,7 @@ public class WaiterAgent extends Agent {
 	private void GoOnBreak()
 	{
 		print("waiter is going on break for 30 seconds...");
+		waiterGui.DoGoToBreakSpot();
 	}
 	
 	private void SeatCustomer(Customer c) 
@@ -360,6 +362,11 @@ public class WaiterAgent extends Agent {
 	public void setGui(WaiterGui gui) {
 		waiterGui = gui;
 	}
+	
+	public String getName()
+	{
+		return this.name;
+	}
 
 	public WaiterGui getGui() {
 		return waiterGui;
@@ -395,6 +402,7 @@ public class WaiterAgent extends Agent {
 		void setUnoccupied() {
 			occupiedBy = null;
 		}
+
 
 		CustomerAgent getOccupant() {
 			return occupiedBy;

@@ -135,29 +135,29 @@ public class HostAgent extends Agent {
 				return true;
 			}
 		}
-//		if (!myWaitingCustomers.isEmpty())
-//		{
-		if (myWaiters.isEmpty())
+		if (!myWaitingCustomers.isEmpty())
 		{
-			print("waiter list is empty. customers waiting in line");
-		}
-		else
-		{
-			Waiter leastBusyWaiter = leastBusyWaiter(myWaiters);
-			for (Table table : myTables)
+			if (myWaiters.isEmpty())
 			{
-				if(!table.isOccupied)
+				print("waiter list is empty. customers waiting in line");
+			}
+			else
+			{
+				Waiter leastBusyWaiter = leastBusyWaiter(myWaiters);
+				for (Table table : myTables)
 				{
-					Customer customer = myWaitingCustomers.get(0);
-					customer.cust.msgSemaphoreRelease();
-					leastBusyWaiter.customers.add(customer);
-					callWaiter(customer.cust, leastBusyWaiter.waiter, table);
-					myWaitingCustomers.remove(0);
-					return true;
+					if(!table.isOccupied)
+					{
+						Customer customer = myWaitingCustomers.get(0);
+						customer.cust.msgSemaphoreRelease();
+						leastBusyWaiter.customers.add(customer);
+						callWaiter(customer.cust, leastBusyWaiter.waiter, table);
+						myWaitingCustomers.remove(0);
+						return true;
+					}
 				}
 			}
 		}
-//		}
 		return false;
 	}
 	

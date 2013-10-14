@@ -158,6 +158,13 @@ public class RestaurantPanel extends JPanel {
                     gui.updateInfoPanel(temp);
             }
         }
+        if(type.equals("Waiters")) {
+        	for(int i=0; i < waiters.size(); i++) {
+        		WaiterAgent w = waiters.get(i);
+        		if(w.getName()== name)
+        			gui.updateInfoPanel(w);
+        	}
+        }
     }
 
     /**
@@ -166,12 +173,14 @@ public class RestaurantPanel extends JPanel {
      * @param type indicates whether the person is a customer or waiter (later)
      * @param name name of person
      */
-    public void addPerson(String type, JCheckBox alwaysHungry, String name) {
+    public void addPerson(String type, JCheckBox checkbox, String name) {
     	if (type.equals("Customers")) {
     		CustomerAgent c = new CustomerAgent(name);	
     		CustomerGui g = new CustomerGui(c, gui);
-    		if (alwaysHungry.isSelected())
+    		if (checkbox.isSelected())
+    		{
     			g.setHungry();
+    		}
     		gui.animationPanel.addGui(g);
     		c.setHost(host);
     		c.setGui(g);
@@ -181,6 +190,11 @@ public class RestaurantPanel extends JPanel {
     	if (type.equals("Waiters")) {
     		WaiterAgent w = new WaiterAgent(name);	
     		WaiterGui g = new WaiterGui(w, gui);
+    		if (checkbox.isSelected())
+    		{
+    			System.out.println("checkbox is selected");
+//    			w.setHungry();
+    		}
     		gui.animationPanel.addGui(g);
     		host.setWaiter(w);
     		host.msgWakeUp();

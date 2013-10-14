@@ -1,8 +1,10 @@
 package restaurant.gui;
 
 import restaurant.CustomerAgent;
+import restaurant.WaiterAgent;
 
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.*;
 /**
@@ -28,6 +30,7 @@ public class RestaurantGui extends JFrame implements ActionListener {
     private JLabel imageLabel;
     private JLabel infoLabel; //part of infoPanel
     private JCheckBox stateCB;//part of infoLabel
+    private JCheckBox stateBD;
 
     private Object currentPerson;/* Holds the agent that the info is about.
     								Seems like a hack */
@@ -67,11 +70,15 @@ public class RestaurantGui extends JFrame implements ActionListener {
         stateCB = new JCheckBox();
         stateCB.setVisible(false);
         stateCB.addActionListener(this);
+        stateBD = new JCheckBox();
+        stateBD.setVisible(false);
+        stateBD.addActionListener(this);
        // infoPanel.setLayout(new GridLayout(1, 2, 30, 0));
         infoLabel = new JLabel(); 
         infoLabel.setText("<html><pre><i>Click Add to make customers</i></pre></html>");
         infoPanel.add(infoLabel);
         infoPanel.add(stateCB);
+        infoPanel.add(stateBD);
         organizer.add(infoPanel, BorderLayout.NORTH);
         
         imageLabel = new JLabel (image);
@@ -86,10 +93,13 @@ public class RestaurantGui extends JFrame implements ActionListener {
      * @param person customer (or waiter) object
      */
     public void updateInfoPanel(Object person) {
-        stateCB.setVisible(true);
-        currentPerson = person;
+        
+        
 
         if (person instanceof CustomerAgent) {
+        	currentPerson = person;
+        	stateCB.setVisible(true);
+        	stateBD.setVisible(false);
             CustomerAgent customer = (CustomerAgent) person;
             stateCB.setText("Hungry?");
           //Should checkmark be there? 
@@ -101,6 +111,22 @@ public class RestaurantGui extends JFrame implements ActionListener {
             
             infoLabel.setText(
                "<html><pre>     Name: " + customer.getName() + " </pre></html>");
+        }
+        if (person instanceof WaiterAgent) {
+        	currentPerson = person;
+        	stateCB.setVisible(false);
+        	stateBD.setVisible(true);
+            WaiterAgent waiter = (WaiterAgent) person;
+            stateBD.setText("Break?");
+          //Should checkmark be there? 
+            stateBD.setSelected(false);
+          //Is customer hungry? Hack. Should ask customerGui
+            stateBD.setEnabled(true);
+          // Hack. Should ask customerGui
+            
+            
+            infoLabel.setText(
+               "<html><pre>     Name: " + waiter.getName() + " </pre></html>");
         }
         infoPanel.validate();
     }
@@ -115,6 +141,13 @@ public class RestaurantGui extends JFrame implements ActionListener {
                 CustomerAgent c = (CustomerAgent) currentPerson;
                 c.getGui().setHungry();
                 stateCB.setEnabled(false);
+            }
+        }
+        if (e.getSource() == stateBD) {
+            if (currentPerson instanceof WaiterAgent) {
+                WaiterAgent w = (WaiterAgent) currentPerson;
+                w.getGui().askForBreak();
+                stateBD.setEnabled(false);
             }
         }
     }
@@ -133,6 +166,17 @@ public class RestaurantGui extends JFrame implements ActionListener {
             }
         }
     }
+    
+    public void setCustomerEnabled(WaiterAgent w) {
+        if (currentPerson instanceof WaiterAgent) {
+            WaiterAgent cust = (WaiterAgent) currentPerson;
+            if (w.equals(cust)) {
+                stateBD.setEnabled(true);
+                stateBD.setSelected(false);
+            }
+        }
+    }
+
     /**
      * Main routine to get gui started
      */

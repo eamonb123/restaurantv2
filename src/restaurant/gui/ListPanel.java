@@ -25,8 +25,6 @@ public class ListPanel extends JPanel implements ActionListener {
     private JButton pauseButton = new JButton("Pause");
     private JTextField textField = new JTextField(30);
     private JCheckBox alwaysHungry = new JCheckBox();
-    private JCheckBox wantToBreak = new JCheckBox();
-
 
     private RestaurantPanel restPanel;
     private String type;
@@ -41,10 +39,7 @@ public class ListPanel extends JPanel implements ActionListener {
         restPanel = rp;
         this.type = type;
         alwaysHungry.setText("Hungry?");
-        wantToBreak.setText("Break?");
-        
         alwaysHungry.addActionListener(this);
-        wantToBreak.addActionListener(this);
         setLayout(new BoxLayout((Container) this, BoxLayout.Y_AXIS));
         add(new JLabel("<html><pre> <u>" + type + "</u><br></pre></html>"));
         
@@ -58,7 +53,7 @@ public class ListPanel extends JPanel implements ActionListener {
         }
         if (type.equals("Waiters"))
         {
-        	add(wantToBreak);
+        	//add(alwaysHungry);
         	addWaiterButton.addActionListener(this);
         	add(addWaiterButton);
         }
@@ -110,12 +105,13 @@ public class ListPanel extends JPanel implements ActionListener {
             list.add(button);
             view.add(button);
             restPanel.addPerson(type, alwaysHungry, name);//puts customer on list
-            restPanel.showInfo(type, name);
-            restPanel.addPerson(type, wantToBreak, name);//puts customer on list
+            if(type=="Customers")
+            	restPanel.showInfo(type, name);//puts hungry button on panel
+            if(type=="Waiters")
+            	restPanel.showInfo(type, name);
             validate();
             textField.setText("");
             alwaysHungry.setSelected(false);
-            wantToBreak.setSelected(false);
         }
     }
 }
