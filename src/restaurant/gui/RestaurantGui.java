@@ -169,8 +169,9 @@ public class RestaurantGui extends JFrame implements ActionListener {
     
     public void setCustomerEnabled(WaiterAgent w) {
         if (currentPerson instanceof WaiterAgent) {
-            WaiterAgent cust = (WaiterAgent) currentPerson;
-            if (w.equals(cust)) {
+            WaiterAgent waiter = (WaiterAgent) currentPerson;
+            if (w.equals(waiter)) {
+            	w.getGui().goOffBreak();
                 stateBD.setEnabled(true);
                 stateBD.setSelected(false);
             }

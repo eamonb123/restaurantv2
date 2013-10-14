@@ -98,7 +98,9 @@ public class WaiterGui implements Gui {
 	public void askForBreak() {
 		waiter.msgTryToGoOnBreak();
 	}
-    
+	public void goOffBreak() {
+		
+	}
     public void DoMoveToPosition(Point location)
     {
     	isMoving=true;

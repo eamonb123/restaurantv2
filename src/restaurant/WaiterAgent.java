@@ -24,7 +24,7 @@ public class WaiterAgent extends Agent {
 	public enum CustomerState
 	{nothing, waiting, seated, readyToOrder, takingOrder, ordered, reOrder, reOrdering, sendOrderToCook, deliver, delivering, eating, done, cleaningUp};
 	public enum WaiterState
-	{nothing, continueWorking, onBreak, atSeat};
+	{nothing, continueWorking, onBreak, breaking, atSeat};
 	public WaiterState waiterState = WaiterState.nothing;
 	public boolean isBusy()
 	{
@@ -179,6 +179,7 @@ public class WaiterAgent extends Agent {
 		//synchronized(customers){
 		if (waiterState == WaiterState.onBreak)
 		{
+			waiterState = WaiterState.breaking;
 			GoOnBreak();
 			return true;
 		}
