@@ -47,7 +47,7 @@ public class MarketAgent extends Agent {
 			inventory.put(choice, 4);
 		}
     }
-//
+////
 
 	
 	//Messages
