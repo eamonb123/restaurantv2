@@ -19,11 +19,12 @@ public class WaiterGui implements Gui {
     public boolean isMoving=false;
     public boolean deliveringFood=false;
     public boolean reOrdering=false;
+    public boolean stayAtBreak=false;
     public String order;
     Point cookLocation = new Point(-20, 100);
     Point homeBase = new Point(260, 100);
     Point customerLine = new Point(-20,-20);
-    Point breakLocation = new Point(520, 100);
+    Point breakLocation = new Point(260, 0);
     public static final int xTable = 100;
     public static final int yTable = 250;
 
@@ -64,9 +65,12 @@ public class WaiterGui implements Gui {
             yPos--;
         if (xPos == xDestination && yPos == yDestination && isMoving==true) 
         {
-        	DoMoveToPosition(homeBase);
-        	waiter.msgAtTable();
-        	isMoving=false;
+        	if(!stayAtBreak)
+        	{
+	        	DoMoveToPosition(homeBase);
+	        	waiter.msgAtTable();
+	        	isMoving=false;
+        	}
         }
     }
 
@@ -98,6 +102,7 @@ public class WaiterGui implements Gui {
 	public void askForBreak() {
 		waiter.msgTryToGoOnBreak();
 	}
+	
 	public void goOffBreak() {
 		
 	}
@@ -125,8 +130,10 @@ public class WaiterGui implements Gui {
     	Point location = tableMap.get(tableNumber);
     	DoMoveToPosition(location);
     }
-    public void DoGoToBreakSpot ()
+    
+    public void DoGoToBreakSpot()
     {
+    	stayAtBreak=true;
     	DoMoveToPosition(breakLocation);
     }
     

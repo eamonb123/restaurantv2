@@ -254,8 +254,13 @@ public class WaiterAgent extends Agent {
 	{
 		print("waiter is going on break for 30 seconds...");
 		waiterGui.DoGoToBreakSpot();
+		host.msgWaiterOnBreak(this);
 	}
 	
+	public void addWaiterToHost(WaiterAgent waiter)
+	{
+		host.msgAddWaiter(waiter);
+	}
 	private void SeatCustomer(Customer c) 
 	{
 		print("waiter is now currently busy helping customer " + c.cust.name);

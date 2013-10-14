@@ -99,7 +99,7 @@ public class HostAgent extends Agent {
 	public void msgCanIGoOnBreak(WaiterAgent askingWaiter)
 	{
 		print("the host recieved the message from the waiter asking to go on break and is considering...");
-		for(Waiter w: myWaiters)
+		for (Waiter w: myWaiters)
 		{
 			if (w.waiter==askingWaiter)
 			{
@@ -108,7 +108,25 @@ public class HostAgent extends Agent {
 		}
 		stateChanged();
 	}
+	
+	public void msgWaiterOnBreak(WaiterAgent w)
+	{
+		Waiter wait = new Waiter(w);
+		for (Waiter waiter: myWaiters)
+		{
+			if (waiter.waiter == w)
+			{
+				wait = waiter;
+			}
+		}
+		myWaiters.remove(wait);
+	}
 
+	public void msgAddWaiter(WaiterAgent waiter)
+	{
+		myWaiters.add(new Waiter(waiter));
+	}
+	
 	public void msgTableIsFree(int tableNumber) {//from animation
 		//print("msgAtTable() called");
 		for (Table table : myTables) 
@@ -126,7 +144,7 @@ public class HostAgent extends Agent {
 	 * Scheduler.  Determine what action is called for, and do it.
 	 */
 	protected boolean pickAndExecuteAnAction() {
-		for(Waiter waiter : myWaiters)
+		for (Waiter waiter : myWaiters)
 		{
 			if (waiter.wantsToGoOnBreak)
 			{
@@ -170,11 +188,13 @@ public class HostAgent extends Agent {
 		if (myWaiters.size()<=1)
 		{
 			print("there is not enough waiters currently working for the waiter to go on break");
+			w.wantsToGoOnBreak=false;
 			w.waiter.msgYouCannotBreak();
 		}
 		else
 		{
 			print("the host allows the waiter to go on break");
+			w.wantsToGoOnBreak=false;
 			w.waiter.msgYouCanBreak();
 		}
 	}
