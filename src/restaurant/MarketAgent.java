@@ -113,11 +113,27 @@ public class MarketAgent extends Agent {
 		print("the market is shipping the food to the cook");
 		if(partialOrder)
 		{
+			try
+			{
+				Thread.sleep(5000);
+			}
+			catch(Exception e)
+			{
+				System.out.println("Exception caught");
+			}
 			incomingOrder.state= reStockingState.failedToFufillOrder;
 			incomingOrder.cook.msgFufilledPartialOrder(outgoingList);
 		}
 		else
 		{
+			try
+			{
+				Thread.sleep(5000);
+			}
+			catch(Exception e)
+			{
+				System.out.println("Exception caught");
+			}
 			incomingOrder.state= reStockingState.fufillingOrder;
 			incomingOrder.cook.msgFufilledCompleteOrder(outgoingList);			
 		}
