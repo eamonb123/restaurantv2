@@ -15,7 +15,8 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class CashierAgent extends Agent {
-	public List<MarketAgent> markets = new ArrayList<MarketAgent>();
+	public List<WaiterAgent> waiters = new ArrayList<WaiterAgent>();
+	public List<Order> receipts = new ArrayList<Order>();
 	HashMap<String, Integer> menu = new HashMap<String, Integer>();
 	{
 	    menu.put("beef", 15);
@@ -34,17 +35,19 @@ public class CashierAgent extends Agent {
 	public class Order
 	{
 		WaiterAgent waiter;
+		CustomerAgent customer;
 		String choice;
-		int tableNumber;
-		state s;
-		Order(WaiterAgent waiter, String choice, int tableNumber, state s)
+		receiptState state;
+		Order(WaiterAgent waiter, CustomerAgent customer, String choice, receiptState state)
 		{
 			this.waiter=waiter;
+			this.customer=customer;
 			this.choice=choice;
-			this.tableNumber=tableNumber;
-			this.s=s;
+			this.state=state;
 		}
 	}
+	enum receiptState
+	{pending, complete};
 	public class Food
 	{
 		String type;
@@ -91,68 +94,14 @@ public class CashierAgent extends Agent {
 	
 	//Messages
 	
-	public void msgHereIsOrder(WaiterAgent waiter, String choice, int tableNumber)
+	public void msgComputeCheck(WaiterAgent waiter, CustomerAgent customer, String choice)
 	{
-		Order order = new Order(waiter, choice, tableNumber, state.pending);
-		print("the cook recieves the order " + order.choice + " and puts it on a list of orders");
+		Order order = new Order(waiter, customer, choice, receiptState.pending);
 		orders.add(order);
 		stateChanged();
 	}
 	
 	
-	public void msgFufilledCompleteOrder(HashMap<String, Integer> incomingOrder)
-	{
-		print("cook is getting the message that the market fufilled the order.");
-		for (Map.Entry<String, Food>  currentFood: foods.entrySet())
-		{
-			for (Map.Entry<String, Integer> incomingFood: incomingOrder.entrySet())
-			{
-				if (currentFood.getKey().equals(incomingFood.getKey()))
-				{
-					currentFood.getValue().currentAmount+=incomingFood.getValue();
-				}
-			}
-		}
-		print("cook has completely resupplied his stock of food");
-		ordering=false;
-		marketIndex=0;
-		stateChanged();
-		//stateChanged(); //!!KSAJDKSJDH
-	}
-	
-	public void msgFufilledPartialOrder(HashMap<String, Integer> incomingOrder)
-	{
-		print("cook is getting the message that the market could NOT fully fufill the order.");
-	    HashMap<String, Integer> newOutgoingList = new HashMap<String, Integer>();
-		for (Map.Entry<String, Food>  currentFood: foods.entrySet())
-		{
-			for (Map.Entry<String, Integer> incomingFood: incomingOrder.entrySet())
-			{
-				if (currentFood.getKey().equals(incomingFood.getKey()))
-				{
-					currentFood.getValue().currentAmount+=incomingFood.getValue();
-					if (currentFood.getValue().currentAmount<currentFood.getValue().capacity)
-					{
-						newOutgoingList.put(currentFood.getKey(), currentFood.getValue().capacity-currentFood.getValue().currentAmount);
-					}
-				}
-			}
-		}
-		print("new outgoing list: ");
-		System.out.println(newOutgoingList);
-		if (marketIndex==markets.size()-1)
-		{
-			print("no more markets left. The cook grabbed all the items he could but still has some he needs");
-			ordering=false;
-		}
-		else
-		{
-			marketIndex++;
-//			SendOrder(newOutgoingList);
-		}
-		stateChanged();
-		//stateChanged(); //!!KSAJDKSJDH
-	}
 	
 
 	
@@ -163,17 +112,9 @@ public class CashierAgent extends Agent {
 	protected boolean pickAndExecuteAnAction() {
 		for (Order order : orders) 
 		{	
-			if (order.s==state.pending)
+			if (order.state==receiptState.pending)
 			{
-				TryToCookFood(order);				
-				return true;
-			}
-		}
-		for (Order order : orders) 
-		{
-			if (order.s==state.done)
-			{
-				PlateIt(order);
+				CalculateReceipt(order)		;		
 				return true;
 			}
 		}
@@ -183,84 +124,14 @@ public class CashierAgent extends Agent {
 
 	// Actions
 
-	private void TryToCookFood(Order order) //can cook multiple things at a time with no decrease in speed
+	private void CalculateReceipt(Order order)
 	{
-		Food f = foods.get(order.choice);
-		if (f.currentAmount==0)
-		{
-			print("the cook tells the waiter that they are out of " + order.choice);
-			order.waiter.msgOutOfFood(order.choice, order.tableNumber);
-			orders.remove(order);
-			return;
-		}
-		f.currentAmount--;
-		if (f.currentAmount <= f.lowThreshold)
-		{
-			print("food is low. the cook is ordering food from the market to restock inventory");
-			OrderFoodThatIsLow();
-			order.s = state.orderingFood;
-		}
-		//DoCooking(order);
-		print("the cook begins cooking the " + order.choice);
-		order.s = state.cooking; //put this inside timer class when u implement it
-		CookingTimer(order);
-		print("the cook is done cooking the " + order.choice);
-		order.s = state.done;
+		int bill = menu.get(order.choice);
+		order.waiter.msgHereIsReceipt(bill, order.customer);
 	}
+	
+	
 
-	private void OrderFoodThatIsLow()
-	{
-		ordering=true;
-		HashMap<String, Integer> groceryList = new HashMap<String, Integer>();
-		if (markets.isEmpty())
-		{
-			print("no markets to order from to begin with. stop the cook");
-			return;
-		}
-		for (Map.Entry<String, Food> food : foods.entrySet()) 
-		{
-		    if (food.getValue().currentAmount < food.getValue().lowThreshold)
-		    {
-		    	groceryList.put(food.getKey(), food.getValue().capacity-food.getValue().currentAmount);
-		    }
-		}
-		print("the cook needs this many items from the market: " + groceryList);
-//		SendOrder(groceryList);
-	}
-	
-//	private void SendOrder(HashMap<String, Integer> groceryList)
-//	{
-//		if (groceryList.isEmpty())
-//		{
-//			print("GROCERY LIST IS EMPTY. something went wrong");
-//			return;
-//		}
-//		print("the cook sends a message to the market with the grocery list");
-//		markets.get(marketIndex).msgOrderRestock(this, groceryList);
-//	}
-	
-	
-	private void PlateIt(Order order)
-	{
-		//DoPlating(order);
-		print("the cook notifies the waiter that the " + order.choice + " is ready to be served to the customer");
-		order.waiter.msgOrderIsReady(order.choice, order.tableNumber);
-		orders.remove(order);
-	}
-	
-	
-	private void CookingTimer(Order order)
-	{
-		int time = cookingTimes.get(order.choice);
-		try
-		{
-			Thread.sleep(time);
-		}
-		catch(Exception e)
-		{
-			System.out.println("Exception caught");
-		}
-	}
 
 	//utilities
 
@@ -272,11 +143,15 @@ public class CashierAgent extends Agent {
 		return hostGui;
 	}
 	
-	
-	public void setMarket(MarketAgent market)
+	public void setWaiter(WaiterAgent waiter)
 	{
-		markets.add(market);
+		waiters.add(waiter);
 	}
+	
+//	public void setMarket(MarketAgent market)
+//	{
+//		markets.add(market);
+//	}
 	
 }
 

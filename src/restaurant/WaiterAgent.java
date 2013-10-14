@@ -15,6 +15,7 @@ import java.util.concurrent.Semaphore;
 
 public class WaiterAgent extends Agent {
 	//public Collection<Table> tables;
+	private CashierAgent cashier;
 	private CookAgent cook;
 	private HostAgent host;
 	public WaiterGui waiterGui = null;
@@ -22,7 +23,7 @@ public class WaiterAgent extends Agent {
 	public List<Customer> myCustomers = new ArrayList<Customer>();
 	//List<Customer> myCustomers = Collections.synchronizedList(new ArrayList<Customer>());
 	public enum CustomerState
-	{nothing, waiting, seated, readyToOrder, takingOrder, ordered, reOrder, reOrdering, sendOrderToCook, deliver, delivering, eating, done, cleaningUp};
+	{nothing, waiting, seated, readyToOrder, takingOrder, ordered, reOrder, reOrdering, receivingReceipt, gettingReceipt, sendOrderToCook, deliver, delivering, eating, done, cleaningUp};
 	public enum WaiterState
 	{nothing, continueWorking, onBreak, breaking, atSeat};
 	public WaiterState waiterState = WaiterState.nothing;
@@ -37,6 +38,7 @@ public class WaiterAgent extends Agent {
 	public class Customer
 	{
 		CustomerAgent cust;
+		int bill;
 		int tableNumber;
 		String choice;
 		List<String> menuOptions = new ArrayList<String>();{
@@ -157,6 +159,18 @@ public class WaiterAgent extends Agent {
 		stateChanged();
 	}
 	
+	public void msgHereIsReceipt(int bill, CustomerAgent cust)
+	{
+		for (Customer c : myCustomers)
+		{
+			if (c.cust==cust)
+			{
+				c.customerState=CustomerState.receivingReceipt;
+				c.bill=bill;
+			}
+		}
+	}
+	
 	public void msgDoneEating(CustomerAgent cust)
 	{
 		for (Customer c : myCustomers)
@@ -230,6 +244,15 @@ public class WaiterAgent extends Agent {
 		}
 		for (Customer cust : myCustomers) 
 		{
+			if (cust.customerState==CustomerState.receivingReceipt)
+			{
+				cust.customerState=CustomerState.gettingReceipt;
+				DeliverReceipt(cust);
+				return true;
+			}
+		}
+		for (Customer cust : myCustomers) 
+		{
 			if (cust.customerState==CustomerState.done)
 			{
 				cust.customerState=CustomerState.cleaningUp;
@@ -252,7 +275,7 @@ public class WaiterAgent extends Agent {
 	
 	private void GoOnBreak()
 	{
-		print("waiter is going on break for 30 seconds...");
+		print("waiter is going on break until told otherwise...");
 		waiterGui.DoGoToBreakSpot();
 		host.msgWaiterOnBreak(this);
 	}
@@ -349,7 +372,13 @@ public class WaiterAgent extends Agent {
 		}
 		print("waiter " + name + " delivers the " + c.choice + " to customer " + c.cust.name);
 		waiterGui.deliveringFood=false;
+		cashier.msgComputeCheck(this, c.cust, c.choice);
 		c.cust.msgHereIsYourFood(c.choice);
+	}
+	
+	private void DeliverReceipt(Customer customer)
+	{
+		customer.cust.msgHereIsReceipt(customer.bill);
 	}
 	
 	private void CleanUp(Customer c)
@@ -376,6 +405,11 @@ public class WaiterAgent extends Agent {
 
 	public WaiterGui getGui() {
 		return waiterGui;
+	}
+	
+	public void setCashier (CashierAgent cashier)
+	{
+		this.cashier=cashier;
 	}
 	
 	public void setCook(CookAgent cook)

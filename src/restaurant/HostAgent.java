@@ -127,6 +127,7 @@ public class HostAgent extends Agent {
 		myWaiters.add(new Waiter(waiter));
 	}
 	
+	
 	public void msgTableIsFree(int tableNumber) {//from animation
 		//print("msgAtTable() called");
 		for (Table table : myTables) 
@@ -204,7 +205,6 @@ public class HostAgent extends Agent {
 	{
 		print("Host is sending message to the waiter to sit customer " + cust.name);
 		cust.setWaiter(waiter);
-		
 		Point location=tableMap.get(table.tableNumber);
 		waiter.msgPleaseSeatCustomer(cust, table.tableNumber, location); //grabbing the only waiter
 		table.isOccupied=true;
