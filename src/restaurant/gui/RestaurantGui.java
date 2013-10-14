@@ -7,10 +7,13 @@ import javax.swing.*;
 
 import java.awt.*;
 import java.awt.event.*;
+
+
 /**
  * Main GUI class.
  * Contains the main frame and subsequent panels
  */
+
 public class RestaurantGui extends JFrame implements ActionListener {
     /* The GUI has two frames, the control frame (in variable gui) 
      * and the animation frame, (in variable animationFrame within gui)
@@ -172,7 +175,7 @@ public class RestaurantGui extends JFrame implements ActionListener {
             WaiterAgent waiter = (WaiterAgent) currentPerson;
             if (w.equals(waiter)) {
             	w.getGui().stayAtBreak=false;
-            	w.addWaiterToHost(w);
+            	w.addWaiterToHost(w); //go off break by adding to the list of waiters in the host
             	w.getGui().goOffBreak();
                 stateBD.setEnabled(true);
                 stateBD.setSelected(false);

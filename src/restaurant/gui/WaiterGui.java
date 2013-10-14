@@ -71,6 +71,7 @@ public class WaiterGui implements Gui {
 	        	waiter.msgAtTable();
 	        	isMoving=false;
         	}
+//        	gui.setCustomerEnabled(waiter);
         }
     }
 
