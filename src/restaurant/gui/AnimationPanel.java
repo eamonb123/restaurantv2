@@ -41,7 +41,7 @@ public class AnimationPanel extends JPanel implements ActionListener {
         Graphics2D g2 = (Graphics2D)g;
         //Clear the screen by painting a rectangle the size of the frame
         g2.setColor(getBackground());
-        g2.fillRect(0, 0, WINDOWX, WINDOWY );
+        g2.fillRect(0, 0, this.getWidth(), this.getHeight() );
         int xPosUpdated=xPos;
         //Here is the table
         for (int i=1; i<=NTABLES; i++) //CREATING GUI TABLES

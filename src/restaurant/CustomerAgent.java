@@ -158,6 +158,7 @@ public class CustomerAgent extends Agent {
 	
 	public void msgHereIsReceipt(int bill)
 	{
+		print("customer received the bill");
 		this.bill=bill;
 		event = AgentEvent.payingBill;
 		stateChanged();
@@ -224,6 +225,11 @@ public class CustomerAgent extends Agent {
 		if (event == AgentEvent.doneEating && state == AgentState.finishing ){
 			state = AgentState.leaving;
 			PayCashier();
+			return true;
+		}
+		if (event == AgentEvent.payingBill && state == AgentState.leaving){
+			state = AgentState.DoingNothing;
+			MakePayment();
 			return true;
 		}
 		return false;
@@ -293,14 +299,11 @@ public class CustomerAgent extends Agent {
 		customerGui.acceptedOrder=false;
 		customerGui.waitingForOrder=false;
 		waiter.msgDoneEating(this);
-		//DoGoToCashier();
-		MakePayment();
-		print("customer " + name + " is now leaving the restaurant");
-		customerGui.DoExitRestaurant();
 	}
 	
 	private void MakePayment()
 	{
+		//DoGoToCashier();
 		if (bill>money)
 		{
 			print("the customer does not have enough money to pay for the food");
@@ -310,6 +313,8 @@ public class CustomerAgent extends Agent {
 			print("the customer pays the money for the food");
 			money-=bill;
 		}
+		print("customer " + name + " is now leaving the restaurant");
+		customerGui.DoExitRestaurant();
 	}
 	
 

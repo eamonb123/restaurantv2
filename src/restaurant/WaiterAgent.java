@@ -181,6 +181,7 @@ public class WaiterAgent extends Agent {
 				c.customerState=CustomerState.receivingReceipt;
 			}
 		}
+		stateChanged();
 	}
 
 	
