@@ -212,18 +212,18 @@ public class CustomerAgent extends Agent {
 			if (event == AgentEvent.noMenuOptions)
 			{
 				state = AgentState.leaving;
-				LeaveTable();
+				PayCashier();
 				return true;
 			}
 		}
-		if (event == AgentEvent.payingBill && state == AgentState.finishing){
-			state = AgentState.payCashier;
-			PayCashier();
-			return true;
-		}
+//		if (event == AgentEvent.payingBill && state == AgentState.finishing){
+//			state = AgentState.payCashier;
+//			PayCashier();
+//			return true;
+//		}
 		if (event == AgentEvent.doneEating && state == AgentState.finishing ){
 			state = AgentState.leaving;
-			LeaveTable();
+			PayCashier();
 			return true;
 		}
 		return false;
@@ -286,9 +286,21 @@ public class CustomerAgent extends Agent {
 		EatFood();
 	}
 	
+
 	private void PayCashier()
 	{
+		print("customer " + name + " notifies the waiter that he is done eating the " + choice);
+		customerGui.acceptedOrder=false;
+		customerGui.waitingForOrder=false;
+		waiter.msgDoneEating(this);
 		//DoGoToCashier();
+		MakePayment();
+		print("customer " + name + " is now leaving the restaurant");
+		customerGui.DoExitRestaurant();
+	}
+	
+	private void MakePayment()
+	{
 		if (bill>money)
 		{
 			print("the customer does not have enough money to pay for the food");
@@ -298,17 +310,6 @@ public class CustomerAgent extends Agent {
 			print("the customer pays the money for the food");
 			money-=bill;
 		}
-		//DoLeaveRestaurant();
-	}
-	
-	private void LeaveTable()
-	{
-		print("customer " + name + " notifies the waiter that he is done eating the " + choice);
-		customerGui.acceptedOrder=false;
-		customerGui.waitingForOrder=false;
-		waiter.msgDoneEating(this);
-		print("customer " + name + " is now leaving the restaurant");
-		customerGui.DoExitRestaurant();
 	}
 	
 

@@ -402,7 +402,6 @@ public class WaiterAgent extends Agent {
 		print("the waiter lets the host know that the table which customer " + customer.cust.name + " sat at is now empty");
 		host.msgTableIsFree(customer.tableNumber);
 		print("the waiter is now available to help the next customer");
-
 	}
 	
 	
