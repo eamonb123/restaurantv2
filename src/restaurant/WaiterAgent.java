@@ -23,7 +23,7 @@ public class WaiterAgent extends Agent {
 	public List<Customer> myCustomers = new ArrayList<Customer>();
 	//List<Customer> myCustomers = Collections.synchronizedList(new ArrayList<Customer>());
 	public enum CustomerState
-	{nothing, waiting, seated, readyToOrder, takingOrder, ordered, reOrder, reOrdering, receivingReceipt, gettingReceipt, sendOrderToCook, deliver, delivering, eating, done, cleaningUp};
+	{nothing, waiting, seated, readyToOrder, takingOrder, ordered, reOrder, reOrdering, doneEating, waitingForReceipt, receivingReceipt, gettingReceipt, deliveredReceipt, sendOrderToCook, deliver, delivering, eating, done, cleaningUp};
 	public enum WaiterState
 	{nothing, continueWorking, onBreak, breaking, atSeat};
 	public WaiterState waiterState = WaiterState.nothing;
@@ -158,30 +158,33 @@ public class WaiterAgent extends Agent {
 		stateChanged();
 	}
 	
-	public void msgHereIsReceipt(int bill, CustomerAgent cust)
-	{
-		for (Customer c : myCustomers)
-		{
-			if (c.cust==cust)
-			{
-				c.customerState=CustomerState.receivingReceipt;
-				c.bill=bill;
-			}
-		}
-	}
-	
 	public void msgDoneEating(CustomerAgent cust)
 	{
 		for (Customer c : myCustomers)
 		{
 			if (c.cust==cust)
 			{
-				c.customerState=CustomerState.done;
+				c.customerState=CustomerState.doneEating;
 			}
 		}
 		stateChanged();
 	}
+	
+	public void msgHereIsReceipt(int bill, int tableNumber)
+	{
+		for (Customer c : myCustomers)
+		{
+			if (c.tableNumber==tableNumber)
+			{
+				print("HEYYYYYYYYY");
+				c.bill=bill;
+				c.customerState=CustomerState.receivingReceipt;
+			}
+		}
+	}
 
+	
+	
 
 	
 	/**
@@ -243,19 +246,19 @@ public class WaiterAgent extends Agent {
 		}
 		for (Customer cust : myCustomers) 
 		{
-			if (cust.customerState==CustomerState.receivingReceipt)
+			if (cust.customerState==CustomerState.doneEating)
 			{
-				cust.customerState=CustomerState.gettingReceipt;
-				DeliverReceipt(cust);
+				cust.customerState=CustomerState.waitingForReceipt;
+				GrabReceiptFromCashier(cust);
 				return true;
 			}
 		}
 		for (Customer cust : myCustomers) 
 		{
-			if (cust.customerState==CustomerState.done)
+			if (cust.customerState==CustomerState.receivingReceipt)
 			{
-				cust.customerState=CustomerState.cleaningUp;
-				CleanUp(cust);
+				cust.customerState=CustomerState.deliveredReceipt;
+				DeliverReceiptAndCleanUp(cust);
 				return true;
 			}
 		}
@@ -371,31 +374,37 @@ public class WaiterAgent extends Agent {
 		}
 		print("waiter " + name + " delivers the " + c.choice + " to customer " + c.cust.name);
 		waiterGui.deliveringFood=false;
-		cashier.msgComputeCheck(this, c.cust, c.choice);
 		c.cust.msgHereIsYourFood(c.choice);
 	}
 	
-	private void DeliverReceipt(Customer customer)
+	private void GrabReceiptFromCashier(Customer customer)
 	{
-//		customer.cust.msgHereIsReceipt(customer.bill);
-		if (customer.bill>customer.cust.money)
-		{
-			print("the customer does not have enough money to pay for the food");
+		waiterGui.DoGoToCashier();
+		try {
+//			print("acquiring");
+			atTable.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
-		else
-		{
-			print("the customer pays the moeny for the food");
-			customer.cust.money-=customer.bill;
-		}
+		cashier.msgComputeCheck(this, customer.choice, customer.tableNumber);
 	}
 	
-	private void CleanUp(Customer c)
+	private void DeliverReceiptAndCleanUp(Customer customer)
 	{
-		print("the waiter lets the host know that the table which customer " + c.cust.name + " sat at is now empty");
-		host.msgTableIsFree(c.tableNumber);
+		waiterGui.DoDeliverReceipt(customer.tableNumber);
+		try {
+//			print("acquiring");
+			atTable.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		customer.cust.msgHereIsReceipt(customer.bill);
+		print("the waiter lets the host know that the table which customer " + customer.cust.name + " sat at is now empty");
+		host.msgTableIsFree(customer.tableNumber);
 		print("the waiter is now available to help the next customer");
-		//state = WaiterState.available;
+
 	}
+	
 	
 
 

@@ -24,7 +24,8 @@ public class WaiterGui implements Gui {
     Point cookLocation = new Point(-20, 100);
     Point homeBase = new Point(260, 100);
     Point customerLine = new Point(-20,-20);
-    Point breakLocation = new Point(260, 0);
+    Point breakLocation = new Point(260, 100);
+    Point cashierLocation = new Point(520, 100);
     public static final int xTable = 100;
     public static final int yTable = 250;
 
@@ -162,6 +163,17 @@ public class WaiterGui implements Gui {
     	this.order = order;
     	deliveringFood = true;
     	reOrdering=true;
+    	Point location = tableMap.get(tableNumber);
+    	DoMoveToPosition(location);
+    }
+    
+    public void DoGoToCashier()
+    {
+    	DoMoveToPosition(cashierLocation);
+    }
+    
+    public void DoDeliverReceipt(int tableNumber)
+    {
     	Point location = tableMap.get(tableNumber);
     	DoMoveToPosition(location);
     }

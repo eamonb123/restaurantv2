@@ -23,7 +23,7 @@ public class CookAgent extends Agent {
 	}
 	private String name; 
 	private int marketIndex=0;
-	public WaiterGui hostGui = null;
+	public WaiterGui waiterGui = null;
 	public class Order
 	{
 		WaiterAgent waiter;
@@ -258,11 +258,11 @@ public class CookAgent extends Agent {
 	//utilities
 
 	public void setGui(WaiterGui gui) {
-		hostGui = gui;
+		waiterGui = gui;
 	}
 
 	public WaiterGui getGui() {
-		return hostGui;
+		return waiterGui;
 	}
 	
 	

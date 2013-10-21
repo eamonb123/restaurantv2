@@ -22,6 +22,7 @@ public class CustomerAgent extends Agent {
 	private int hungerLevel = 5;        // determines length of meal
     String choice;
     int money = 20;
+    int bill = 0;
     int tableNumber;
 	public Semaphore waiting = new Semaphore(0);
 	Timer timer = new Timer();
@@ -40,11 +41,11 @@ public class CustomerAgent extends Agent {
 	
 	//    private boolean isHungry = false; //hack for gui
 	public enum AgentState
-	{DoingNothing, WaitingToBeSeated, BeingSeated, Ordered, reOrder, finishing, leaving};
+	{DoingNothing, WaitingToBeSeated, BeingSeated, Ordered, reOrder, finishing, payCashier, leaving};
 	private AgentState state = AgentState.DoingNothing;//The start state
 
 	public enum AgentEvent // you're doing the event, so you are "state". ex. you got hungry, so you arrive at the restaurant. you walked in the restaurant, so you are waiting to be seated
-	{none, gotHungry, followHost, readyToOrder, readyToReorder, noMenuOptions, eating, doneEating};
+	{none, gotHungry, followHost, readyToOrder, readyToReorder, noMenuOptions, eating, doneEating, payingBill};
 	AgentEvent event = AgentEvent.none;
 	
 
@@ -155,17 +156,12 @@ public class CustomerAgent extends Agent {
 		stateChanged();
 	}
 	
-//	public void msgHereIsReceipt(int bill)
-//	{
-//		if (bill>money)
-//		{
-//			print("the cost of the food is greater than the amount the customer has");
-//		}
-//		else
-//		{
-//			money -= bill;
-//		}
-//	}
+	public void msgHereIsReceipt(int bill)
+	{
+		this.bill=bill;
+		event = AgentEvent.payingBill;
+		stateChanged();
+	}
 	
 	public void msgAnimationFinishedGoToSeat() {
 		//from animation
@@ -219,6 +215,11 @@ public class CustomerAgent extends Agent {
 				LeaveTable();
 				return true;
 			}
+		}
+		if (event == AgentEvent.payingBill && state == AgentState.finishing){
+			state = AgentState.payCashier;
+			PayCashier();
+			return true;
 		}
 		if (event == AgentEvent.doneEating && state == AgentState.finishing ){
 			state = AgentState.leaving;
@@ -285,6 +286,21 @@ public class CustomerAgent extends Agent {
 		EatFood();
 	}
 	
+	private void PayCashier()
+	{
+		//DoGoToCashier();
+		if (bill>money)
+		{
+			print("the customer does not have enough money to pay for the food");
+		}
+		else
+		{
+			print("the customer pays the money for the food");
+			money-=bill;
+		}
+		//DoLeaveRestaurant();
+	}
+	
 	private void LeaveTable()
 	{
 		print("customer " + name + " notifies the waiter that he is done eating the " + choice);
@@ -298,14 +314,6 @@ public class CustomerAgent extends Agent {
 
 	private void EatFood() {
 		Do("Eating Food");
-		//This next complicated line creates and starts a timer thread.
-		//We schedule a deadline of getHungerLevel()*1000 milliseconds.
-		//When that time elapses, it will call back to the run routine
-		//located in the anonymous class created right there inline:
-		//TimerTask is an interface that we implement right there inline.
-		//Since Java does not all us to pass functions, only objects.
-		//So, we use Java syntactic mechanism to create an
-		//anonymous inner class that has the public method run() in it.
 		timer.schedule(new TimerTask() {
 			Object cookie = 1;
 			public void run() {
