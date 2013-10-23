@@ -4,6 +4,7 @@ import agent.Agent;
 import restaurant.HostAgent.Table;
 import restaurant.HostAgent.Waiter;
 import restaurant.gui.WaiterGui;
+import restaurant.interfaces.Cashier;
 
 import java.awt.Point;
 import java.util.*;
@@ -14,7 +15,7 @@ import java.util.concurrent.TimeUnit;
  * Restaurant Host Agent
  */
 
-public class CashierAgent extends Agent {
+public class CashierAgent extends Agent implements Cashier{
 	public List<WaiterAgent> waiters = new ArrayList<WaiterAgent>();
 	public List<Order> receipts = new ArrayList<Order>();
 	HashMap<String, Integer> menu = new HashMap<String, Integer>();

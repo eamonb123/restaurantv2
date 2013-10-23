@@ -4,6 +4,7 @@ import agent.Agent;
 import restaurant.CustomerAgent.AgentState;
 import restaurant.HostAgent.Table;
 import restaurant.gui.WaiterGui;
+import restaurant.interfaces.Waiter;
 
 import java.awt.Point;
 import java.util.*;
@@ -13,7 +14,7 @@ import java.util.concurrent.Semaphore;
  * Restaurant Host Agent
  */
 
-public class WaiterAgent extends Agent {
+public class WaiterAgent extends Agent implements Waiter{
 	//public Collection<Table> tables;
 	private CashierAgent cashier;
 	private CookAgent cook;

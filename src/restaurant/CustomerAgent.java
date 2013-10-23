@@ -2,6 +2,8 @@ package restaurant;
 
 import restaurant.gui.CustomerGui;
 import restaurant.gui.RestaurantGui;
+import restaurant.interfaces.Customer;
+import restaurant.interfaces.Waiter;
 import agent.Agent;
 
 import java.awt.Point;
@@ -17,7 +19,7 @@ import java.util.concurrent.Semaphore;
 /**
  * Restaurant customer agent.
  */
-public class CustomerAgent extends Agent {
+public class CustomerAgent extends Agent implements Customer{
 	public String name;
 	private int hungerLevel = 5;        // determines length of meal
     String choice;
@@ -92,7 +94,7 @@ public class CustomerAgent extends Agent {
 	}
 	
 	
-	public void msgFollowMeToTable(WaiterAgent waiter, List<String> menuOptions, int tableNumber, Point loc)
+	public void msgFollowMeToTable(Waiter waiter, List<String> menuOptions, int tableNumber, Point loc)
 	{
 		print("customer " + name + " has recived the message to sit at table " + tableNumber);
 		this.menuOptions=menuOptions;

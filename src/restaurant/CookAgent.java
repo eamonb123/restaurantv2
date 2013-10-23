@@ -4,6 +4,7 @@ import agent.Agent;
 import restaurant.HostAgent.Table;
 import restaurant.HostAgent.Waiter;
 import restaurant.gui.WaiterGui;
+import restaurant.interfaces.Cook;
 
 import java.awt.Point;
 import java.util.*;
@@ -14,7 +15,7 @@ import java.util.concurrent.TimeUnit;
  * Restaurant Host Agent
  */
 
-public class CookAgent extends Agent {
+public class CookAgent extends Agent implements Cook{
 	public List<MarketAgent> markets = new ArrayList<MarketAgent>();
 	List<String> menuOptions = new ArrayList<String>();{
 	    menuOptions.add("chicken");
@@ -26,11 +27,11 @@ public class CookAgent extends Agent {
 	public WaiterGui waiterGui = null;
 	public class Order
 	{
-		WaiterAgent waiter;
+		Waiter waiter;
 		String choice;
 		int tableNumber;
 		state s;
-		Order(WaiterAgent waiter, String choice, int tableNumber, state s)
+		Order(Waiter waiter, String choice, int tableNumber, state s)
 		{
 			this.waiter=waiter;
 			this.choice=choice;
@@ -84,7 +85,7 @@ public class CookAgent extends Agent {
 	
 	//Messages
 	
-	public void msgHereIsOrder(WaiterAgent waiter, String choice, int tableNumber)
+	public void msgHereIsOrder(Waiter waiter, String choice, int tableNumber)
 	{
 		Order order = new Order(waiter, choice, tableNumber, state.pending);
 		print("the cook recieves the order " + order.choice + " and puts it on a list of orders");
