@@ -1,5 +1,7 @@
 package restaurant.test.mock;
 
+import restaurant.interfaces.Host;
+
 /**
  * This is the base class for all mocks.
  *

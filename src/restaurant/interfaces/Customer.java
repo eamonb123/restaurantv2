@@ -32,6 +32,8 @@ public interface Customer {
 	public abstract String getChoice();
 	
 	public abstract String getName();
+
+	public abstract void setHost(Host h);
 	
 	
 	

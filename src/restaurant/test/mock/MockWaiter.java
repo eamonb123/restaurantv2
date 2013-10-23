@@ -38,20 +38,20 @@ public class MockWaiter extends Mock implements Waiter {
 	}
 
 	@Override
-	public void msgPleaseSeatCustomer(restaurant.WaiterAgent.MyCustomer customer,
+	public void msgPleaseSeatCustomer(Customer customer,
 			int tableNumber, Point loc) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void msgReadyToOrder(restaurant.WaiterAgent.MyCustomer customer) {
+	public void msgReadyToOrder(Customer customer) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void msgHereIsChoice(restaurant.WaiterAgent.MyCustomer customer) {
+	public void msgHereIsChoice(Customer customer) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -69,7 +69,7 @@ public class MockWaiter extends Mock implements Waiter {
 	}
 
 	@Override
-	public void msgDoneEating(restaurant.WaiterAgent.MyCustomer customer) {
+	public void msgDoneEating(Customer customer) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -79,5 +79,13 @@ public class MockWaiter extends Mock implements Waiter {
 		// TODO Auto-generated method stub
 		
 	}
+
+
+
+
+
+
+
+
 	
 }

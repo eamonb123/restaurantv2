@@ -4,8 +4,10 @@ package restaurant.test.mock;
 import java.awt.Point;
 import java.util.List;
 
+import restaurant.HostAgent;
 import restaurant.interfaces.Cashier;
 import restaurant.interfaces.Customer;
+import restaurant.interfaces.Host;
 import restaurant.interfaces.Waiter;
 
 
@@ -21,15 +23,18 @@ public class MockCustomer extends Mock implements Customer {
 	 * Reference to the Cashier under test that can be set by the unit test.
 	 */
 	public Cashier cashier;
+	public Host host;
 	public EventLog log = new EventLog();
 	private String choice;
+	//public HostAgent host;
 	
 	public MockCustomer(String name) {
 		super(name);
 	}
 	@Override
 	public void gotHungry() {
-		log.add(new LoggedEvent("customer is hungry"));
+		log.add(new LoggedEvent("customer is hungry and host is adding customer to list"));
+		host.msgIWantToEat(this);
 	}
 	@Override
 	public void msgSemaphoreRelease() {
@@ -67,10 +72,16 @@ public class MockCustomer extends Mock implements Customer {
 	public String getChoice(){
 		return choice;
 	}
+	
 	@Override
 	public void setWaiter(Waiter w) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	@Override
+	public void setHost(Host host) {
+		this.host = host;
 	}
 
 //	@Override

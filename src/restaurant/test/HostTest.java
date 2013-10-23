@@ -18,9 +18,10 @@ public class HostTest extends TestCase {
 	
 	public void testOneNormalCustomerScenario()
 	{
-		setUp(); //runs first before this test!
-		host.
-		assertTrue(customer.log.getLastLoggedEvent().toString().equals("customer is hungry"));
-		customer.host = host;//You can do almost anything in a unit test.			
-		
+		//setUp(); //runs first before this test!
+		customer.setHost(host);//You can do almost anything in a unit test.
+		customer.gotHungry();
+		assertTrue(customer.log.getLastLoggedEvent().toString().equals("customer is hungry and host is adding customer to list"));
+		assertTrue(!host.myWaitingCustomers.isEmpty());
+	}
 }
