@@ -53,7 +53,7 @@ public class CashierAgent extends Agent implements Cashier{
 	
 	//Messages
 	
-	public void msgComputeCheck(WaiterAgent waiter, String choice, int tableNumber)
+	public void msgComputeCheck(Waiter waiter, String choice, int tableNumber)
 	{
 		Order order = new Order(waiter, choice, tableNumber, receiptState.pending);
 		orders.add(order);

@@ -2,9 +2,8 @@ package restaurant;
 
 import agent.Agent;
 import restaurant.HostAgent.Table;
-import restaurant.HostAgent.Waiter;
 import restaurant.gui.WaiterGui;
-import restaurant.interfaces.Cook;
+import restaurant.interfaces.*;
 
 import java.awt.Point;
 import java.util.*;
@@ -84,7 +83,7 @@ public class CookAgent extends Agent implements Cook{
 
 	
 	//Messages
-	
+
 	public void msgHereIsOrder(Waiter waiter, String choice, int tableNumber)
 	{
 		Order order = new Order(waiter, choice, tableNumber, state.pending);
