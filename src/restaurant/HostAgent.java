@@ -1,8 +1,10 @@
 package restaurant;
 
 import agent.Agent;
-import restaurant.WaiterAgent.Customer;
 import restaurant.gui.WaiterGui;
+import restaurant.interfaces.Customer;
+import restaurant.interfaces.Host;
+import restaurant.interfaces.Waiter;
 
 import java.awt.Point;
 import java.util.*;
@@ -15,20 +17,20 @@ import java.util.concurrent.Semaphore;
 //does all the rest. Rather than calling the other agent a waiter, we called him
 //the HostAgent. A Host is the manager of a restaurant who sees that all
 //is proceeded as he wishes.
-public class HostAgent extends Agent {
+public class HostAgent extends Agent implements Host{
 	static int NTABLES=3;
-	public List<Customer> myWaitingCustomers = new ArrayList<Customer>();
-	public List<Waiter> myWaiters = new ArrayList<Waiter>();
+	public List<MyCustomer> myWaitingCustomers = new ArrayList<MyCustomer>();
+	public List<MyWaiter> myWaiters = new ArrayList<MyWaiter>();
 	public Collection<Table> myTables;
 	public WaiterGui waiterGui = null;
     private int xPosition=100;
     private int yPosition=250;
     private String name;
-	public class Waiter
+	public class MyWaiter
 	{
-		WaiterAgent waiter;
+		Waiter waiter;
 		boolean wantsToGoOnBreak=false;
-		List<Customer> customers = new ArrayList<Customer>();
+		List<MyCustomer> customers = new ArrayList<MyCustomer>();
 		boolean isBusy()
 		{
 			if (customers.size()!=0)
@@ -36,15 +38,15 @@ public class HostAgent extends Agent {
 			else 
 				return false;
 		}
-		Waiter(WaiterAgent waiter)
+		MyWaiter(Waiter waiter)
 		{
 			this.waiter=waiter;
 		}
 	}
-	public class Customer
+	public class MyCustomer
 	{
-		CustomerAgent cust;
-		Customer(CustomerAgent cust)
+		Customer cust;
+		MyCustomer(Customer cust)
 		{
 			this.cust=cust;
 		}
@@ -85,9 +87,9 @@ public class HostAgent extends Agent {
     
 	// Messages
 
-	public void msgIWantToEat(CustomerAgent cust) {
-		print("Host is adding customer " + cust.name + " to the waiting customer list");
-		myWaitingCustomers.add(new Customer(cust));
+	public void msgIWantToEat(Customer cust) {
+		print("Host is adding customer to the waiting customer list");
+		myWaitingCustomers.add(new MyCustomer(cust));
 		stateChanged();
 	}
 
@@ -96,10 +98,10 @@ public class HostAgent extends Agent {
 		stateChanged();
 	}
 	
-	public void msgCanIGoOnBreak(WaiterAgent askingWaiter)
+	public void msgCanIGoOnBreak(Waiter askingWaiter)
 	{
 		print("the host recieved the message from the waiter asking to go on break and is considering...");
-		for (Waiter w: myWaiters)
+		for (MyWaiter w: myWaiters)
 		{
 			if (w.waiter==askingWaiter)
 			{
@@ -109,10 +111,10 @@ public class HostAgent extends Agent {
 		stateChanged();
 	}
 	
-	public void msgWaiterOnBreak(WaiterAgent w)
+	public void msgWaiterOnBreak(Waiter w)
 	{
-		Waiter wait = new Waiter(w);
-		for (Waiter waiter: myWaiters)
+		MyWaiter wait = new MyWaiter(w);
+		for (MyWaiter waiter: myWaiters)
 		{
 			if (waiter.waiter == w)
 			{
@@ -122,10 +124,7 @@ public class HostAgent extends Agent {
 		myWaiters.remove(wait);
 	}
 
-	public void msgAddWaiter(WaiterAgent waiter)
-	{
-		myWaiters.add(new Waiter(waiter));
-	}
+
 	
 	
 	public void msgTableIsFree(int tableNumber) {//from animation
@@ -145,7 +144,7 @@ public class HostAgent extends Agent {
 	 * Scheduler.  Determine what action is called for, and do it.
 	 */
 	protected boolean pickAndExecuteAnAction() {
-		for (Waiter waiter : myWaiters)
+		for (MyWaiter waiter : myWaiters)
 		{
 			if (waiter.wantsToGoOnBreak)
 			{
@@ -162,12 +161,12 @@ public class HostAgent extends Agent {
 			}
 			else
 			{
-				Waiter leastBusyWaiter = leastBusyWaiter(myWaiters);
+				MyWaiter leastBusyWaiter = leastBusyWaiter(myWaiters);
 				for (Table table : myTables)
 				{
 					if(!table.isOccupied)
 					{
-						Customer customer = myWaitingCustomers.get(0);
+						MyCustomer customer = myWaitingCustomers.get(0);
 						customer.cust.msgSemaphoreRelease();
 						leastBusyWaiter.customers.add(customer);
 						callWaiter(customer.cust, leastBusyWaiter.waiter, table);
@@ -184,7 +183,7 @@ public class HostAgent extends Agent {
 
 	// Actions
 
-	private void DecideIfWaiterCanBreak(Waiter w)
+	private void DecideIfWaiterCanBreak(MyWaiter w)
 	{
 		if (myWaiters.size()<=1)
 		{
@@ -201,9 +200,9 @@ public class HostAgent extends Agent {
 	}
 	
 	
-	private void callWaiter(CustomerAgent cust, WaiterAgent waiter, Table table)
+	private void callWaiter(Customer cust, Waiter waiter, Table table)
 	{
-		print("Host is sending message to the waiter to sit customer " + cust.name);
+		print("Host is sending message to the waiter to sit customer");
 		cust.setWaiter(waiter);
 		Point location=tableMap.get(table.tableNumber);
 		waiter.msgPleaseSeatCustomer(cust, table.tableNumber, location); //grabbing the only waiter
@@ -214,15 +213,20 @@ public class HostAgent extends Agent {
 
 	//utilities
 
-	Waiter leastBusyWaiter(List<Waiter> waiterList)
+	public void msgAddWaiter(Waiter waiter)
+	{
+		myWaiters.add(new MyWaiter(waiter));
+	}
+	
+	MyWaiter leastBusyWaiter(List<MyWaiter> waiterList)
 	{
 		if (waiterList.isEmpty()) 
 			return null;
 		else
 		{
 			int numOfCustomers=waiterList.get(0).customers.size();
-			Waiter freeWaiter = myWaiters.get(0);
-			for(Waiter waiter : myWaiters)
+			MyWaiter freeWaiter = myWaiters.get(0);
+			for(MyWaiter waiter : myWaiters)
 			{
 				if (waiter.customers.size()<numOfCustomers)
 				{
@@ -245,7 +249,7 @@ public class HostAgent extends Agent {
 
 	public void setWaiter(WaiterAgent waiter)
 	{
-		myWaiters.add(new Waiter(waiter));
+		myWaiters.add(new MyWaiter(waiter));
 	}
 }
 

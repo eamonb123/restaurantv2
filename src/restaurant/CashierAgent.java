@@ -1,10 +1,11 @@
 package restaurant;
 
 import agent.Agent;
-import restaurant.HostAgent.Table;
-import restaurant.HostAgent.Waiter;
 import restaurant.gui.WaiterGui;
+
+
 import restaurant.interfaces.Cashier;
+import restaurant.interfaces.Waiter;
 
 import java.awt.Point;
 import java.util.*;
@@ -28,11 +29,11 @@ public class CashierAgent extends Agent implements Cashier{
 	public WaiterGui waiterGui = null;
 	public class Order
 	{
-		WaiterAgent waiter;
+		Waiter waiter;
 		String choice;
 		int tableNumber;
 		receiptState state;
-		Order(WaiterAgent waiter, String choice, int tableNumber, receiptState state)
+		Order(Waiter waiter, String choice, int tableNumber, receiptState state)
 		{
 			this.waiter=waiter;
 			this.choice=choice;
@@ -107,6 +108,11 @@ public class CashierAgent extends Agent implements Cashier{
 	{
 		waiters.add(waiter);
 	}
-	
+
+
+
+
+
+
 }
 
