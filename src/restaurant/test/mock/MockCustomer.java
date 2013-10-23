@@ -3,6 +3,7 @@ package restaurant.test.mock;
 
 import java.awt.Point;
 import java.util.List;
+
 import restaurant.interfaces.Cashier;
 import restaurant.interfaces.Customer;
 import restaurant.interfaces.Waiter;
@@ -21,9 +22,10 @@ public class MockCustomer extends Mock implements Customer {
 	 */
 	public Cashier cashier;
 	public EventLog log = new EventLog();
+	private String choice;
+	
 	public MockCustomer(String name) {
 		super(name);
-
 	}
 	@Override
 	public void gotHungry() {
@@ -57,6 +59,16 @@ public class MockCustomer extends Mock implements Customer {
 	}
 	@Override
 	public void msgHereIsReceipt(int bill) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public String getChoice(){
+		return choice;
+	}
+	@Override
+	public void setWaiter(Waiter w) {
 		// TODO Auto-generated method stub
 		
 	}

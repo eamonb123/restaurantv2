@@ -7,6 +7,7 @@ import restaurant.CustomerAgent.AgentEvent;
 import restaurant.CustomerAgent.AgentState;
 import restaurant.HostAgent.Table;
 import restaurant.gui.WaiterGui;
+import restaurant.interfaces.Cook;
 import restaurant.interfaces.Market;
 
 import java.awt.Point;
@@ -19,14 +20,14 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class MarketAgent extends Agent implements Market{
-	CookAgent cook;
+	Cook cook;
 	private String name; 
 	public class IncomingOrder
 	{
-		CookAgent cook;
+		Cook cook;
 	    HashMap<String, Integer> incomingList = new HashMap<String, Integer>();
 	    reStockingState state;
-		IncomingOrder(CookAgent cook,  HashMap<String, Integer> incomingList, reStockingState state)
+		IncomingOrder(Cook cook,  HashMap<String, Integer> incomingList, reStockingState state)
 		{
 			this.cook=cook;
 			this.incomingList=incomingList;
@@ -48,12 +49,12 @@ public class MarketAgent extends Agent implements Market{
 			inventory.put(choice, 4);
 		}
     }
-////
+
 
 	
 	//Messages
 	
-	public void msgOrderRestock(CookAgent cook, HashMap<String, Integer> groceryList)
+	public void msgOrderRestock(Cook cook, HashMap<String, Integer> groceryList)
 	{
 		print("the market recieves the grocery list and changes it's state to restocking");
 		orders.add(new IncomingOrder(cook, groceryList, reStockingState.restocking));

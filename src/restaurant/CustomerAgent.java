@@ -367,5 +367,10 @@ public class CustomerAgent extends Agent implements Customer{
 	public void setWaiter(Waiter w){
 		waiter = w;
 	}
+
+	@Override
+	public String getChoice() {
+		return this.choice;
+	}
 }
 

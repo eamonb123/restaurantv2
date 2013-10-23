@@ -10,6 +10,9 @@ import java.util.List;
  *
  */
 public interface Customer {
+	
+	
+	
 	public abstract void gotHungry();
 	
 	public abstract void msgSemaphoreRelease();
@@ -25,6 +28,10 @@ public interface Customer {
 	public abstract void msgHereIsReceipt(int bill);
 	
 	public abstract void setWaiter(Waiter w);
+	
+	public abstract String getChoice();
+	
+	public abstract String getName();
 	
 	
 	

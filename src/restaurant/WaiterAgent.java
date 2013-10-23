@@ -127,11 +127,11 @@ public class WaiterAgent extends Agent implements Waiter{
 		System.out.println("A:" + cust);
 		for (MyCustomers c : myCustomers)
 		{
-			if (c.cust==cust && c.cust.choice.equals(cust.choice))
+			if (c.cust==cust && c.cust.getChoice().equals(cust.getChoice()))
 			{
-				print("the waiter assigns the customer's choice " + c.cust.choice + " to customer " + cust.name);
+				print("the waiter assigns the customer's choice " + c.cust.getChoice() + " to customer " + cust.getName());
 				c.customerState=CustomerState.ordered;
-				c.choice=cust.choice;
+				c.choice=cust.getChoice();
 			}
 		}
 		stateChanged();
@@ -293,8 +293,8 @@ public class WaiterAgent extends Agent implements Waiter{
 	}
 	private void SeatCustomer(MyCustomers c) 
 	{
-		print("waiter is now currently busy helping customer " + c.cust.name);
-		print("waiter is asking customer " + c.cust.name + " to follow him to table " + c.tableNumber);
+		print("waiter is now currently busy helping customer " + c.cust.getName());
+		print("waiter is asking customer " + c.cust.getName() + " to follow him to table " + c.tableNumber);
 		//state = WaiterState.busy;
 		waiterGui.PickUpCustomer();
 		try {
@@ -317,7 +317,7 @@ public class WaiterAgent extends Agent implements Waiter{
 	
 	private void TakeOrder(MyCustomers c)
 	{
-		print("waiter " + name + " is taking customer " + c.cust.name + " order");
+		print("waiter " + name + " is taking customer " + c.cust.getName() + " order");
 		waiterGui.DoGoToTable(c.tableNumber);
 		try {
 //			print("acquiring");
@@ -356,7 +356,7 @@ public class WaiterAgent extends Agent implements Waiter{
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		print("the waiter gives customer " + c.cust.name + " order to the cook to prepare");
+		print("the waiter gives customer " + c.cust.getName() + " order to the cook to prepare");
 		cook.msgHereIsOrder(this, c.choice, c.tableNumber);
 	
 	}
@@ -377,7 +377,7 @@ public class WaiterAgent extends Agent implements Waiter{
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		print("waiter " + name + " delivers the " + c.choice + " to customer " + c.cust.name);
+		print("waiter " + name + " delivers the " + c.choice + " to customer " + c.cust.getName());
 		waiterGui.deliveringFood=false;
 		c.cust.msgHereIsYourFood(c.choice);
 	}
@@ -404,7 +404,7 @@ public class WaiterAgent extends Agent implements Waiter{
 			e.printStackTrace();
 		}
 		customer.cust.msgHereIsReceipt(customer.bill);
-		print("the waiter lets the host know that the table which customer " + customer.cust.name + " sat at is now empty");
+		print("the waiter lets the host know that the table which customer " + customer.cust.getName() + " sat at is now empty");
 		host.msgTableIsFree(customer.tableNumber);
 		print("the waiter is now available to help the next customer");
 	}
@@ -443,7 +443,7 @@ public class WaiterAgent extends Agent implements Waiter{
 		this.host=host;
 	}
 	
-	public HostAgent getHost()
+	public Host getHost()
 	{
 		return host;
 	}
