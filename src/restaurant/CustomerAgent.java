@@ -3,6 +3,7 @@ package restaurant;
 import restaurant.gui.CustomerGui;
 import restaurant.gui.RestaurantGui;
 import restaurant.interfaces.Customer;
+import restaurant.interfaces.Host;
 import restaurant.interfaces.Waiter;
 import agent.Agent;
 
@@ -37,9 +38,9 @@ public class CustomerAgent extends Agent implements Customer{
 		String chicken;
 	}
 	// agent correspondents
-	private HostAgent host;
+	private Host host;
 	//private WaiterAgent waiter = new WaiterAgent("bob");
-	private WaiterAgent waiter = null;
+	private Waiter waiter = null;
 	
 	//    private boolean isHungry = false; //hack for gui
 	public enum AgentState
@@ -65,7 +66,7 @@ public class CustomerAgent extends Agent implements Customer{
 	/**
 	 * hack to establish connection to Host agent.
 	 */
-	public void setHost(HostAgent host) {
+	public void setHost(Host host) {
 		this.host = host;
 	}
 
@@ -363,7 +364,7 @@ public class CustomerAgent extends Agent implements Customer{
 		return customerGui;
 	}
 	
-	public void setWaiter(WaiterAgent w){
+	public void setWaiter(Waiter w){
 		waiter = w;
 	}
 }

@@ -12,12 +12,11 @@ public interface Host {
 
 	public abstract void msgWakeUp();
 	
-	public abstract void msgCanIGoOnBreak(MyWaiter askingWaiter);
+	public abstract void msgCanIGoOnBreak(Waiter askingWaiter);
 	
-	public abstract void msgWaiterOnBreak(MyWaiter waiter);
-
-	public abstract void msgAddWaiter(MyWaiter waiter);
+	public abstract void msgWaiterOnBreak(Waiter waiter);
 
 	public abstract void msgTableIsFree(int tableNumber);
 
+	public abstract void msgAddWaiter(Waiter waiter);
 }

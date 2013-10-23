@@ -1,23 +1,21 @@
 package restaurant;
 
 import agent.Agent;
+import restaurant.HostAgent.Table;
 import restaurant.gui.WaiterGui;
-
-
 import restaurant.interfaces.Cashier;
-import restaurant.interfaces.Waiter;
 
 import java.awt.Point;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
-
+import restaurant.interfaces.Waiter;
 /**
  * Restaurant Host Agent
  */
 
 public class CashierAgent extends Agent implements Cashier{
-	public List<WaiterAgent> waiters = new ArrayList<WaiterAgent>();
+	public List<Waiter> waiters = new ArrayList<Waiter>();
 	public List<Order> receipts = new ArrayList<Order>();
 	HashMap<String, Integer> menu = new HashMap<String, Integer>();
 	{
@@ -108,11 +106,6 @@ public class CashierAgent extends Agent implements Cashier{
 	{
 		waiters.add(waiter);
 	}
-
-
-
-
-
-
+	
 }
 

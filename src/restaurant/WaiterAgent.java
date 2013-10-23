@@ -4,6 +4,10 @@ import agent.Agent;
 import restaurant.CustomerAgent.AgentState;
 import restaurant.HostAgent.Table;
 import restaurant.gui.WaiterGui;
+import restaurant.interfaces.Cashier;
+import restaurant.interfaces.Cook;
+import restaurant.interfaces.Customer;
+import restaurant.interfaces.Host;
 import restaurant.interfaces.Waiter;
 
 import java.awt.Point;
@@ -16,12 +20,12 @@ import java.util.concurrent.Semaphore;
 
 public class WaiterAgent extends Agent implements Waiter{
 	//public Collection<Table> tables;
-	private CashierAgent cashier;
-	private CookAgent cook;
-	private HostAgent host;
+	private Cashier cashier;
+	private Cook cook;
+	private Host host;
 	public WaiterGui waiterGui = null;
 	//private Point location = new Point();
-	public List<Customer> myCustomers = new ArrayList<Customer>();
+	public List<MyCustomers> myCustomers = new ArrayList<MyCustomers>();
 	//List<Customer> myCustomers = Collections.synchronizedList(new ArrayList<Customer>());
 	public enum CustomerState
 	{nothing, waiting, seated, readyToOrder, takingOrder, ordered, reOrder, reOrdering, doneEating, waitingForReceipt, receivingReceipt, gettingReceipt, deliveredReceipt, sendOrderToCook, deliver, delivering, eating, done, cleaningUp};
@@ -36,9 +40,9 @@ public class WaiterAgent extends Agent implements Waiter{
 			return false;
 	}
 
-	public class Customer
+	public class MyCustomers
 	{
-		CustomerAgent cust;
+		Customer cust;
 		int bill;
 		int tableNumber;
 		String choice;
@@ -49,7 +53,7 @@ public class WaiterAgent extends Agent implements Waiter{
 		}
 		Point location = new Point();
 		CustomerState customerState = CustomerState.nothing;
-		Customer(CustomerAgent cust, int tableNumber, CustomerState state, Point location) {
+		MyCustomers(Customer cust, int tableNumber, CustomerState state, Point location) {
 			this.cust=cust;
 			this.tableNumber=tableNumber;
 			this.customerState=state;
@@ -96,32 +100,32 @@ public class WaiterAgent extends Agent implements Waiter{
 		stateChanged();
 	}
 	
-	public void msgPleaseSeatCustomer(CustomerAgent cust, int tableNumber, Point loc)
+	public void msgPleaseSeatCustomer(Customer cust, int tableNumber, Point loc)
 	{
-		print("waiter is adding " + cust.name + " to the list of waiting customers");
-		myCustomers.add(new Customer(cust, tableNumber, CustomerState.waiting, loc));
+		print("waiter is adding customer to the list of waiting customers");
+		myCustomers.add(new MyCustomers(cust, tableNumber, CustomerState.waiting, loc));
 		stateChanged();
 		//System.out.println("test");
 	}
 
 	
-	public void msgReadyToOrder(CustomerAgent cust)
+	public void msgReadyToOrder(Customer cust)
 	{
-		for (Customer c : myCustomers)
+		for (MyCustomers c : myCustomers)
 		{
 			if (c.cust==cust)
 			{
-				print("change customer " + cust.name + " state to readyToOrder");
+				print("change customer state to readyToOrder");
 				c.customerState=CustomerState.readyToOrder;
 			}
 		}
 		stateChanged();
 	}
 	
-	public void msgHereIsChoice(CustomerAgent cust)
+	public void msgHereIsChoice(Customer cust)
 	{
 		System.out.println("A:" + cust);
-		for (Customer c : myCustomers)
+		for (MyCustomers c : myCustomers)
 		{
 			if (c.cust==cust && c.cust.choice.equals(cust.choice))
 			{
@@ -135,7 +139,7 @@ public class WaiterAgent extends Agent implements Waiter{
 	
 	public void msgOutOfFood(String choice, int tableNumber)
 	{
-		for (Customer c : myCustomers)
+		for (MyCustomers c : myCustomers)
 		{
 			if (c.choice.equals(choice) && c.tableNumber==tableNumber)
 			{
@@ -149,7 +153,7 @@ public class WaiterAgent extends Agent implements Waiter{
 	
 	public void msgOrderIsReady(String choice, int tableNumber)
 	{
-		for (Customer c : myCustomers)
+		for (MyCustomers c : myCustomers)
 		{
 			if (c.choice.equals(choice) && c.tableNumber==tableNumber)
 			{
@@ -159,9 +163,9 @@ public class WaiterAgent extends Agent implements Waiter{
 		stateChanged();
 	}
 	
-	public void msgDoneEating(CustomerAgent cust)
+	public void msgDoneEating(Customer cust)
 	{
-		for (Customer c : myCustomers)
+		for (MyCustomers c : myCustomers)
 		{
 			if (c.cust==cust)
 			{
@@ -173,11 +177,10 @@ public class WaiterAgent extends Agent implements Waiter{
 	
 	public void msgHereIsReceipt(int bill, int tableNumber)
 	{
-		for (Customer c : myCustomers)
+		for (MyCustomers c : myCustomers)
 		{
 			if (c.tableNumber==tableNumber)
 			{
-				print("HEYYYYYYYYY");
 				c.bill=bill;
 				c.customerState=CustomerState.receivingReceipt;
 			}
@@ -201,7 +204,7 @@ public class WaiterAgent extends Agent implements Waiter{
 			GoOnBreak();
 			return true;
 		}
-		for (Customer cust : myCustomers) 
+		for (MyCustomers cust : myCustomers) 
 		{
 			if (cust.customerState==CustomerState.waiting)
 			{
@@ -210,7 +213,7 @@ public class WaiterAgent extends Agent implements Waiter{
 			}
 		}
 		//}
-		for (Customer cust : myCustomers) 
+		for (MyCustomers cust : myCustomers) 
 		{
 			if (cust.customerState==CustomerState.readyToOrder)
 			{
@@ -219,7 +222,7 @@ public class WaiterAgent extends Agent implements Waiter{
 				return true;
 			}
 		}
-		for (Customer cust : myCustomers) 
+		for (MyCustomers cust : myCustomers) 
 		{
 			if (cust.customerState==CustomerState.ordered)
 			{
@@ -228,7 +231,7 @@ public class WaiterAgent extends Agent implements Waiter{
 				return true;
 			}
 		}
-		for (Customer cust : myCustomers) 
+		for (MyCustomers cust : myCustomers) 
 		{
 			if (cust.customerState==CustomerState.reOrder)
 			{
@@ -237,7 +240,7 @@ public class WaiterAgent extends Agent implements Waiter{
 				return true;
 			}
 		}
-		for (Customer cust : myCustomers) 
+		for (MyCustomers cust : myCustomers) 
 		{
 			if (cust.customerState==CustomerState.deliver)
 			{
@@ -246,7 +249,7 @@ public class WaiterAgent extends Agent implements Waiter{
 				return true;
 			}
 		}
-		for (Customer cust : myCustomers) 
+		for (MyCustomers cust : myCustomers) 
 		{
 			if (cust.customerState==CustomerState.doneEating)
 			{
@@ -255,7 +258,7 @@ public class WaiterAgent extends Agent implements Waiter{
 				return true;
 			}
 		}
-		for (Customer cust : myCustomers) 
+		for (MyCustomers cust : myCustomers) 
 		{
 			if (cust.customerState==CustomerState.receivingReceipt)
 			{
@@ -288,7 +291,7 @@ public class WaiterAgent extends Agent implements Waiter{
 	{
 		host.msgAddWaiter(waiter);
 	}
-	private void SeatCustomer(Customer c) 
+	private void SeatCustomer(MyCustomers c) 
 	{
 		print("waiter is now currently busy helping customer " + c.cust.name);
 		print("waiter is asking customer " + c.cust.name + " to follow him to table " + c.tableNumber);
@@ -312,7 +315,7 @@ public class WaiterAgent extends Agent implements Waiter{
 	}
 	
 	
-	private void TakeOrder(Customer c)
+	private void TakeOrder(MyCustomers c)
 	{
 		print("waiter " + name + " is taking customer " + c.cust.name + " order");
 		waiterGui.DoGoToTable(c.tableNumber);
@@ -326,7 +329,7 @@ public class WaiterAgent extends Agent implements Waiter{
 		//c.state = CustomerState.ordered;
 	}
 	
-	private void reOrder(Customer c)
+	private void reOrder(MyCustomers c)
 	{
 		print("the waiter is now approaching the customer asking him to reorder");
 		waiterGui.WalkingToReorderingCustomer(c.tableNumber, c.choice);
@@ -344,7 +347,7 @@ public class WaiterAgent extends Agent implements Waiter{
 		c.cust.msgReOrder(c.menuOptions);
 	}
 	
-	private void GiveCook(Customer c)
+	private void GiveCook(MyCustomers c)
 	{
 		waiterGui.DoGiveCook();
 		try {
@@ -358,7 +361,7 @@ public class WaiterAgent extends Agent implements Waiter{
 	
 	}
 	
-	private void Deliver(Customer c)
+	private void Deliver(MyCustomers c)
 	{
 		waiterGui.DoPickUpOrder();
 		try {
@@ -379,7 +382,7 @@ public class WaiterAgent extends Agent implements Waiter{
 		c.cust.msgHereIsYourFood(c.choice);
 	}
 	
-	private void GrabReceiptFromCashier(Customer customer)
+	private void GrabReceiptFromCashier(MyCustomers customer)
 	{
 		waiterGui.DoGoToCashier();
 		try {
@@ -391,7 +394,7 @@ public class WaiterAgent extends Agent implements Waiter{
 		cashier.msgComputeCheck(this, customer.choice, customer.tableNumber);
 	}
 	
-	private void DeliverReceiptAndCleanUp(Customer customer)
+	private void DeliverReceiptAndCleanUp(MyCustomers customer)
 	{
 		waiterGui.DoDeliverReceipt(customer.tableNumber);
 		try {

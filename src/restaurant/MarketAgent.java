@@ -7,6 +7,7 @@ import restaurant.CustomerAgent.AgentEvent;
 import restaurant.CustomerAgent.AgentState;
 import restaurant.HostAgent.Table;
 import restaurant.gui.WaiterGui;
+import restaurant.interfaces.Market;
 
 import java.awt.Point;
 import java.util.*;
@@ -17,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  * Restaurant Host Agent
  */
 
-public class MarketAgent extends Agent {
+public class MarketAgent extends Agent implements Market{
 	CookAgent cook;
 	private String name; 
 	public class IncomingOrder

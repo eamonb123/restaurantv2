@@ -24,6 +24,8 @@ public interface Customer {
 	
 	public abstract void msgHereIsReceipt(int bill);
 	
+	public abstract void setWaiter(Waiter w);
+	
 	
 	
 	

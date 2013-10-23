@@ -4,7 +4,6 @@ import java.awt.Point;
 import java.util.List;
 
 import restaurant.CustomerAgent;
-import restaurant.WaiterAgent.Customer;
 import restaurant.WaiterAgent.CustomerState;
 import restaurant.WaiterAgent.WaiterState;
 
