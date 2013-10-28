@@ -18,5 +18,6 @@ public interface Host {
 
 	public abstract void msgTableIsFree(int tableNumber);
 
-	public abstract void msgAddWaiter(Waiter waiter);
+	public abstract void setWaiter(Waiter waiter);
+
 }

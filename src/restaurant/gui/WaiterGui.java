@@ -26,7 +26,7 @@ public class WaiterGui implements Gui {
     Point cookLocation = new Point(-20, 100);
     Point homeBase = new Point(260, 100);
     Point customerLine = new Point(-20,-20);
-    Point breakLocation = new Point(260, 100);
+    Point breakLocation = new Point(260, 20);
     Point cashierLocation = new Point(520, 100);
     public static final int xTable = 100;
     public static final int yTable = 250;
@@ -79,10 +79,7 @@ public class WaiterGui implements Gui {
     }
 
     
-    public void goToHome()
-    {
-    	DoMoveToPosition(homeBase);
-    }
+ 
     
     public void draw(Graphics2D g) {
         g.setColor(Color.MAGENTA);
@@ -107,14 +104,18 @@ public class WaiterGui implements Gui {
 		waiter.msgTryToGoOnBreak();
 	}
 	
-	public void goOffBreak() {
-		
-	}
+	
+	
     public void DoMoveToPosition(Point location)
     {
     	isMoving=true;
     	xDestination = location.x;
 		yDestination = location.y;
+    }
+    
+    public void goToHome()
+    {
+    	DoMoveToPosition(homeBase);
     }
     
     public void PickUpCustomer()
@@ -137,7 +138,6 @@ public class WaiterGui implements Gui {
     
     public void DoGoToBreakSpot()
     {
-    	stayAtBreak=true;
     	DoMoveToPosition(breakLocation);
     }
     

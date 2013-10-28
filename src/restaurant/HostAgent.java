@@ -105,6 +105,7 @@ public class HostAgent extends Agent implements Host{
 		{
 			if (w.waiter==askingWaiter)
 			{
+				print("found him");
 				w.wantsToGoOnBreak=true;
 			}
 		}
@@ -122,6 +123,7 @@ public class HostAgent extends Agent implements Host{
 			}
 		}
 		myWaiters.remove(wait);
+		stateChanged();
 	}
 
 
@@ -213,11 +215,7 @@ public class HostAgent extends Agent implements Host{
 
 	//utilities
 
-	public void msgAddWaiter(Waiter waiter)
-	{
-		myWaiters.add(new MyWaiter(waiter));
-	}
-	
+
 	
 	
 	MyWaiter leastBusyWaiter(List<MyWaiter> waiterList)
@@ -254,13 +252,10 @@ public class HostAgent extends Agent implements Host{
 		return waiterGui;
 	}
 
-	public void setWaiter(WaiterAgent waiter)
+	public void setWaiter(Waiter waiter)
 	{
 		myWaiters.add(new MyWaiter(waiter));
 	}
-
-
-
 
 }
 

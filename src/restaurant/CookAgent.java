@@ -201,7 +201,7 @@ public class CookAgent extends Agent implements Cook{
 		order.s = state.cooking; //put this inside timer class when u implement it
 		CookingTimer(order);
 		print("the cook is done cooking the " + order.choice);
-		order.s = state.done;
+		
 	}
 
 	private void OrderFoodThatIsLow()
@@ -256,6 +256,7 @@ public class CookAgent extends Agent implements Cook{
 		{
 			System.out.println("Exception caught");
 		}
+		order.s = state.done;
 	}
 
 	//utilities

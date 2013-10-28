@@ -24,7 +24,6 @@ public class WaiterAgent extends Agent implements Waiter{
 	private Cook cook;
 	private Host host;
 	public WaiterGui waiterGui = null;
-	//private Point location = new Point();
 	public List<MyCustomers> myCustomers = new ArrayList<MyCustomers>();
 	//List<Customer> myCustomers = Collections.synchronizedList(new ArrayList<Customer>());
 	public enum CustomerState
@@ -75,7 +74,6 @@ public class WaiterAgent extends Agent implements Waiter{
 
 	public void msgAtTable() {//from animation
 		print("msgAtTable() called");
-		//CustomerState.readyToOrder;s
 		atTable.release();
 //		print("releasing");
 		stateChanged();
@@ -283,14 +281,41 @@ public class WaiterAgent extends Agent implements Waiter{
 	private void GoOnBreak()
 	{
 		print("waiter is going on break until told otherwise...");
-		waiterGui.DoGoToBreakSpot();
 		host.msgWaiterOnBreak(this);
+		waiterGui.DoGoToBreakSpot();
+		try {
+//			print("acquiring");
+			atTable.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		waiterGui.stayAtBreak=true;
+		print("hey");
+		TakingBreak();
 	}
 	
-	public void addWaiterToHost(WaiterAgent waiter)
+	private void TakingBreak()
 	{
-		host.msgAddWaiter(waiter);
+		try
+		{
+			Thread.sleep(4000);
+		}
+		catch(Exception e)
+		{
+			System.out.println("Exception caught");
+		}
+		waiterGui.stayAtBreak=false;
+		waiterGui.goToHome();
+		try {
+//			print("acquiring");
+			atTable.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		print("setting waiter");
+		host.setWaiter(this);
 	}
+
 	private void SeatCustomer(MyCustomers c) 
 	{
 		print("waiter is now currently busy helping customer " + c.cust.getName());
