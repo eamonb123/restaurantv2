@@ -25,7 +25,7 @@ public interface Customer {
 	
 	public abstract void msgHereIsYourFood(String food);
 	
-	public abstract void msgHereIsReceipt(int bill);
+	public abstract void msgHereIsBill(int bill);
 	
 	public abstract void setWaiter(Waiter w);
 	

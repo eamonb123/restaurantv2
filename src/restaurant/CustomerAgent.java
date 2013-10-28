@@ -158,7 +158,7 @@ public class CustomerAgent extends Agent implements Customer{
 		stateChanged();
 	}
 	
-	public void msgHereIsReceipt(int bill)
+	public void msgHereIsBill(int bill)
 	{
 		print("customer received the bill");
 		this.bill=bill;
@@ -280,9 +280,9 @@ public class CustomerAgent extends Agent implements Customer{
 	private void OrderFood()
 	{
 		print("customer " + name + " tells the waiter he wants " + choice);
-		customerGui.waitingForOrder = true;
 		customerGui.order = choice;
 		customerGui.decidedOrder = false;
+		customerGui.waitingForOrder = true;
 		waiter.msgHereIsChoice(this);
 	}
 	
@@ -301,12 +301,15 @@ public class CustomerAgent extends Agent implements Customer{
 		print("customer " + name + " notifies the waiter that he is done eating the " + choice);
 		customerGui.acceptedOrder=false;
 		customerGui.waitingForOrder=false;
-//		customerGui.DoGoToCashier();
+		customerGui.finishedOrder=true;
 		waiter.msgDoneEating(this);
 	}
 	
 	private void MakePayment()
 	{
+		customerGui.finishedOrder=false;
+		customerGui.payingBill=true;
+		customerGui.bill=this.bill;
 		customerGui.DoGoToCashier();
 		try {
 //			print("acquiring");
@@ -314,6 +317,12 @@ public class CustomerAgent extends Agent implements Customer{
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		PayAndLeave();
+	}
+	
+	private void PayAndLeave()
+	{
+		customerGui.payingBill=false;
 		if (bill>money)
 		{
 			print("the customer does not have enough money to pay for the food");
@@ -326,7 +335,6 @@ public class CustomerAgent extends Agent implements Customer{
 		print("customer " + name + " is now leaving the restaurant");
 		customerGui.DoExitRestaurant();
 	}
-	
 
 	private void EatFood() {
 		Do("Eating Food");

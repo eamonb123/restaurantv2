@@ -63,7 +63,7 @@ public class MockCustomer extends Mock implements Customer {
 		
 	}
 	@Override
-	public void msgHereIsReceipt(int bill) {
+	public void msgHereIsBill(int bill) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -18,7 +18,10 @@ public class CustomerGui implements Gui{
 	public boolean waitingForOrder = false;
 	public boolean decidedOrder = false;
 	public boolean acceptedOrder = false;
+	public boolean finishedOrder = false;
+	public boolean payingBill = false;
 	public String order;
+	public int bill;
 
 	//private HostAgent host;
 	RestaurantGui gui;
@@ -49,7 +52,6 @@ public class CustomerGui implements Gui{
 			yPos--;
 		else if (xPos == xDestination && yPos == yDestination && isMoving==true)
 		{
-			System.out.println("got there!!!!!!");
 			customer.msgSemaphoreRelease();
 			isMoving=false;
 		}

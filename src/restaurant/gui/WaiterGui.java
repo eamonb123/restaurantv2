@@ -20,7 +20,9 @@ public class WaiterGui implements Gui {
     public boolean deliveringFood=false;
     public boolean reOrdering=false;
     public boolean stayAtBreak=false;
+    public boolean deliveringCheck=false;
     public String order;
+    public int check;
     Point cookLocation = new Point(-20, 100);
     Point homeBase = new Point(260, 100);
     Point customerLine = new Point(-20,-20);

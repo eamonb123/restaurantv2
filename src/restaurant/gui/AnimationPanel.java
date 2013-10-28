@@ -69,9 +69,13 @@ public class AnimationPanel extends JPanel implements ActionListener {
             		{
             			waiterGui.drawOrder(stringOrder, "currently out of " + waiterGui.order);
             		}
-            		else if (waiterGui.deliveringFood)
+            		if (waiterGui.deliveringFood)
             		{
             			waiterGui.drawOrder(stringOrder, waiterGui.order);
+            		}
+            		if (waiterGui.deliveringCheck)
+            		{
+            			waiterGui.drawOrder(stringOrder, "delivering check of $" + waiterGui.check);
             		}
             	}
             	else if (gui instanceof CustomerGui)
@@ -88,6 +92,14 @@ public class AnimationPanel extends JPanel implements ActionListener {
             		if (customerGui.acceptedOrder)
             		{
             			customerGui.eatingOrder(stringOrder, "eating " + customerGui.order + "...");
+            		}
+            		if (customerGui.finishedOrder)
+            		{
+            			customerGui.drawOrder(stringOrder, "Finished! Check please...");
+            		}
+            		if (customerGui.payingBill)
+            		{
+            			customerGui.drawOrder(stringOrder, "Going to cashier to pay $" + customerGui.bill + " for " + customerGui.order);
             		}
             	}
             }
