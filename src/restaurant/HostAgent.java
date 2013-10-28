@@ -245,6 +245,11 @@ public class HostAgent extends Agent implements Host{
 		waiterGui = gui;
 	}
 
+	public String getName()
+	{
+		return name;
+	}
+	
 	public WaiterGui getGui() {
 		return waiterGui;
 	}

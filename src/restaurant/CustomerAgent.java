@@ -78,6 +78,7 @@ public class CustomerAgent extends Agent implements Customer{
 	
 	// Messages
 
+	
 	public void gotHungry() {//from animation
 		print(name + " is hungry");
 		event = AgentEvent.gotHungry;
@@ -87,10 +88,8 @@ public class CustomerAgent extends Agent implements Customer{
 	
 	public void msgSemaphoreRelease()
 	{
-		print("releasing customer semaphore");
-		//CustomerState.readyToOrder;s
+//		print("RELEASING customer semaphore");
 		waiting.release();
-//		print("releasing");
 		stateChanged();
 	}
 	
@@ -216,18 +215,13 @@ public class CustomerAgent extends Agent implements Customer{
 			if (event == AgentEvent.noMenuOptions)
 			{
 				state = AgentState.leaving;
-				PayCashier();
+				FinishedEating();
 				return true;
 			}
 		}
-//		if (event == AgentEvent.payingBill && state == AgentState.finishing){
-//			state = AgentState.payCashier;
-//			PayCashier();
-//			return true;
-//		}
 		if (event == AgentEvent.doneEating && state == AgentState.finishing ){
 			state = AgentState.leaving;
-			PayCashier();
+			FinishedEating();
 			return true;
 		}
 		if (event == AgentEvent.payingBill && state == AgentState.leaving){
@@ -257,6 +251,12 @@ public class CustomerAgent extends Agent implements Customer{
 	private void SitDown() {
 		print("customer " + name + " is being seated and going to table " + tableNumber);
 		customerGui.DoGoToSeat(location);
+		try {
+//			print("acquiring");
+			waiting.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		print("the waiter hands " + name + " the menu");
 		print(name + " is deciding what to order...");
 		decidingOrder();
@@ -269,7 +269,7 @@ public class CustomerAgent extends Agent implements Customer{
 	{
 		try
 		{
-			Thread.sleep(6000);
+			Thread.sleep(3000);
 		}
 		catch(Exception e)
 		{
@@ -296,17 +296,24 @@ public class CustomerAgent extends Agent implements Customer{
 	}
 	
 
-	private void PayCashier()
+	private void FinishedEating()
 	{
 		print("customer " + name + " notifies the waiter that he is done eating the " + choice);
 		customerGui.acceptedOrder=false;
 		customerGui.waitingForOrder=false;
+//		customerGui.DoGoToCashier();
 		waiter.msgDoneEating(this);
 	}
 	
 	private void MakePayment()
 	{
-		//DoGoToCashier();
+		customerGui.DoGoToCashier();
+		try {
+//			print("acquiring");
+			waiting.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		if (bill>money)
 		{
 			print("the customer does not have enough money to pay for the food");

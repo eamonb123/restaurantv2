@@ -22,7 +22,6 @@ public class RestaurantPanel extends JPanel {
     //Host, cook, waiters and customers
     private HostAgent host = new HostAgent("Sarah");
     private CookAgent cook = new CookAgent();
-    private MarketAgent market = new MarketAgent();
     private CashierAgent cashier = new CashierAgent();
 //    private WaiterAgent waiter = new WaiterAgent("Matt");
 //    private WaiterGui waiterGui = new WaiterGui(waiter);
@@ -58,6 +57,7 @@ public class RestaurantPanel extends JPanel {
         host.startThread();
         cook.startThread();
         cashier.startThread();
+        cook.CheckInitialFood();
         
         
         setLayout(new GridLayout(1, 2, 20, 20));
@@ -155,7 +155,6 @@ public class RestaurantPanel extends JPanel {
     public void showInfo(String type, String name) {
 
         if (type.equals("Customers")) {
-
             for (int i = 0; i < customers.size(); i++) {
                 CustomerAgent temp = customers.get(i);
                 if (temp.getName() == name)

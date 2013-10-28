@@ -8,11 +8,13 @@ import java.util.HashMap;
 
 public class CustomerGui implements Gui{
 
-	private CustomerAgent agent = null;
+	private CustomerAgent customer = null;
 	private boolean isPresent = false;
 	private boolean isHungry = false;
 	private int xPosition=100;
 	private int yPosition=250;
+	Point cashierLocation = new Point(520, 100);
+	private boolean isMoving=false;
 	public boolean waitingForOrder = false;
 	public boolean decidedOrder = false;
 	public boolean acceptedOrder = false;
@@ -27,7 +29,7 @@ public class CustomerGui implements Gui{
 	private Command command=Command.noCommand;
 
 	public CustomerGui(CustomerAgent c, RestaurantGui gui){ //HostAgent m) {
-		agent = c;
+		customer = c;
 		xPos = -40;
 		yPos = -40;
 		xDestination = -40;
@@ -41,21 +43,15 @@ public class CustomerGui implements Gui{
 			xPos++;
 		else if (xPos > xDestination)
 			xPos--;
-
 		if (yPos < yDestination)
 			yPos++;
 		else if (yPos > yDestination)
 			yPos--;
-
-		if (xPos == xDestination && yPos == yDestination) {
-			if (command==Command.GoToSeat) agent.msgAnimationFinishedGoToSeat();
-			else if (command==Command.LeaveRestaurant) {
-				agent.msgAnimationFinishedLeaveRestaurant();
-				//System.out.println("about to call gui.setCustomerEnabled(agent);");
-				isHungry = false;
-				gui.setCustomerEnabled(agent);
-			}
-			command=Command.noCommand;
+		else if (xPos == xDestination && yPos == yDestination && isMoving==true)
+		{
+			System.out.println("got there!!!!!!");
+			customer.msgSemaphoreRelease();
+			isMoving=false;
 		}
 	}
 
@@ -80,7 +76,7 @@ public class CustomerGui implements Gui{
 	}
 	public void setHungry() {
 		isHungry = true;
-		agent.gotHungry();
+		customer.gotHungry();
 		setPresent(true);
 	}
 	public boolean isHungry() {
@@ -102,11 +98,20 @@ public class CustomerGui implements Gui{
     	}
     }
 	
-	public void DoGoToSeat(Point location) {
+	public void DoGoToSeat(Point location) 
+	{
+		isMoving=true;
 		xDestination = location.x;
 		yDestination = location.y;
 		command = Command.GoToSeat;
 	}
+	
+  public void DoGoToCashier()
+  {
+	  isMoving=true;
+	  xDestination = cashierLocation.x;
+	  yDestination = cashierLocation.y;
+  }
 
 	public void DoExitRestaurant() {
 		xDestination = -40;

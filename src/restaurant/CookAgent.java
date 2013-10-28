@@ -61,6 +61,7 @@ public class CookAgent extends Agent implements Cook{
 	public List<Order> orders = new ArrayList<Order>();
 	boolean incomplete=false;
 	boolean ordering=false;
+	boolean opening=false;
 	public enum OrderState
 	{nothing};
 	public enum state
@@ -259,6 +260,11 @@ public class CookAgent extends Agent implements Cook{
 
 	//utilities
 
+	public void CheckInitialFood()
+	{
+		OrderFoodThatIsLow();
+	}
+	
 	public void setGui(WaiterGui gui) {
 		waiterGui = gui;
 	}
