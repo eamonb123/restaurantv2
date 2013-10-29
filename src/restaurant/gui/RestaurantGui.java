@@ -148,9 +148,15 @@ public class RestaurantGui extends JFrame implements ActionListener {
                 WaiterAgent w = (WaiterAgent) currentPerson;
                 if (!w.getGui().onBreak)
                 {
-                	w.getGui().onBreak=true;
+                	System.out.println("GETTING WAITER ON BREAK");
                 	stateBD.setSelected(true);
                 	w.getGui().askForBreak();
+                }
+                else
+                {
+                	System.out.println("NOTHING WORKS");
+                	w.getGui().onBreak=false;
+                	stateBD.setSelected(false);
                 }
             }
         }
@@ -180,6 +186,7 @@ public class RestaurantGui extends JFrame implements ActionListener {
             	//w.getGui().goOffBreak();
                 if (w.getGui().onBreak)
                 {
+                	System.out.println("THIS IS NEVER GETTING CALLED");
                 	w.getGui().onBreak=false;
                 	stateBD.setSelected(false);
                 }

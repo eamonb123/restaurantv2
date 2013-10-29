@@ -29,7 +29,7 @@ public class WaiterAgent extends Agent implements Waiter{
 	public enum CustomerState
 	{nothing, waiting, seated, readyToOrder, takingOrder, ordered, reOrder, reOrdering, doneEating, waitingForReceipt, receivingReceipt, deliveredReceipt, sendOrderToCook, deliver, delivering};
 	public enum WaiterState
-	{nothing, continueWorking, onBreak, breaking, atSeat};
+	{nothing, continueWorking, askForBreak, asking, onBreak, breaking, atSeat};
 	public WaiterState waiterState = WaiterState.nothing;
 	public class MyCustomers
 	{
@@ -74,12 +74,14 @@ public class WaiterAgent extends Agent implements Waiter{
 	public void msgTryToGoOnBreak()
 	{
 		print("the waiter wants to go on break");
+		waiterState = WaiterState.askForBreak;
 		AskToGoOnBreak();
 	}
 	
 	public void msgYouCannotBreak()
 	{
 		print("the waiter continues to work like normal as his request to break is denied");
+		waiterGui.onBreak=false;
 		stateChanged();
 	}
 	
@@ -187,6 +189,12 @@ public class WaiterAgent extends Agent implements Waiter{
 	
 	protected boolean pickAndExecuteAnAction() {
 		//synchronized(customers){
+		if (waiterState == WaiterState.askForBreak)
+		{
+			waiterState = WaiterState.asking;
+			AskToGoOnBreak();
+			return true;
+		}
 		if (waiterState == WaiterState.onBreak)
 		{
 			waiterState = WaiterState.breaking;

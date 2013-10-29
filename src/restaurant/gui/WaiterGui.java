@@ -107,6 +107,7 @@ public class WaiterGui implements Gui {
 //    }
    
 	public void askForBreak() {
+		onBreak=true;
 		waiter.msgTryToGoOnBreak();
 	}
 	
