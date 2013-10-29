@@ -29,7 +29,7 @@ public class WaiterAgent extends Agent implements Waiter{
 	public enum CustomerState
 	{nothing, waiting, seated, readyToOrder, takingOrder, ordered, reOrder, reOrdering, doneEating, waitingForReceipt, receivingReceipt, deliveredReceipt, sendOrderToCook, deliver, delivering};
 	public enum WaiterState
-	{nothing, continueWorking, askForBreak, asking, onBreak, breaking, atSeat};
+	{nothing, continueWorking, askForBreak, asking, onBreak, returningToWork, backToWork, breaking, atSeat};
 	public WaiterState waiterState = WaiterState.nothing;
 	public class MyCustomers
 	{
@@ -87,8 +87,15 @@ public class WaiterAgent extends Agent implements Waiter{
 	
 	public void msgYouCanBreak()
 	{
-		print("the waiter breaks for a little");
+		print("the waiter begins his break");
 		waiterState = WaiterState.onBreak;
+		stateChanged();
+	}
+	
+	public void msgBackToWork()
+	{
+		print("the waiter gets back to work");
+		waiterState = WaiterState.returningToWork;
 		stateChanged();
 	}
 	
@@ -201,6 +208,12 @@ public class WaiterAgent extends Agent implements Waiter{
 			GoOnBreak();
 			return true;
 		}
+		if (waiterState == WaiterState.returningToWork)
+		{
+			waiterState = WaiterState.backToWork;
+			ReAddWaiterToHost();
+			return true;
+		}
 		for (MyCustomers cust : myCustomers) 
 		{
 			if (cust.customerState==CustomerState.waiting)
@@ -288,32 +301,14 @@ public class WaiterAgent extends Agent implements Waiter{
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		print("the waiter has reached the break location");
 		waiterGui.stayAtBreak=true;
-		TakingBreak();
 	}
 	
-	private void TakingBreak()
+	private void ReAddWaiterToHost()
 	{
-	
-		try
-		{
-			print("waiting for 8 seconds");
-			Thread.sleep(8000);
-		}
-		catch(Exception e)
-		{
-			System.out.println("Exception caught");
-		}
+		print("the waiter is being readded to the host list of waiters");
 		waiterGui.stayAtBreak=false;
-		print("waiter stay at break is false");
-		waiterGui.goToHome();
-		try {
-//			print("acquiring");
-			atTable.acquire();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		print("setting waiter");
 		host.setWaiter(this);
 	}
 

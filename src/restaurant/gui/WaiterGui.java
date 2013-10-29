@@ -106,9 +106,16 @@ public class WaiterGui implements Gui {
 //        yDestination = yTable - 20;
 //    }
    
-	public void askForBreak() {
+	public void askForBreak() 
+	{
 		onBreak=true;
 		waiter.msgTryToGoOnBreak();
+	}
+	
+	public void getBackToWork()
+	{
+		onBreak=false;
+		waiter.msgBackToWork();
 	}
 	
 	
