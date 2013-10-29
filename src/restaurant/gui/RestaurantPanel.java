@@ -20,7 +20,7 @@ import java.util.Vector;
 public class RestaurantPanel extends JPanel {
 
     //Host, cook, waiters and customers
-    private HostAgent host = new HostAgent("Sarah");
+    private HostAgent host = new HostAgent("Sarah", this);
     private CookAgent cook = new CookAgent();
     private CashierAgent cashier = new CashierAgent();
 //    private WaiterAgent waiter = new WaiterAgent("Matt");

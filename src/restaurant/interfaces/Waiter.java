@@ -35,5 +35,7 @@ public interface Waiter {
 	public abstract void msgDoneEating(Customer customer);
 	
 	public abstract void msgHereIsReceipt(int bill, int tableNumber);
+	
+	public abstract String getName();
 
 }

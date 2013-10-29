@@ -44,11 +44,11 @@ public class CustomerAgent extends Agent implements Customer{
 	
 	//    private boolean isHungry = false; //hack for gui
 	public enum AgentState
-	{DoingNothing, WaitingToBeSeated, BeingSeated, Ordered, reOrder, finishing, payCashier, leaving};
-	private AgentState state = AgentState.DoingNothing;//The start state
+	{DoingNothing, WaitingToBeSeated, BeingSeated, Ordered, reOrder, finishing, payCashier, done, MakingPayment};
+	AgentState state = AgentState.DoingNothing;//The start state
 
 	public enum AgentEvent // you're doing the event, so you are "state". ex. you got hungry, so you arrive at the restaurant. you walked in the restaurant, so you are waiting to be seated
-	{none, gotHungry, followHost, readyToOrder, readyToReorder, noMenuOptions, eating, doneEating, payingBill};
+	{none, gotHungry, followHost, readyToOrder, readyToReorder, noMenuOptions, eating, doneEating, payingBill, leaving};
 	AgentEvent event = AgentEvent.none;
 	
 
@@ -207,19 +207,24 @@ public class CustomerAgent extends Agent implements Customer{
 			}
 			if (event == AgentEvent.noMenuOptions)
 			{
-				state = AgentState.leaving;
+				state = AgentState.done;
 				FinishedEating();
 				return true;
 			}
 		}
 		if (event == AgentEvent.doneEating && state == AgentState.finishing ){
-			state = AgentState.leaving;
+			state = AgentState.done;
 			FinishedEating();
 			return true;
 		}
-		if (event == AgentEvent.payingBill && state == AgentState.leaving){
-			state = AgentState.DoingNothing;
+		if (event == AgentEvent.payingBill && state == AgentState.done){
+			state = AgentState.MakingPayment;
 			MakePayment();
+			return true;
+		}
+		if (event == AgentEvent.leaving && state == AgentState.MakingPayment){
+			state = AgentState.DoingNothing;
+			LeaveRestaurant();
 			return true;
 		}
 		return false;
@@ -310,10 +315,10 @@ public class CustomerAgent extends Agent implements Customer{
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		PayAndLeave();
+		event = AgentEvent.leaving;
 	}
 	
-	private void PayAndLeave()
+	private void LeaveRestaurant()
 	{
 		customerGui.payingBill=false;
 		if (bill>money)
@@ -346,6 +351,14 @@ public class CustomerAgent extends Agent implements Customer{
 
 	// Accessors, etc.
 
+	public boolean DoingNothing()
+	{
+		if (state == AgentState.DoingNothing)
+			return true;
+		else 
+			return false;
+	}
+	
 	public String getName() {
 		return name;
 	}

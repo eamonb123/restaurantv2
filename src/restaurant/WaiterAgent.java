@@ -302,7 +302,7 @@ public class WaiterAgent extends Agent implements Waiter{
 			e.printStackTrace();
 		}
 		print("the waiter has reached the break location");
-		waiterGui.stayAtBreak=true;
+		//waiterGui.stayAtBreak=true;
 	}
 	
 	private void ReAddWaiterToHost()

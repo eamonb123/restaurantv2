@@ -38,7 +38,6 @@ public interface Customer {
 	
 	
 	
-	
 //	/**
 //	 * @param total The cost according to the cashier
 //	 *

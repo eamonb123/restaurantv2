@@ -76,10 +76,6 @@ public class WaiterGui implements Gui {
 	        	waiter.msgAtTable();
 	        	isMoving=false;
         	}
-        	else
-        	{
-        		System.out.println("stay at break is TRUE");
-        	}
 //        	gui.setCustomerEnabled(waiter);
         }
     }

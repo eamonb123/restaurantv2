@@ -103,9 +103,9 @@ public class RestaurantGui extends JFrame implements ActionListener {
             CustomerAgent customer = (CustomerAgent) person;
             stateCB.setText("Hungry?");
           //Should checkmark be there? 
-            stateCB.setSelected(customer.getGui().isHungry());
+            stateCB.setSelected(!customer.DoingNothing());
           //Is customer hungry? Hack. Should ask customerGui
-            stateCB.setEnabled(!customer.getGui().isHungry());
+            stateCB.setEnabled(customer.DoingNothing());
           // Hack. Should ask customerGui
             
             

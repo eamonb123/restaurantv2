@@ -1,6 +1,7 @@
 package restaurant;
 
 import agent.Agent;
+import restaurant.gui.RestaurantPanel;
 import restaurant.gui.WaiterGui;
 import restaurant.interfaces.Customer;
 import restaurant.interfaces.Host;
@@ -19,13 +20,15 @@ import java.util.concurrent.Semaphore;
 //is proceeded as he wishes.
 public class HostAgent extends Agent implements Host{
 	static int NTABLES=3;
+	private String name;
+	private RestaurantPanel restPanel;
 	public List<MyCustomer> myWaitingCustomers = new ArrayList<MyCustomer>();
 	public List<MyWaiter> myWaiters = new ArrayList<MyWaiter>();
 	public Collection<Table> myTables;
 	public WaiterGui waiterGui = null;
     private int xPosition=100;
     private int yPosition=250;
-    private String name;
+    
 	public class MyWaiter
 	{
 		Waiter waiter;
@@ -61,9 +64,10 @@ public class HostAgent extends Agent implements Host{
 		}
 	}
     
-	public HostAgent(String name) {
+	public HostAgent(String name, RestaurantPanel restPanel) {
 		super();
 		this.name = name;
+		this.restPanel=restPanel;
 		myTables = new ArrayList<Table>(NTABLES);
 		int xPos = 200;
 		for (int ix = 1; ix <= NTABLES; ix++) {
@@ -192,6 +196,10 @@ public class HostAgent extends Agent implements Host{
 			print("there is not enough waiters currently working for the waiter to go on break");
 			w.wantsToGoOnBreak=false;
 			w.waiter.msgYouCannotBreak();
+			if (restPanel!=null)
+			{
+				restPanel.showInfo("Waiters", w.waiter.getName());
+			}
 		}
 		else
 		{

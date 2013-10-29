@@ -12,7 +12,7 @@ public class HostTest extends TestCase {
 	
 	public void setUp() throws Exception{
 		super.setUp();		
-		host = new HostAgent("host");		
+		host = new HostAgent("host", null);		
 		customer = new MockCustomer("mockcustomer");		
 	}	
 	
