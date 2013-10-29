@@ -138,13 +138,6 @@ public class CustomerAgent extends Agent implements Customer{
 		return menu.get(index);
 	}
 	
-//	private String reOrderChoice(List<String> menu)
-//	{
-//		Random random = new Random();
-//		int index = random.nextInt(menu.size());
-//		return menu.get(index);
-//	}
-	
 	public void msgHereIsYourFood(String food)
 	{
 		if (food==choice)

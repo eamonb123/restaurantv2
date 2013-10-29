@@ -113,7 +113,6 @@ public class CookAgent extends Agent implements Cook{
 		ordering=false;
 		marketIndex=0;
 		stateChanged();
-		//stateChanged(); //!!KSAJDKSJDH
 	}
 	
 	public void msgFufilledPartialOrder(HashMap<String, Integer> incomingOrder)
@@ -147,7 +146,6 @@ public class CookAgent extends Agent implements Cook{
 			SendOrder(newOutgoingList);
 		}
 		stateChanged();
-		//stateChanged(); //!!KSAJDKSJDH
 	}
 	
 

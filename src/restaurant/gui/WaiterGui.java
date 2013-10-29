@@ -16,6 +16,7 @@ public class WaiterGui implements Gui {
     //private int xPos = -20, yPos = -20;//default waiter position
 	public int xPos = -20, yPos = -20;
     private int xDestination = -20, yDestination = -20;//default start position
+    public boolean onBreak=false;
     public boolean isMoving=false;
     public boolean deliveringFood=false;
     public boolean reOrdering=false;
@@ -70,9 +71,14 @@ public class WaiterGui implements Gui {
         {
         	if(!stayAtBreak)
         	{
+        		System.out.println("stay at break is FALSE");
 	        	DoMoveToPosition(homeBase);
 	        	waiter.msgAtTable();
 	        	isMoving=false;
+        	}
+        	else
+        	{
+        		System.out.println("stay at break is TRUE");
         	}
 //        	gui.setCustomerEnabled(waiter);
         }

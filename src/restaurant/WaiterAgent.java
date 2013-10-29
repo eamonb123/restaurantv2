@@ -27,18 +27,10 @@ public class WaiterAgent extends Agent implements Waiter{
 	public List<MyCustomers> myCustomers = new ArrayList<MyCustomers>();
 	//List<Customer> myCustomers = Collections.synchronizedList(new ArrayList<Customer>());
 	public enum CustomerState
-	{nothing, waiting, seated, readyToOrder, takingOrder, ordered, reOrder, reOrdering, doneEating, waitingForReceipt, receivingReceipt, gettingReceipt, deliveredReceipt, sendOrderToCook, deliver, delivering, eating, done, cleaningUp};
+	{nothing, waiting, seated, readyToOrder, takingOrder, ordered, reOrder, reOrdering, doneEating, waitingForReceipt, receivingReceipt, deliveredReceipt, sendOrderToCook, deliver, delivering};
 	public enum WaiterState
 	{nothing, continueWorking, onBreak, breaking, atSeat};
 	public WaiterState waiterState = WaiterState.nothing;
-	public boolean isBusy()
-	{
-		if (myCustomers.size()!=0)
-			return true;
-		else 
-			return false;
-	}
-
 	public class MyCustomers
 	{
 		Customer cust;
@@ -73,7 +65,7 @@ public class WaiterAgent extends Agent implements Waiter{
 	//Messages
 
 	public void msgAtTable() {//from animation
-		print("msgAtTable() called");
+		//print("msgAtTable() called");
 		atTable.release();
 //		print("releasing");
 		stateChanged();
@@ -122,7 +114,6 @@ public class WaiterAgent extends Agent implements Waiter{
 	
 	public void msgHereIsChoice(Customer cust)
 	{
-		System.out.println("A:" + cust);
 		for (MyCustomers c : myCustomers)
 		{
 			if (c.cust==cust && c.cust.getChoice().equals(cust.getChoice()))
@@ -290,21 +281,23 @@ public class WaiterAgent extends Agent implements Waiter{
 			e.printStackTrace();
 		}
 		waiterGui.stayAtBreak=true;
-		print("hey");
 		TakingBreak();
 	}
 	
 	private void TakingBreak()
 	{
+	
 		try
 		{
-			Thread.sleep(4000);
+			print("waiting for 8 seconds");
+			Thread.sleep(8000);
 		}
 		catch(Exception e)
 		{
 			System.out.println("Exception caught");
 		}
 		waiterGui.stayAtBreak=false;
+		print("waiter stay at break is false");
 		waiterGui.goToHome();
 		try {
 //			print("acquiring");

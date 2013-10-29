@@ -96,9 +96,6 @@ public class RestaurantGui extends JFrame implements ActionListener {
      * @param person customer (or waiter) object
      */
     public void updateInfoPanel(Object person) {
-        
-        
-
         if (person instanceof CustomerAgent) {
         	currentPerson = person;
         	stateCB.setVisible(true);
@@ -122,9 +119,9 @@ public class RestaurantGui extends JFrame implements ActionListener {
             WaiterAgent waiter = (WaiterAgent) person;
             stateBD.setText("Break?");
           //Should checkmark be there? 
-            stateBD.setSelected(false);
+            stateBD.setSelected(waiter.getGui().onBreak);
           //Is customer hungry? Hack. Should ask customerGui
-            stateBD.setEnabled(true);
+           // stateBD.setEnabled(!waiter.getGui().onBreak);
           // Hack. Should ask customerGui
             
             
@@ -149,8 +146,12 @@ public class RestaurantGui extends JFrame implements ActionListener {
         if (e.getSource() == stateBD) {
             if (currentPerson instanceof WaiterAgent) {
                 WaiterAgent w = (WaiterAgent) currentPerson;
-                w.getGui().askForBreak();
-                stateBD.setEnabled(false);
+                if (!w.getGui().onBreak)
+                {
+                	w.getGui().onBreak=true;
+                	stateBD.setSelected(true);
+                	w.getGui().askForBreak();
+                }
             }
         }
     }
@@ -174,11 +175,14 @@ public class RestaurantGui extends JFrame implements ActionListener {
         if (currentPerson instanceof WaiterAgent) {
             WaiterAgent waiter = (WaiterAgent) currentPerson;
             if (w.equals(waiter)) {
-            	w.getGui().stayAtBreak=false;
+            	//w.getGui().stayAtBreak=false;
             	//w.addWaiterToHost(w); //go off break by adding to the list of waiters in the host
             	//w.getGui().goOffBreak();
-                stateBD.setEnabled(true);
-                stateBD.setSelected(false);
+                if (w.getGui().onBreak)
+                {
+                	w.getGui().onBreak=false;
+                	stateBD.setSelected(false);
+                }
             }
         }
     }
@@ -194,3 +198,5 @@ public class RestaurantGui extends JFrame implements ActionListener {
         gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 }
+
+
