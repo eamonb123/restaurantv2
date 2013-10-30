@@ -294,7 +294,6 @@ public class WaiterAgent extends Agent implements Waiter{
 	private void GoOnBreak()
 	{
 		print("waiter is going on break until told otherwise...");
-		host.msgWaiterOnBreak(this);
 		waiterGui.stayAtBreak=true;
 		waiterGui.DoGoToBreakSpot();
 		try {

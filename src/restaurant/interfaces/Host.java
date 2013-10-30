@@ -14,8 +14,6 @@ public interface Host {
 	
 	public abstract void msgCanIGoOnBreak(Waiter askingWaiter);
 	
-	public abstract void msgWaiterOnBreak(Waiter waiter);
-
 	public abstract void msgTableIsFree(Waiter waiter, Customer customer, int tableNumber);
 
 	public abstract void setWaiter(Waiter waiter);

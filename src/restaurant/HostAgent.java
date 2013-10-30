@@ -112,20 +112,6 @@ public class HostAgent extends Agent implements Host{
 		}
 		stateChanged();
 	}
-	
-	public void msgWaiterOnBreak(Waiter w)
-	{
-		MyWaiter wait = new MyWaiter(w, WaiterState.onBreak);
-		for (MyWaiter waiter: myWaiters)
-		{
-			if (waiter.waiter == w)
-			{
-				wait = waiter;
-			}
-		}
-		stateChanged();
-	}
-
 
 	
 	
@@ -234,6 +220,7 @@ public class HostAgent extends Agent implements Host{
 			print("the host allows the waiter to go on break");
 			w.state=WaiterState.onBreak;
 			w.waiter.msgYouCanBreak();
+			myWaiters.remove(w);
 		}
 	}
 	
