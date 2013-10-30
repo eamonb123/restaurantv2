@@ -4,11 +4,13 @@ import agent.Agent;
 import restaurant.HostAgent.Table;
 import restaurant.gui.WaiterGui;
 import restaurant.interfaces.Cashier;
+import restaurant.interfaces.Customer;
 
 import java.awt.Point;
 import java.util.*;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
+
 import restaurant.interfaces.Waiter;
 /**
  * Restaurant Host Agent
@@ -17,6 +19,7 @@ import restaurant.interfaces.Waiter;
 public class CashierAgent extends Agent implements Cashier{
 	public List<Waiter> waiters = new ArrayList<Waiter>();
 	public List<Order> receipts = new ArrayList<Order>();
+	public List<Payment> payments = new ArrayList<Payment>();
 	HashMap<String, Integer> menu = new HashMap<String, Integer>();
 	{
 	    menu.put("beef", 15);
@@ -25,6 +28,20 @@ public class CashierAgent extends Agent implements Cashier{
 	}
 	private String name; 
 	public WaiterGui waiterGui = null;
+	public class Payment
+	{
+		Customer customer;
+		int money;
+		int bill;
+		paymentState state;
+		Payment(Customer customer, int money, int bill, paymentState state)
+		{
+			this.customer=customer;
+			this.money=money;
+			this.bill=bill;
+			this.state=state;
+		}
+	}
 	public class Order
 	{
 		Waiter waiter;
@@ -40,6 +57,8 @@ public class CashierAgent extends Agent implements Cashier{
 		}
 	}
 	enum receiptState
+	{pending, complete};
+	enum paymentState
 	{pending, complete};
 	public List<Order> orders = new ArrayList<Order>();
 	boolean incomplete=false;
@@ -59,6 +78,14 @@ public class CashierAgent extends Agent implements Cashier{
 		stateChanged();
 	}
 	
+	public void msgPayBill(Customer customer, int money, int bill)
+	{
+		Payment payment = new Payment(customer, money, bill, paymentState.pending);
+		payments.add(payment);
+		stateChanged();
+	}
+	
+	
 	
 	
 
@@ -77,6 +104,15 @@ public class CashierAgent extends Agent implements Cashier{
 				return true;
 			}
 		}
+		for (Payment payment : payments)
+		{
+			if (payment.state==paymentState.pending)
+			{
+				payment.state=paymentState.complete;
+				GiveChange(payment);
+				return true;
+			}
+		}
 		return false;
 	}
 
@@ -87,6 +123,16 @@ public class CashierAgent extends Agent implements Cashier{
 	{
 		int bill = menu.get(order.choice);
 		order.waiter.msgHereIsReceipt(bill, order.tableNumber);
+	}
+	
+	private void GiveChange(Payment payment)
+	{
+		int change = payment.money-payment.bill;
+		if (change < 0)
+		{
+			print("customer did not have enough money to pay for meal");
+		}
+		payment.customer.msgHereIsChange(change);
 	}
 	
 	

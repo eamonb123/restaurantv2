@@ -2,6 +2,7 @@ package restaurant;
 
 import restaurant.gui.CustomerGui;
 import restaurant.gui.RestaurantGui;
+import restaurant.interfaces.Cashier;
 import restaurant.interfaces.Customer;
 import restaurant.interfaces.Host;
 import restaurant.interfaces.Waiter;
@@ -39,6 +40,7 @@ public class CustomerAgent extends Agent implements Customer{
 	}
 	// agent correspondents
 	private Host host;
+	private Cashier cashier;
 	//private WaiterAgent waiter = new WaiterAgent("bob");
 	private Waiter waiter = null;
 	
@@ -160,15 +162,19 @@ public class CustomerAgent extends Agent implements Customer{
 		stateChanged();
 	}
 	
+	public void msgHereIsChange(int change)
+	{
+		print("customer recieved $" + change);
+		money+=change;
+		event = AgentEvent.leaving;
+		stateChanged();
+	}
+	
 	public void msgAnimationFinishedGoToSeat() {
-		//from animation
-		//event = AgentEvent.seated;
 		stateChanged();
 	}
 	
 	public void msgAnimationFinishedLeaveRestaurant() {
-		//from animation
-		//event = AgentEvent.doneLeaving;
 		stateChanged();
 	}
 
@@ -302,7 +308,6 @@ public class CustomerAgent extends Agent implements Customer{
 	
 	private void MakePayment()
 	{
-
 		customerGui.text="Going to cashier to pay $" + bill + " for " + choice;
 		customerGui.bill=this.bill;
 		customerGui.DoGoToCashier();
@@ -313,16 +318,16 @@ public class CustomerAgent extends Agent implements Customer{
 			e.printStackTrace();
 		}
 		customerGui.text="";
-		if (bill>money)
-		{
-			print("the customer does not have enough money to pay for the food");
-		}
-		else
-		{
-			print("the customer pays the money for the food");
-			money-=bill;
-		}
-		event = AgentEvent.leaving;
+		cashier.msgPayBill(this, money, bill);
+//		if (bill>money)
+//		{
+//			print("the customer does not have enough money to pay for the food");
+//		}
+//		else
+//		{
+//			print("the customer pays the money for the food");
+//			money-=bill;
+//		}
 	}
 	
 	private void LeaveRestaurant()
@@ -384,6 +389,10 @@ public class CustomerAgent extends Agent implements Customer{
 	
 	public void setWaiter(Waiter w){
 		waiter = w;
+	}
+	
+	public void setCashier(Cashier c){
+		cashier=c;
 	}
 
 	@Override

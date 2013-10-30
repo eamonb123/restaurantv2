@@ -83,6 +83,11 @@ public class MockCustomer extends Mock implements Customer {
 	public void setHost(Host host) {
 		this.host = host;
 	}
+	@Override
+	public void msgHereIsChange(int change) {
+		// TODO Auto-generated method stub
+		
+	}
 
 //	@Override
 //	public void HereIsYourTotal(double total) {

@@ -27,6 +27,8 @@ public interface Customer {
 	
 	public abstract void msgHereIsBill(int bill);
 	
+	public abstract void msgHereIsChange(int change);
+	
 	public abstract void setWaiter(Waiter w);
 	
 	public abstract String getChoice();

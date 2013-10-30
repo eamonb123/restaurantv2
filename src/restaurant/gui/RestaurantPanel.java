@@ -57,7 +57,7 @@ public class RestaurantPanel extends JPanel {
         host.startThread();
         cook.startThread();
         cashier.startThread();
-        //cook.CheckInitialFood();
+        cook.CheckInitialFood();
         
         
         setLayout(new GridLayout(1, 2, 20, 20));
@@ -187,6 +187,7 @@ public class RestaurantPanel extends JPanel {
     		gui.animationPanel.addGui(g);
     		c.setHost(host);
     		c.setGui(g);
+    		c.setCashier(cashier);
     		customers.add(c);
     		c.startThread();
     	}
