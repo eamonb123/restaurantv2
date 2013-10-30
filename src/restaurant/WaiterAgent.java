@@ -295,6 +295,7 @@ public class WaiterAgent extends Agent implements Waiter{
 	{
 		print("waiter is going on break until told otherwise...");
 		host.msgWaiterOnBreak(this);
+		waiterGui.stayAtBreak=true;
 		waiterGui.DoGoToBreakSpot();
 		try {
 //			print("acquiring");
@@ -309,6 +310,13 @@ public class WaiterAgent extends Agent implements Waiter{
 	{
 		print("the waiter is being readded to the host list of waiters");
 		waiterGui.stayAtBreak=false;
+		waiterGui.goToHome();
+		try {
+//			print("acquiring");
+			atTable.acquire();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		host.setWaiter(this);
 	}
 
