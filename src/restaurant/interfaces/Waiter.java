@@ -14,6 +14,7 @@ import restaurant.WaiterAgent.WaiterState;
  *
  */
 public interface Waiter {
+
 	public abstract void msgAtTable();
 	
 	public abstract void msgTryToGoOnBreak();

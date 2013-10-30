@@ -28,22 +28,18 @@ public class HostAgent extends Agent implements Host{
 	public WaiterGui waiterGui = null;
     private int xPosition=100;
     private int yPosition=250;
-    
+	private enum WaiterState
+	{working, wantsToGoOnBreak, waitingForBreak, onBreak};
 	public class MyWaiter
 	{
 		Waiter waiter;
-		boolean wantsToGoOnBreak=false;
+//		boolean wantsToGoOnBreak=false;
+		WaiterState state; 
 		List<MyCustomer> customers = new ArrayList<MyCustomer>();
-		boolean isBusy()
-		{
-			if (customers.size()!=0)
-				return true;
-			else 
-				return false;
-		}
-		MyWaiter(Waiter waiter)
+		MyWaiter(Waiter waiter, WaiterState state)
 		{
 			this.waiter=waiter;
+			this.state=state;
 		}
 	}
 	public class MyCustomer
@@ -110,7 +106,7 @@ public class HostAgent extends Agent implements Host{
 			if (w.waiter==askingWaiter)
 			{
 				print("found him");
-				w.wantsToGoOnBreak=true;
+				w.state=WaiterState.wantsToGoOnBreak;
 			}
 		}
 		stateChanged();
@@ -118,7 +114,7 @@ public class HostAgent extends Agent implements Host{
 	
 	public void msgWaiterOnBreak(Waiter w)
 	{
-		MyWaiter wait = new MyWaiter(w);
+		MyWaiter wait = new MyWaiter(w, WaiterState.onBreak);
 		for (MyWaiter waiter: myWaiters)
 		{
 			if (waiter.waiter == w)
@@ -152,7 +148,7 @@ public class HostAgent extends Agent implements Host{
 	protected boolean pickAndExecuteAnAction() {
 		for (MyWaiter waiter : myWaiters)
 		{
-			if (waiter.wantsToGoOnBreak)
+			if (waiter.state==WaiterState.wantsToGoOnBreak)
 			{
 				print("the host is deciding whether the waiter should go on break");
 				DecideIfWaiterCanBreak(waiter);
@@ -194,17 +190,21 @@ public class HostAgent extends Agent implements Host{
 		if (myWaiters.size()<=1)
 		{
 			print("there is not enough waiters currently working for the waiter to go on break");
-			w.wantsToGoOnBreak=false;
+			w.state=WaiterState.working;
 			w.waiter.msgYouCannotBreak();
 			if (restPanel!=null)
 			{
 				restPanel.showInfo("Waiters", w.waiter.getName());
 			}
 		}
+		else if (!w.customers.isEmpty())
+		{
+			w.state=WaiterState.waitingForBreak;
+		}
 		else
 		{
 			print("the host allows the waiter to go on break");
-			w.wantsToGoOnBreak=false;
+			w.state=WaiterState.onBreak;
 			w.waiter.msgYouCanBreak();
 		}
 	}
@@ -236,7 +236,7 @@ public class HostAgent extends Agent implements Host{
 			MyWaiter freeWaiter = myWaiters.get(0);
 			for(MyWaiter waiter : myWaiters)
 			{
-				if (waiter.customers.size()<numOfCustomers)
+				if (waiter.customers.size()<numOfCustomers && waiter.state!=WaiterState.waitingForBreak)
 				{
 					numOfCustomers=waiter.customers.size();
 					freeWaiter=waiter;
@@ -262,7 +262,7 @@ public class HostAgent extends Agent implements Host{
 
 	public void setWaiter(Waiter waiter)
 	{
-		myWaiters.add(new MyWaiter(waiter));
+		myWaiters.add(new MyWaiter(waiter, WaiterState.working));
 	}
 
 }
