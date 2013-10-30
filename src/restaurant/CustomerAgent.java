@@ -120,6 +120,7 @@ public class CustomerAgent extends Agent implements Customer{
 		print("customer is reordering");
 		if (menu.isEmpty())
 		{
+			customerGui.text="";
 			event = AgentEvent.noMenuOptions;
 		}
 		else
@@ -259,7 +260,7 @@ public class CustomerAgent extends Agent implements Customer{
 		print(name + " is deciding what to order...");
 		decidingOrder();
 		print(name + " is ready to order");
-		customerGui.decidedOrder = true;
+		customerGui.text="decided order!";
 		waiter.msgReadyToOrder(this);
 	}
 	
@@ -279,16 +280,14 @@ public class CustomerAgent extends Agent implements Customer{
 	{
 		print("customer " + name + " tells the waiter he wants " + choice);
 		customerGui.order = choice;
-		customerGui.decidedOrder = false;
-		customerGui.waitingForOrder = true;
+		customerGui.text=choice + "?";
 		waiter.msgHereIsChoice(this);
 	}
 	
 	
 	private void ConsumeFood() //currently every food takes same amount of time to eat
 	{
-		customerGui.waitingForOrder=false;
-		customerGui.acceptedOrder=true;
+		customerGui.text= "eating " + choice + "...";
 		print("customer " + name + " eats the food for 5 seconds before being done");
 		EatFood();
 	}
@@ -297,16 +296,14 @@ public class CustomerAgent extends Agent implements Customer{
 	private void FinishedEating()
 	{
 		print("customer " + name + " notifies the waiter that he is done eating the " + choice);
-		customerGui.acceptedOrder=false;
-		customerGui.waitingForOrder=false;
-		customerGui.finishedOrder=true;
+		customerGui.text= "finished! check please...";
 		waiter.msgDoneEating(this);
 	}
 	
 	private void MakePayment()
 	{
-		customerGui.finishedOrder=false;
-		customerGui.payingBill=true;
+
+		customerGui.text="Going to cashier to pay $" + bill + " for " + choice;
 		customerGui.bill=this.bill;
 		customerGui.DoGoToCashier();
 		try {
@@ -315,7 +312,7 @@ public class CustomerAgent extends Agent implements Customer{
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		customerGui.payingBill=false;
+		customerGui.text="";
 		if (bill>money)
 		{
 			print("the customer does not have enough money to pay for the food");

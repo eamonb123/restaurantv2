@@ -401,7 +401,6 @@ public class WaiterAgent extends Agent implements Waiter{
 		}
 		waiterGui.text="";
 		print("waiter " + name + " delivers the " + c.choice + " to customer " + c.cust.getName());
-		waiterGui.deliveringFood=false;
 		c.cust.msgHereIsYourFood(c.choice);
 	}
 	

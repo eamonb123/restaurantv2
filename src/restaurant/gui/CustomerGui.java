@@ -15,11 +15,7 @@ public class CustomerGui implements Gui{
 	private int yPosition=250;
 	Point cashierLocation = new Point(520, 100);
 	private boolean isMoving=false;
-	public boolean waitingForOrder = false;
-	public boolean decidedOrder = false;
-	public boolean acceptedOrder = false;
-	public boolean finishedOrder = false;
-	public boolean payingBill = false;
+	public String text="";
 	public String order;
 	public int bill;
 

@@ -82,26 +82,27 @@ public class AnimationPanel extends JPanel implements ActionListener {
             	else if (gui instanceof CustomerGui)
             	{
             		CustomerGui customerGui = (CustomerGui) gui;
-            		if (customerGui.decidedOrder)
-            		{
-            			customerGui.drawOrder(stringOrder, "Decided my order!");
-            		}
-            		if (customerGui.waitingForOrder)
-            		{
-            			customerGui.drawOrder(stringOrder, customerGui.order + "?");
-            		}
-            		if (customerGui.acceptedOrder)
-            		{
-            			customerGui.eatingOrder(stringOrder, "eating " + customerGui.order + "...");
-            		}
-            		if (customerGui.finishedOrder)
-            		{
-            			customerGui.drawOrder(stringOrder, "Finished! Check please...");
-            		}
-            		if (customerGui.payingBill)
-            		{
-            			customerGui.drawOrder(stringOrder, "Going to cashier to pay $" + customerGui.bill + " for " + customerGui.order);
-            		}
+            		customerGui.drawOrder(stringOrder, customerGui.text);
+//            		if (customerGui.decidedOrder)
+//            		{
+//            			customerGui.drawOrder(stringOrder, "Decided my order!");
+//            		}
+//            		if (customerGui.waitingForOrder)
+//            		{
+//            			customerGui.drawOrder(stringOrder, customerGui.order + "?");
+//            		}
+//            		if (customerGui.acceptedOrder)
+//            		{
+//            			customerGui.eatingOrder(stringOrder, "eating " + customerGui.order + "...");
+//            		}
+//            		if (customerGui.finishedOrder)
+//            		{
+//            			customerGui.drawOrder(stringOrder, "Finished! Check please...");
+//            		}
+//            		if (customerGui.payingBill)
+//            		{
+//            			customerGui.drawOrder(stringOrder, "Going to cashier to pay $" + customerGui.bill + " for " + customerGui.order);
+//            		}
             	}
             }
         }
