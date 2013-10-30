@@ -438,7 +438,7 @@ public class WaiterAgent extends Agent implements Waiter{
 		waiterGui.text="";
 		customer.cust.msgHereIsBill(customer.bill);
 		print("the waiter lets the host know that the table which customer " + customer.cust.getName() + " sat at is now empty");
-		host.msgTableIsFree(customer.tableNumber);
+		host.msgTableIsFree(this, customer.cust, customer.tableNumber);
 		print("the waiter is now available to help the next customer");
 	}
 	

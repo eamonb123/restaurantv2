@@ -45,6 +45,7 @@ public class HostAgent extends Agent implements Host{
 	public class MyCustomer
 	{
 		Customer cust;
+		int tableNumber;
 		MyCustomer(Customer cust)
 		{
 			this.cust=cust;
@@ -122,15 +123,32 @@ public class HostAgent extends Agent implements Host{
 				wait = waiter;
 			}
 		}
-		myWaiters.remove(wait);
 		stateChanged();
 	}
 
 
 	
 	
-	public void msgTableIsFree(int tableNumber) {//from animation
-		//print("msgAtTable() called");
+	public void msgTableIsFree(Waiter waiter, Customer customer, int tableNumber) {//from animation
+		MyCustomer cust = new MyCustomer(null);
+		for (MyWaiter wait: myWaiters)
+		{
+			for (MyCustomer c: wait.customers)
+			{
+				if (c.cust==customer)
+				{
+					print("ASKHDKJASHFKJHGKAJSHFKHASDHKAHSKJDHASKJHDKJASHDKJHASKJD");
+					cust = c;
+					print("CUSTOMER SIZE FOR WAITER IS " + wait.customers.size());
+				}
+				else
+				{
+					print("COULDNT FIND YA");
+				}
+			}
+			wait.customers.remove(cust);
+			System.out.println(wait.customers.size());
+		}
 		for (Table table : myTables) 
 		{
 			if (table.tableNumber==tableNumber)
@@ -151,6 +169,15 @@ public class HostAgent extends Agent implements Host{
 			if (waiter.state==WaiterState.wantsToGoOnBreak)
 			{
 				print("the host is deciding whether the waiter should go on break");
+				DecideIfWaiterCanBreak(waiter);
+				return true;
+			}
+		}
+		for (MyWaiter waiter : myWaiters)
+		{
+			if (waiter.state==WaiterState.waitingForBreak && waiter.customers.isEmpty())
+			{
+				print("the waiter is done serving all his customers and can now go on break");
 				DecideIfWaiterCanBreak(waiter);
 				return true;
 			}
@@ -200,6 +227,7 @@ public class HostAgent extends Agent implements Host{
 		else if (!w.customers.isEmpty())
 		{
 			w.state=WaiterState.waitingForBreak;
+			w.waiter.msgYouCannotBreak();
 		}
 		else
 		{
@@ -232,11 +260,19 @@ public class HostAgent extends Agent implements Host{
 			return null;
 		else
 		{
-			int numOfCustomers=waiterList.get(0).customers.size();
-			MyWaiter freeWaiter = myWaiters.get(0);
-			for(MyWaiter waiter : myWaiters)
+			List<MyWaiter> waiters = new ArrayList<MyWaiter>();
+			for (MyWaiter waiter: waiterList)
 			{
-				if (waiter.customers.size()<numOfCustomers && waiter.state!=WaiterState.waitingForBreak)
+				if (waiter.state!=WaiterState.waitingForBreak)
+				{
+					waiters.add(waiter);
+				}
+			}
+			int numOfCustomers=waiters.get(0).customers.size();
+			MyWaiter freeWaiter = waiters.get(0);
+			for(MyWaiter waiter : waiters)
+			{
+				if (waiter.customers.size()<numOfCustomers)
 				{
 					numOfCustomers=waiter.customers.size();
 					freeWaiter=waiter;
