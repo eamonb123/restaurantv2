@@ -208,7 +208,7 @@ public class CustomerAgent extends Agent implements Customer{
 			if (event == AgentEvent.noMenuOptions)
 			{
 				state = AgentState.done;
-				FinishedEating();
+				LeaveRestaurant();
 				return true;
 			}
 		}
@@ -315,11 +315,6 @@ public class CustomerAgent extends Agent implements Customer{
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		event = AgentEvent.leaving;
-	}
-	
-	private void LeaveRestaurant()
-	{
 		customerGui.payingBill=false;
 		if (bill>money)
 		{
@@ -330,6 +325,11 @@ public class CustomerAgent extends Agent implements Customer{
 			print("the customer pays the money for the food");
 			money-=bill;
 		}
+		event = AgentEvent.leaving;
+	}
+	
+	private void LeaveRestaurant()
+	{	
 		print("customer " + name + " is now leaving the restaurant");
 		customerGui.DoExitRestaurant();
 	}

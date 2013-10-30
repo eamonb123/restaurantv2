@@ -65,18 +65,19 @@ public class AnimationPanel extends JPanel implements ActionListener {
             	if (gui instanceof WaiterGui)
             	{
             		WaiterGui waiterGui = (WaiterGui) gui;
-            		if (waiterGui.reOrdering)
-            		{
-            			waiterGui.drawOrder(stringOrder, "currently out of " + waiterGui.order);
-            		}
-            		if (waiterGui.deliveringFood)
-            		{
-            			waiterGui.drawOrder(stringOrder, waiterGui.order);
-            		}
-            		if (waiterGui.deliveringCheck)
-            		{
-            			waiterGui.drawOrder(stringOrder, "delivering check of $" + waiterGui.check);
-            		}
+            		waiterGui.drawOrder(stringOrder, waiterGui.text);
+//            		if (waiterGui.reOrdering)
+//            		{
+//            			waiterGui.drawOrder(stringOrder, "currently out of " + waiterGui.order);
+//            		}
+//            		if (waiterGui.deliveringFood)
+//            		{
+//            			waiterGui.drawOrder(stringOrder, waiterGui.order);
+//            		}
+//            		if (waiterGui.deliveringCheck)
+//            		{
+//            			waiterGui.drawOrder(stringOrder, "delivering check of $" + waiterGui.check);
+//            		}
             	}
             	else if (gui instanceof CustomerGui)
             	{

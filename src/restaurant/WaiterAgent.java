@@ -128,8 +128,9 @@ public class WaiterAgent extends Agent implements Waiter{
 			if (c.cust==cust && c.cust.getChoice().equals(cust.getChoice()))
 			{
 				print("the waiter assigns the customer's choice " + c.cust.getChoice() + " to customer " + cust.getName());
-				c.customerState=CustomerState.ordered;
 				c.choice=cust.getChoice();
+				waiterGui.order=c.choice;
+				c.customerState=CustomerState.ordered;
 			}
 		}
 		stateChanged();
@@ -302,7 +303,6 @@ public class WaiterAgent extends Agent implements Waiter{
 			e.printStackTrace();
 		}
 		print("the waiter has reached the break location");
-		//waiterGui.stayAtBreak=true;
 	}
 	
 	private void ReAddWaiterToHost()
@@ -353,6 +353,7 @@ public class WaiterAgent extends Agent implements Waiter{
 	private void reOrder(MyCustomers c)
 	{
 		print("the waiter is now approaching the customer asking him to reorder");
+		waiterGui.text="currently out of " + waiterGui.order;
 		waiterGui.WalkingToReorderingCustomer(c.tableNumber, c.choice);
 		try {
 //			print("acquiring");
@@ -362,8 +363,7 @@ public class WaiterAgent extends Agent implements Waiter{
 		}
 		if (c.menuOptions.isEmpty())
 		{
-			waiterGui.reOrdering=false;
-			waiterGui.deliveringFood=false;
+			waiterGui.text="";
 		}
 		c.cust.msgReOrder(c.menuOptions);
 	}
@@ -391,6 +391,7 @@ public class WaiterAgent extends Agent implements Waiter{
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		waiterGui.text=waiterGui.order;
 		waiterGui.DoGoToCustomer(c.tableNumber, c.choice);
 		try {
 //			print("acquiring");
@@ -398,6 +399,7 @@ public class WaiterAgent extends Agent implements Waiter{
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		waiterGui.text="";
 		print("waiter " + name + " delivers the " + c.choice + " to customer " + c.cust.getName());
 		waiterGui.deliveringFood=false;
 		c.cust.msgHereIsYourFood(c.choice);
@@ -417,8 +419,8 @@ public class WaiterAgent extends Agent implements Waiter{
 	
 	private void DeliverReceiptAndCleanUp(MyCustomers customer)
 	{
-		waiterGui.deliveringCheck=true;
 		waiterGui.check=customer.bill;
+		waiterGui.text= "delivering check of $" + waiterGui.check;
 		waiterGui.DoDeliverReceipt(customer.tableNumber);
 		try {
 //			print("acquiring");
@@ -426,7 +428,7 @@ public class WaiterAgent extends Agent implements Waiter{
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		waiterGui.deliveringCheck=false;
+		waiterGui.text="";
 		customer.cust.msgHereIsBill(customer.bill);
 		print("the waiter lets the host know that the table which customer " + customer.cust.getName() + " sat at is now empty");
 		host.msgTableIsFree(customer.tableNumber);
