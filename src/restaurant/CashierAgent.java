@@ -5,6 +5,7 @@ import restaurant.HostAgent.Table;
 import restaurant.gui.WaiterGui;
 import restaurant.interfaces.Cashier;
 import restaurant.interfaces.Customer;
+import restaurant.interfaces.Market;
 
 import java.awt.Point;
 import java.util.*;
@@ -20,6 +21,7 @@ public class CashierAgent extends Agent implements Cashier{
 	public List<Waiter> waiters = new ArrayList<Waiter>();
 	public List<Order> receipts = new ArrayList<Order>();
 	public List<Payment> payments = new ArrayList<Payment>();
+	private int money=1000000;
 	HashMap<String, Integer> menu = new HashMap<String, Integer>();
 	{
 	    menu.put("beef", 15);
@@ -86,7 +88,26 @@ public class CashierAgent extends Agent implements Cashier{
 	}
 	
 	
-	
+	public void msgHereIsMarketBill(Market market, int bill, HashMap<String, Integer> outgoingList)
+	{
+		if (money>=bill)
+		{
+			print ("the cashier has enough money to pay " + market.getName() + " for the order");
+			money-=bill;
+			print ("the cashier pays the market $" + bill  + " for " + outgoingList);
+			print ("the cashier now has $" + money);
+			market.msgHereIsPayment(bill);
+		}
+		if (money<bill)
+		{
+			print ("the cashier does not have enough money to pay " + market.getName() + " for " + outgoingList + ". The cashier paid all he could");
+			bill=bill-money;
+			money=0;
+			print ("the cashier now has $" + money);
+			market.msgHereIsPayment(bill);
+		}
+		stateChanged();
+	}
 	
 
 	

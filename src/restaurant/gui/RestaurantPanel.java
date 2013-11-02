@@ -20,7 +20,7 @@ import java.util.Vector;
 public class RestaurantPanel extends JPanel {
 
     //Host, cook, waiters and customers
-    private HostAgent host = new HostAgent("Sarah", this);
+    private HostAgent host = new HostAgent("Host Sarah", this);
     private CookAgent cook = new CookAgent();
     private CashierAgent cashier = new CashierAgent();
 //    private WaiterAgent waiter = new WaiterAgent("Matt");
@@ -43,12 +43,13 @@ public class RestaurantPanel extends JPanel {
     public RestaurantPanel(RestaurantGui gui) {
         this.gui = gui;
 
-        markets.add(new MarketAgent());
-        markets.add(new MarketAgent());
-        markets.add(new MarketAgent());
+        markets.add(new MarketAgent("Market 1"));
+        markets.add(new MarketAgent("Market 2"));
+        markets.add(new MarketAgent("Market 3"));
         
         for(MarketAgent market: markets)
         {
+        	market.setCashier(cashier);
         	cook.setMarket(market);
         	market.startThread();
         }

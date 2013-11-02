@@ -96,9 +96,9 @@ public class CookAgent extends Agent implements Cook{
 	}
 	
 	
-	public void msgFufilledCompleteOrder(HashMap<String, Integer> incomingOrder)
+	public void msgFufilledCompleteOrder(String name, HashMap<String, Integer> incomingOrder)
 	{
-		print("cook is getting the message that the market fufilled the order.");
+		print("cook is getting the message that " + name + " fufilled the order.");
 		for (Map.Entry<String, Food>  currentFood: foods.entrySet())
 		{
 			for (Map.Entry<String, Integer> incomingFood: incomingOrder.entrySet())
@@ -115,9 +115,9 @@ public class CookAgent extends Agent implements Cook{
 		stateChanged();
 	}
 	
-	public void msgFufilledPartialOrder(HashMap<String, Integer> incomingOrder)
+	public void msgFufilledPartialOrder(String name, HashMap<String, Integer> incomingOrder)
 	{
-		print("cook is getting the message that the market could NOT fully fufill the order.");
+		print("cook is getting the message that " + name + " could NOT fully fufill the order.");
 	    HashMap<String, Integer> newOutgoingList = new HashMap<String, Integer>();
 		for (Map.Entry<String, Food>  currentFood: foods.entrySet())
 		{

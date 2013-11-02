@@ -29,10 +29,10 @@ public class CustomerGui implements Gui{
 
 	public CustomerGui(CustomerAgent c, RestaurantGui gui){ //HostAgent m) {
 		customer = c;
-		xPos = -40;
-		yPos = -40;
-		xDestination = -40;
-		yDestination = -40;
+		xPos = 0;
+		yPos = 0;
+		xDestination = 20;
+		yDestination = 20;
 		//maitreD = m;
 		this.gui = gui;
 	}

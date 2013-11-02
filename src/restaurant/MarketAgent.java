@@ -23,6 +23,11 @@ import java.util.concurrent.TimeUnit;
 public class MarketAgent extends Agent implements Market{
 	private Cashier cashier;
 	private String name; 
+	private int money;
+	public MarketAgent(String name)
+	{
+		this.name=name;
+	}
 	HashMap<String, Integer> prices = new HashMap<String, Integer>();
 	{
 	    prices.put("beef", 15);
@@ -68,6 +73,12 @@ public class MarketAgent extends Agent implements Market{
 		stateChanged();
 	}
 	
+	public void msgHereIsPayment(int bill)
+	{
+		money+=bill;
+		print(name + " now has $" + money);
+		stateChanged();
+	}
 
 	
 	/**
@@ -131,8 +142,8 @@ public class MarketAgent extends Agent implements Market{
 				System.out.println("Exception caught");
 			}
 			incomingOrder.state= reStockingState.failedToFufillOrder;
-			cashier.msgHereIsMarketBill(CalculateBill(outgoingList));
-			incomingOrder.cook.msgFufilledPartialOrder(outgoingList);
+			cashier.msgHereIsMarketBill(this, CalculateBill(outgoingList), outgoingList);
+			incomingOrder.cook.msgFufilledPartialOrder(name, outgoingList);
 		}
 		else
 		{
@@ -145,8 +156,8 @@ public class MarketAgent extends Agent implements Market{
 				System.out.println("Exception caught");
 			}
 			incomingOrder.state= reStockingState.fufillingOrder;
-			cashier.msgHereIsMarketBill(CalculateBill(outgoingList));
-			incomingOrder.cook.msgFufilledCompleteOrder(outgoingList);			
+			cashier.msgHereIsMarketBill(this, CalculateBill(outgoingList), outgoingList);
+			incomingOrder.cook.msgFufilledCompleteOrder(name, outgoingList);			
 		}
 	}
 	
@@ -170,6 +181,10 @@ public class MarketAgent extends Agent implements Market{
 		this.cashier=cashier;
 	}
 
+	public String getName()
+	{
+		return name;
+	}
 	
 }
 

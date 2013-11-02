@@ -319,15 +319,6 @@ public class CustomerAgent extends Agent implements Customer{
 		}
 		customerGui.text="";
 		cashier.msgPayBill(this, money, bill);
-//		if (bill>money)
-//		{
-//			print("the customer does not have enough money to pay for the food");
-//		}
-//		else
-//		{
-//			print("the customer pays the money for the food");
-//			money-=bill;
-//		}
 	}
 	
 	private void LeaveRestaurant()
