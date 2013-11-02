@@ -88,6 +88,11 @@ public class MockCustomer extends Mock implements Customer {
 		// TODO Auto-generated method stub
 		
 	}
+	@Override
+	public void msgWaitInLine(Point location) {
+		// TODO Auto-generated method stub
+		
+	}
 
 //	@Override
 //	public void HereIsYourTotal(double total) {

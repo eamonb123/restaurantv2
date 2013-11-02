@@ -17,6 +17,8 @@ public interface Customer {
 	
 	public abstract void msgSemaphoreRelease();
 	
+	public abstract void msgWaitInLine(Point location);
+	
 	public abstract void msgFollowMeToTable(Waiter waiter, List<String> menuOptions, int tableNumber, Point loc);
 	
 	public abstract void msgWhatWouldYouLike(List<String> menu);

@@ -96,6 +96,14 @@ public class CustomerAgent extends Agent implements Customer{
 	}
 	
 	
+	public void msgWaitInLine(Point location)
+	{
+		customerGui.xDestination=location.x;
+		customerGui.yDestination=location.y;
+		stateChanged();
+	}
+	
+	
 	public void msgFollowMeToTable(Waiter waiter, List<String> menuOptions, int tableNumber, Point loc)
 	{
 		print("customer " + name + " has recived the message to sit at table " + tableNumber);

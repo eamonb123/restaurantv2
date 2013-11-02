@@ -45,6 +45,7 @@ public class HostAgent extends Agent implements Host{
 	public class MyCustomer
 	{
 		Customer cust;
+		Point waitingLocation = new Point();
 		int tableNumber;
 		MyCustomer(Customer cust)
 		{
@@ -60,12 +61,39 @@ public class HostAgent extends Agent implements Host{
 			this.tableNumber = tableNumber;
 		}
 	}
+	public List<WaitingSpot> waitingSpots = new ArrayList<WaitingSpot>();
+    public class WaitingSpot 
+    {
+		boolean isOccupied=false;
+		Point location = new Point();
+		WaitingSpot(int i)
+		{
+			this.isOccupied=false;
+			this.location=waitingSpot.get(i);
+		}
+	}
+    HashMap<Integer, Point> waitingSpot = new HashMap<Integer, Point>();
+    {
+    	int xPosition=20;
+    	int yPosition=20;
+    	for (int i=0; i<=10; i++)
+    	{
+    		Point location = new Point(xPosition, yPosition);
+    		waitingSpot.put(i,location);
+    		xPosition+=150;
+    	}
+    }
+
     
 	public HostAgent(String name, RestaurantPanel restPanel) {
 		super();
 		this.name = name;
 		this.restPanel=restPanel;
 		myTables = new ArrayList<Table>(NTABLES);
+	    for (int i=0; i<10; i++)
+	    {
+	    	waitingSpots.add(new WaitingSpot(i));
+	    }
 		int xPos = 200;
 		for (int ix = 1; ix <= NTABLES; ix++) {
 			Table newTable = new Table(ix);
@@ -74,7 +102,6 @@ public class HostAgent extends Agent implements Host{
 			xPos+=150;
 		}
 	}
-	
     HashMap<Integer, Point> tableMap = new HashMap<Integer, Point>();
     {
     	for (int i=1; i<=NTABLES; i++)
@@ -126,6 +153,13 @@ public class HostAgent extends Agent implements Host{
 					cust = c;
 				}
 			}
+			for (WaitingSpot spot: waitingSpots)
+			{
+				if (spot.equals(cust.waitingLocation))
+				{
+					spot.isOccupied=false;
+				}
+			}
 			wait.customers.remove(cust);
 		}
 		for (Table table : myTables) 
@@ -165,6 +199,20 @@ public class HostAgent extends Agent implements Host{
 		{
 			if (myWaiters.isEmpty())
 			{
+				for (MyCustomer customer: myWaitingCustomers)
+				{
+					for (WaitingSpot waitingSpot: waitingSpots)
+					{
+						if (!waitingSpot.isOccupied)
+						{
+//							print("NOT OCCUPIED");
+							customer.waitingLocation=waitingSpot.location;
+							customer.cust.msgWaitInLine(customer.waitingLocation);
+//							waitingSpot.isOccupied=true;
+							return true;
+						}
+					}
+				}
 				print("waiter list is empty. customers waiting in line");
 			}
 			else
@@ -172,14 +220,18 @@ public class HostAgent extends Agent implements Host{
 				MyWaiter leastBusyWaiter = leastBusyWaiter(myWaiters);
 				for (Table table : myTables)
 				{
-					if(!table.isOccupied)
+					for (WaitingSpot waitingSpot: waitingSpots)
 					{
-						MyCustomer customer = myWaitingCustomers.get(0);
-						customer.cust.msgSemaphoreRelease();
-						leastBusyWaiter.customers.add(customer);
-						callWaiter(customer.cust, leastBusyWaiter.waiter, table);
-						myWaitingCustomers.remove(0);
-						return true;
+						if(!table.isOccupied && !waitingSpot.isOccupied)
+						{
+							MyCustomer customer = myWaitingCustomers.get(0);
+							customer.cust.msgSemaphoreRelease();
+							leastBusyWaiter.customers.add(customer);
+							callWaiter(customer.cust, leastBusyWaiter.waiter, table);
+							waitingSpot.isOccupied=true;
+							myWaitingCustomers.remove(0);
+							return true;
+						}
 					}
 				}
 			}
