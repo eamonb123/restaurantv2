@@ -221,18 +221,16 @@ public class HostAgent extends Agent implements Host{
 				MyWaiter leastBusyWaiter = leastBusyWaiter(myWaiters);
 				for (Table table : myTables)
 				{
-					for (WaitingSpot waitingSpot: waitingSpots)
+					if(!table.isOccupied)
 					{
-						if(!table.isOccupied && !waitingSpot.isOccupied)
-						{
-							MyCustomer customer = myWaitingCustomers.get(0);
-							customer.cust.msgSemaphoreRelease();
-							leastBusyWaiter.customers.add(customer);
-							callWaiter(customer.cust, leastBusyWaiter.waiter, table);
-							waitingSpot.isOccupied=true;
-							myWaitingCustomers.remove(0);
-							return true;
-						}
+						MyCustomer customer = myWaitingCustomers.get(0);
+						customer.cust.msgSemaphoreRelease();
+						leastBusyWaiter.customers.add(customer);
+						callWaiter(customer.cust, customer.waitingLocation, leastBusyWaiter.waiter, table);
+						print("HERE IT IS");
+						System.out.println(customer.waitingLocation);
+						myWaitingCustomers.remove(0);
+						return true;
 					}
 				}
 			}
@@ -278,12 +276,12 @@ public class HostAgent extends Agent implements Host{
 	}
 	
 	
-	private void callWaiter(Customer cust, Waiter waiter, Table table)
+	private void callWaiter(Customer cust, Point location, Waiter waiter, Table table)
 	{
 		print("Host is sending message to the waiter to sit customer");
 		cust.setWaiter(waiter);
-		Point location=tableMap.get(table.tableNumber);
-		waiter.msgPleaseSeatCustomer(cust, table.tableNumber, location); //grabbing the only waiter
+		Point loc=tableMap.get(table.tableNumber);
+		waiter.msgPleaseSeatCustomer(cust, location, table.tableNumber, loc); //grabbing the only waiter
 		table.isOccupied=true;
 	}
 	

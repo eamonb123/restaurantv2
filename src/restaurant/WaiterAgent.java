@@ -34,6 +34,7 @@ public class WaiterAgent extends Agent implements Waiter{
 	public class MyCustomers
 	{
 		Customer cust;
+		Point customerlocation = new Point();
 		int bill;
 		int tableNumber;
 		String choice;
@@ -44,8 +45,9 @@ public class WaiterAgent extends Agent implements Waiter{
 		}
 		Point location = new Point();
 		CustomerState customerState = CustomerState.nothing;
-		MyCustomers(Customer cust, int tableNumber, CustomerState state, Point location) {
+		MyCustomers(Customer cust, Point customerlocation, int tableNumber, CustomerState state, Point location) {
 			this.cust=cust;
+			this.customerlocation=customerlocation;
 			this.tableNumber=tableNumber;
 			this.customerState=state;
 			this.location=location;
@@ -99,10 +101,10 @@ public class WaiterAgent extends Agent implements Waiter{
 		stateChanged();
 	}
 	
-	public void msgPleaseSeatCustomer(Customer cust, int tableNumber, Point loc)
+	public void msgPleaseSeatCustomer(Customer cust, Point customerlocation, int tableNumber, Point loc)
 	{
 		print("waiter is adding customer to the list of waiting customers");
-		myCustomers.add(new MyCustomers(cust, tableNumber, CustomerState.waiting, loc));
+		myCustomers.add(new MyCustomers(cust, customerlocation ,tableNumber, CustomerState.waiting, loc));
 		stateChanged();
 		//System.out.println("test");
 	}
@@ -324,7 +326,7 @@ public class WaiterAgent extends Agent implements Waiter{
 		print("waiter is now currently busy helping customer " + c.cust.getName());
 		print("waiter is asking customer " + c.cust.getName() + " to follow him to table " + c.tableNumber);
 		//state = WaiterState.busy;
-		waiterGui.PickUpCustomer();
+		waiterGui.PickUpCustomer(c.customerlocation);
 		try {
 //			print("acquiring");
 			atTable.acquire();

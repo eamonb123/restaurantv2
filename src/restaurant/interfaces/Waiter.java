@@ -23,7 +23,7 @@ public interface Waiter {
 	
 	public abstract void msgYouCanBreak();
 	
-	public abstract void msgPleaseSeatCustomer(Customer customer, int tableNumber, Point loc);
+	public abstract void msgPleaseSeatCustomer(Customer customer, Point customerLocation, int tableNumber, Point loc);
 	
 	public abstract void msgReadyToOrder(Customer customer);
 	
