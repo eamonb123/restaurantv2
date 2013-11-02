@@ -7,6 +7,7 @@ import restaurant.CustomerAgent.AgentEvent;
 import restaurant.CustomerAgent.AgentState;
 import restaurant.HostAgent.Table;
 import restaurant.gui.WaiterGui;
+import restaurant.interfaces.Cashier;
 import restaurant.interfaces.Cook;
 import restaurant.interfaces.Market;
 
@@ -20,8 +21,14 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class MarketAgent extends Agent implements Market{
-	Cook cook;
+	private Cashier cashier;
 	private String name; 
+	HashMap<String, Integer> prices = new HashMap<String, Integer>();
+	{
+	    prices.put("beef", 15);
+    	prices.put("chicken", 10);
+    	prices.put("lamb", 5);
+	}
 	public class IncomingOrder
 	{
 		Cook cook;
@@ -124,6 +131,7 @@ public class MarketAgent extends Agent implements Market{
 				System.out.println("Exception caught");
 			}
 			incomingOrder.state= reStockingState.failedToFufillOrder;
+			cashier.msgHereIsMarketBill(CalculateBill(outgoingList));
 			incomingOrder.cook.msgFufilledPartialOrder(outgoingList);
 		}
 		else
@@ -137,19 +145,31 @@ public class MarketAgent extends Agent implements Market{
 				System.out.println("Exception caught");
 			}
 			incomingOrder.state= reStockingState.fufillingOrder;
+			cashier.msgHereIsMarketBill(CalculateBill(outgoingList));
 			incomingOrder.cook.msgFufilledCompleteOrder(outgoingList);			
 		}
 	}
 	
-
-
+	private int CalculateBill(HashMap<String, Integer> outgoingList)
+	{
+		int bill = 0;
+		for (Map.Entry<String, Integer> groceryItem : outgoingList.entrySet())
+		{
+			int quantity = groceryItem.getValue();
+			int price = prices.get(groceryItem.getKey());
+			int total = quantity * price;
+			bill += total;
+		}
+		return bill;
+	}
+	
 	//utilities
 
-
-	public void setCook(CookAgent cook)
+	public void setCashier(Cashier cashier)
 	{
-		this.cook=cook;
+		this.cashier=cashier;
 	}
+
 	
 }
 

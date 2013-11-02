@@ -67,21 +67,16 @@ public class WaiterGui implements Gui {
             yPos--;
         if (xPos == xDestination && yPos == yDestination && isMoving==true) 
         {
-//        	if(!stayAtBreak)
-//        	{
-        		System.out.println("stay at break is FALSE");
-	        	if (stayAtBreak)
-	        	{
-	        		DoMoveToPosition(breakLocation);
-	        	}
-	        	else
-	        	{
-	        		DoMoveToPosition(homeBase);
-	        	}
-	        	waiter.msgAtTable();
-	        	isMoving=false;
-//        	}
-//        	gui.setCustomerEnabled(waiter);
+        	if (stayAtBreak)
+        	{
+        		DoMoveToPosition(breakLocation);
+        	}
+        	else
+        	{
+        		DoMoveToPosition(homeBase);
+        	}
+        	waiter.msgAtTable();
+        	isMoving=false;
         }
     }
 

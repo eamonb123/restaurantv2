@@ -123,17 +123,10 @@ public class HostAgent extends Agent implements Host{
 			{
 				if (c.cust==customer)
 				{
-					print("ASKHDKJASHFKJHGKAJSHFKHASDHKAHSKJDHASKJHDKJASHDKJHASKJD");
 					cust = c;
-					print("CUSTOMER SIZE FOR WAITER IS " + wait.customers.size());
-				}
-				else
-				{
-					print("COULDNT FIND YA");
 				}
 			}
 			wait.customers.remove(cust);
-			System.out.println(wait.customers.size());
 		}
 		for (Table table : myTables) 
 		{

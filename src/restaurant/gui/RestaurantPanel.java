@@ -50,14 +50,13 @@ public class RestaurantPanel extends JPanel {
         for(MarketAgent market: markets)
         {
         	cook.setMarket(market);
-        	market.setCook(cook);
         	market.startThread();
         }
         
         host.startThread();
         cook.startThread();
         cashier.startThread();
-        //cook.CheckInitialFood();
+        cook.CheckInitialFood();
         
         
         setLayout(new GridLayout(1, 2, 20, 20));
