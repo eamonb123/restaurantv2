@@ -46,6 +46,7 @@ public class HostAgent extends Agent implements Host{
 	{
 		Customer cust;
 		Point waitingLocation = new Point();
+		boolean waitingInLine = false;
 		int tableNumber;
 		MyCustomer(Customer cust)
 		{
@@ -80,7 +81,7 @@ public class HostAgent extends Agent implements Host{
     	{
     		Point location = new Point(xPosition, yPosition);
     		waitingSpot.put(i,location);
-    		xPosition+=150;
+    		xPosition+=30;
     	}
     }
 
@@ -92,7 +93,9 @@ public class HostAgent extends Agent implements Host{
 		myTables = new ArrayList<Table>(NTABLES);
 	    for (int i=0; i<10; i++)
 	    {
-	    	waitingSpots.add(new WaitingSpot(i));
+	    	WaitingSpot spot = new WaitingSpot(i);
+	    	System.out.println(spot.location);
+	    	waitingSpots.add(spot);
 	    }
 		int xPos = 200;
 		for (int ix = 1; ix <= NTABLES; ix++) {
@@ -116,7 +119,7 @@ public class HostAgent extends Agent implements Host{
 	// Messages
 
 	public void msgIWantToEat(Customer cust) {
-		print("Host is adding customer to the waiting customer list");
+		print("Host is adding customer " + cust.getName() + " to the waiting customer list");
 		myWaitingCustomers.add(new MyCustomer(cust));
 		stateChanged();
 	}
@@ -199,16 +202,14 @@ public class HostAgent extends Agent implements Host{
 		{
 			if (myWaiters.isEmpty())
 			{
-				for (MyCustomer customer: myWaitingCustomers)
-				{
+				for (MyCustomer customer : myWaitingCustomers)	
+				{	
 					for (WaitingSpot waitingSpot: waitingSpots)
 					{
-						if (!waitingSpot.isOccupied)
+						if (!waitingSpot.isOccupied && !customer.waitingInLine)
 						{
-//							print("NOT OCCUPIED");
 							customer.waitingLocation=waitingSpot.location;
-							customer.cust.msgWaitInLine(customer.waitingLocation);
-//							waitingSpot.isOccupied=true;
+							WaitInLine(customer, waitingSpot);
 							return true;
 						}
 					}
@@ -267,6 +268,13 @@ public class HostAgent extends Agent implements Host{
 			w.waiter.msgYouCanBreak();
 			myWaiters.remove(w);
 		}
+	}
+	
+	private void WaitInLine(MyCustomer customer, WaitingSpot waitingSpot)
+	{
+		customer.waitingInLine=true;
+		customer.cust.msgWaitInLine(customer.waitingLocation);
+		waitingSpot.isOccupied=true;
 	}
 	
 	
