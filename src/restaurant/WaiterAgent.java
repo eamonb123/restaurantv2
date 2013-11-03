@@ -207,87 +207,92 @@ public class WaiterAgent extends Agent implements Waiter{
 	 */
 	
 	protected boolean pickAndExecuteAnAction() {
-		//synchronized(customers){
-		if (waiterState == WaiterState.askForBreak)
+		try
 		{
-			waiterState = WaiterState.asking;
-			AskToGoOnBreak();
-			return true;
-		}
-		if (waiterState == WaiterState.onBreak)
-		{
-			waiterState = WaiterState.breaking;
-			GoOnBreak();
-			return true;
-		}
-		if (waiterState == WaiterState.returningToWork)
-		{
-			waiterState = WaiterState.backToWork;
-			ReAddWaiterToHost();
-			return true;
-		}
-		for (MyCustomers cust : myCustomers) 
-		{
-			if (cust.customerState==CustomerState.waiting)
+			if (waiterState == WaiterState.askForBreak)
 			{
-				SeatCustomer(cust);
+				waiterState = WaiterState.asking;
+				AskToGoOnBreak();
 				return true;
 			}
-		}
-		//}
-		for (MyCustomers cust : myCustomers) 
-		{
-			if (cust.customerState==CustomerState.readyToOrder)
+			if (waiterState == WaiterState.onBreak)
 			{
-				cust.customerState = CustomerState.takingOrder;
-				TakeOrder(cust);
+				waiterState = WaiterState.breaking;
+				GoOnBreak();
 				return true;
 			}
-		}
-		for (MyCustomers cust : myCustomers) 
-		{
-			if (cust.customerState==CustomerState.ordered)
+			if (waiterState == WaiterState.returningToWork)
 			{
-				cust.customerState=CustomerState.sendOrderToCook;
-				GiveCook(cust);
+				waiterState = WaiterState.backToWork;
+				ReAddWaiterToHost();
 				return true;
 			}
-		}
-		for (MyCustomers cust : myCustomers) 
-		{
-			if (cust.customerState==CustomerState.reOrder)
+			for (MyCustomers cust : myCustomers) 
 			{
-				cust.customerState=CustomerState.reOrdering;
-				reOrder(cust);
-				return true;
+				if (cust.customerState==CustomerState.waiting)
+				{
+					SeatCustomer(cust);
+					return true;
+				}
+			}
+			//}
+			for (MyCustomers cust : myCustomers) 
+			{
+				if (cust.customerState==CustomerState.readyToOrder)
+				{
+					cust.customerState = CustomerState.takingOrder;
+					TakeOrder(cust);
+					return true;
+				}
+			}
+			for (MyCustomers cust : myCustomers) 
+			{
+				if (cust.customerState==CustomerState.ordered)
+				{
+					cust.customerState=CustomerState.sendOrderToCook;
+					GiveCook(cust);
+					return true;
+				}
+			}
+			for (MyCustomers cust : myCustomers) 
+			{
+				if (cust.customerState==CustomerState.reOrder)
+				{
+					cust.customerState=CustomerState.reOrdering;
+					reOrder(cust);
+					return true;
+				}
+			}
+			for (MyCustomers cust : myCustomers) 
+			{
+				if (cust.customerState==CustomerState.deliver)
+				{
+					cust.customerState=CustomerState.delivering;
+					Deliver(cust);
+					return true;
+				}
+			}
+			for (MyCustomers cust : myCustomers) 
+			{
+				if (cust.customerState==CustomerState.doneEating)
+				{
+					cust.customerState=CustomerState.waitingForReceipt;
+					GrabReceiptFromCashier(cust);
+					return true;
+				}
+			}
+			for (MyCustomers cust : myCustomers) 
+			{
+				if (cust.customerState==CustomerState.receivingReceipt)
+				{
+					cust.customerState=CustomerState.deliveredReceipt;
+					DeliverReceiptAndCleanUp(cust);
+					return true;
+				}
 			}
 		}
-		for (MyCustomers cust : myCustomers) 
-		{
-			if (cust.customerState==CustomerState.deliver)
-			{
-				cust.customerState=CustomerState.delivering;
-				Deliver(cust);
-				return true;
-			}
-		}
-		for (MyCustomers cust : myCustomers) 
-		{
-			if (cust.customerState==CustomerState.doneEating)
-			{
-				cust.customerState=CustomerState.waitingForReceipt;
-				GrabReceiptFromCashier(cust);
-				return true;
-			}
-		}
-		for (MyCustomers cust : myCustomers) 
-		{
-			if (cust.customerState==CustomerState.receivingReceipt)
-			{
-				cust.customerState=CustomerState.deliveredReceipt;
-				DeliverReceiptAndCleanUp(cust);
-				return true;
-			}
+		catch(ConcurrentModificationException e){
+			e.printStackTrace();
 		}
 		return false;
 	}

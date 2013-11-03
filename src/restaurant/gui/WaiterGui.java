@@ -25,7 +25,7 @@ public class WaiterGui implements Gui {
     Point cookLocation = new Point(-40, 135);
     Point homeBase = new Point();
     Point customerLine = new Point(-20,-20);
-    Point breakLocation = new Point(260, 20);
+    Point breakLocation = new Point(290, -20);
     Point cashierLocation = new Point(520, 100);
     public static final int xTable = 100;
     public static final int yTable = 250;
@@ -101,6 +101,22 @@ public class WaiterGui implements Gui {
         g.setColor(Color.BLACK);
     	g.drawString(order, xPos, yPos);
     }
+    
+    public void drawCustomerArea(Graphics2D g, String order) {
+        g.setColor(Color.BLACK);
+    	g.drawString(order, 20, 15);
+    }
+    
+    public void drawCookArea(Graphics2D g, String order) {
+        g.setColor(Color.BLACK);
+    	g.drawString(order, 0, 150);
+    }
+    
+    public void drawBreakArea(Graphics2D g, String order) {
+        g.setColor(Color.BLACK);
+    	g.drawString(order, 260, 20);
+    }
+    
 
     public boolean isPresent() {
         return true;

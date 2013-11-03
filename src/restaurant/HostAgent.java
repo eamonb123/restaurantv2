@@ -34,6 +34,7 @@ public class HostAgent extends Agent implements Host{
 	{
 		Waiter waiter;
 		WaiterState state; 
+		Point homeBase = new Point();
 		boolean assignedHomeBase=false;
 		List<MyCustomer> customers = new ArrayList<MyCustomer>();
 		MyWaiter(Waiter waiter, WaiterState state)
@@ -93,7 +94,7 @@ public class HostAgent extends Agent implements Host{
     		xPosition+=150;
     	}
     }
-    public List<WaiterHomeBase> waiterHomeBases = new ArrayList<WaiterHomeBase>();
+    public List<WaiterHomeBase> waiterHomeBases = Collections.synchronizedList(new ArrayList<WaiterHomeBase>());
     class WaiterHomeBase
     {
     	boolean isOccupied=false;
@@ -124,7 +125,7 @@ public class HostAgent extends Agent implements Host{
     	}
     	xPosition = 200;
     	yPosition += 30;
-    	for (int i=10; i<5; i++)
+    	for (int i=10; i<15; i++)
     	{
     		Point location = new Point(xPosition, yPosition);
     		waiterHomeBase.put(i,location);
@@ -244,13 +245,16 @@ public class HostAgent extends Agent implements Host{
 	 * Scheduler.  Determine what action is called for, and do it.
 	 */
 	protected boolean pickAndExecuteAnAction() {
-		for (MyWaiter waiter : myWaiters)
+		synchronized(myWaiters)
 		{
-			if (waiter.state==WaiterState.wantsToGoOnBreak)
+			for (MyWaiter waiter : myWaiters)
 			{
-				print("the host is deciding whether the waiter should go on break");
-				DecideIfWaiterCanBreak(waiter);
-				return true;
+				if (waiter.state==WaiterState.wantsToGoOnBreak)
+				{
+					print("the host is deciding whether the waiter should go on break");
+					DecideIfWaiterCanBreak(waiter);
+					return true;
+				}
 			}
 		}
 		for (MyWaiter waiter : myWaiters)
@@ -268,10 +272,11 @@ public class HostAgent extends Agent implements Host{
 			{
 				if (!waiter.assignedHomeBase && !homeBase.isOccupied)
 				{
+					print("TEEEE");
 					print("the waiter is assigned to the first home base location");
 					GoToHomeBase(waiter, homeBase);
 					return true;
-				}
+				}			
 			}
 		}
 		if (!myWaitingCustomers.isEmpty())
@@ -330,9 +335,11 @@ public class HostAgent extends Agent implements Host{
 
 	private void GoToHomeBase(MyWaiter w, WaiterHomeBase homeBase)
 	{
-		w.waiter.msgSetHomeBase(homeBase.location);
 		w.assignedHomeBase=true;
+		w.homeBase=homeBase.location;
+		System.out.println(w.homeBase);
 		homeBase.isOccupied=true;
+		w.waiter.msgSetHomeBase(homeBase.location);	
 	}
 	
 	private void DecideIfWaiterCanBreak(MyWaiter w)
@@ -356,8 +363,20 @@ public class HostAgent extends Agent implements Host{
 		{
 			print("the host allows the waiter to go on break");
 			w.state=WaiterState.onBreak;
+			setUnoccupied(w);
 			w.waiter.msgYouCanBreak();
 			myWaiters.remove(w);
+		}
+	}
+	
+	private void setUnoccupied(MyWaiter waiter)
+	{
+		for (WaiterHomeBase homeBase: waiterHomeBases)
+		{
+			if (homeBase.location.equals(waiter.homeBase))
+			{
+				homeBase.isOccupied=false;
+			}
 		}
 	}
 	
@@ -383,9 +402,6 @@ public class HostAgent extends Agent implements Host{
 
 	//utilities
 
-
-	
-	
 	MyWaiter leastBusyWaiter(List<MyWaiter> waiterList)
 	{
 		if (waiterList.isEmpty()) 
@@ -431,6 +447,8 @@ public class HostAgent extends Agent implements Host{
 	public void setWaiter(Waiter waiter)
 	{
 		myWaiters.add(new MyWaiter(waiter, WaiterState.working));
+		System.out.println(myWaiters.size());
+		stateChanged();
 	}
 
 }
