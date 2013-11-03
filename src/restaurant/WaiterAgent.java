@@ -35,6 +35,7 @@ public class WaiterAgent extends Agent implements Waiter{
 	{
 		Customer cust;
 		Point customerlocation = new Point();
+		Point foodLocation = new Point();
 		int bill;
 		int tableNumber;
 		String choice;
@@ -152,12 +153,13 @@ public class WaiterAgent extends Agent implements Waiter{
 		stateChanged();
 	}
 	
-	public void msgOrderIsReady(String choice, int tableNumber)
+	public void msgOrderIsReady(String choice, int tableNumber, Point foodLocation)
 	{
 		for (MyCustomers c : myCustomers)
 		{
 			if (c.choice.equals(choice) && c.tableNumber==tableNumber)
 			{
+				c.foodLocation=foodLocation;
 				c.customerState=CustomerState.deliver;
 			}
 		}
@@ -394,7 +396,7 @@ public class WaiterAgent extends Agent implements Waiter{
 	
 	private void Deliver(MyCustomers c)
 	{
-		waiterGui.DoPickUpOrder();
+		waiterGui.DoPickUpOrder(c.foodLocation);
 		try {
 //			print("acquiring");
 			atTable.acquire();
@@ -513,4 +515,5 @@ public class WaiterAgent extends Agent implements Waiter{
 			return "table " + tableNumber;
 		}
 	}
+
 }

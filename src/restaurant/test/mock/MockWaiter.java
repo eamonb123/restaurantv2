@@ -62,7 +62,7 @@ public class MockWaiter extends Mock implements Waiter {
 	}
 
 	@Override
-	public void msgOrderIsReady(String choice, int tableNumber) {
+	public void msgOrderIsReady(String choice, int tableNumber, Point foodLocation) {
 		// TODO Auto-generated method stub
 		
 	}

@@ -22,7 +22,7 @@ public class WaiterGui implements Gui {
     public boolean stayAtBreak=false;
     public String order;
     public int check;
-    Point cookLocation = new Point(-20, 100);
+    Point cookLocation = new Point(-40, 135);
     Point homeBase = new Point(260, 100);
     Point customerLine = new Point(-20,-20);
     Point breakLocation = new Point(260, 20);
@@ -157,9 +157,9 @@ public class WaiterGui implements Gui {
     	DoMoveToPosition(cookLocation);
     }
     
-    public void DoPickUpOrder()
+    public void DoPickUpOrder(Point location)
     {
-    	DoMoveToPosition(cookLocation);
+    	DoMoveToPosition(location);
     }
     
     public void DoGoToCustomer(int tableNumber, String order)

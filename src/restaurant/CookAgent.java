@@ -311,7 +311,7 @@ public class CookAgent extends Agent implements Cook{
 		platingArea.isOccupied=true;
 		platingArea.food=order.choice;
 		DecidePlate(platingArea.location, order.choice);
-		order.waiter.msgOrderIsReady(order.choice, order.tableNumber);
+		order.waiter.msgOrderIsReady(order.choice, order.tableNumber, platingArea.location);
 		orders.remove(order);
 	}
 	

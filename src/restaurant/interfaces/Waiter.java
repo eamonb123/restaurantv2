@@ -31,7 +31,7 @@ public interface Waiter {
 	
 	public abstract void msgOutOfFood(String choice, int tableNumber);
 	
-	public abstract void msgOrderIsReady(String choice, int tableNumber);
+	public abstract void msgOrderIsReady(String choice, int tableNumber, Point foodLocation);
 	
 	public abstract void msgDoneEating(Customer customer);
 	
