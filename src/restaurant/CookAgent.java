@@ -126,7 +126,7 @@ public class CookAgent extends Agent implements Cook{
     	for (int i=0; i<3; i++)
     	{
     		Point location = new Point(0, yPosition);
-    		cookingArea.put(i,location);
+    		platingArea.put(i,location);
     		yPosition+=30;
     	}
     }
@@ -376,12 +376,7 @@ public class CookAgent extends Agent implements Cook{
 		for (int i=0; i<3; i++)
 		{
 			cookingAreas.add(new CookingArea(i));
-			System.out.println(cookingAreas.get(i).location);
-		}
-		for (int i=0; i<3; i++)
-		{
 			platingAreas.add(new PlatingArea(i));
-			System.out.println(platingAreas.get(i).location);
 		}
 	}
 	
