@@ -94,7 +94,6 @@ public class HostAgent extends Agent implements Host{
 	    for (int i=0; i<10; i++)
 	    {
 	    	WaitingSpot spot = new WaitingSpot(i);
-	    	System.out.println(spot.location);
 	    	waitingSpots.add(spot);
 	    }
 		int xPos = 200;
@@ -131,7 +130,6 @@ public class HostAgent extends Agent implements Host{
 		{
 			if (waitingSpot.location.equals(loc))
 			{
-				System.out.print(loc);
 				waitingSpot.isOccupied=false;
 			}
 		}
@@ -237,7 +235,6 @@ public class HostAgent extends Agent implements Host{
 					{
 						if (!c.waitingInLine && !w.isOccupied)
 						{
-							System.out.println(w.location);
 							WaitInLine(c, w);
 						}
 					}
@@ -253,8 +250,6 @@ public class HostAgent extends Agent implements Host{
 							customer.cust.msgSemaphoreRelease();
 							leastBusyWaiter.customers.add(customer);
 							callWaiter(customer.cust, customer.waitingLocation, leastBusyWaiter.waiter, table);
-							print("HERE IT IS");
-							System.out.println(customer.waitingLocation);
 							myWaitingCustomers.remove(0);
 							return true;
 						}

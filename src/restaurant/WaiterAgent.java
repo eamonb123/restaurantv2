@@ -103,7 +103,6 @@ public class WaiterAgent extends Agent implements Waiter{
 	
 	public void msgPleaseSeatCustomer(Customer cust, Point customerlocation, int tableNumber, Point loc)
 	{
-		System.out.println("YOYOYO" + customerlocation);
 		print("waiter is adding customer to the list of waiting customers");
 		myCustomers.add(new MyCustomers(cust, customerlocation ,tableNumber, CustomerState.waiting, loc));
 		stateChanged();
@@ -335,7 +334,6 @@ public class WaiterAgent extends Agent implements Waiter{
 			e.printStackTrace();
 		}
 		host.msgPickedUpCustomer(c.customerlocation);
-		System.out.println("CUSTOMER LOCATION" + c.customerlocation);
 		c.cust.msgFollowMeToTable(this, c.menuOptions, c.tableNumber, c.destination);
 		waiterGui.DoSeatCustomer(c.destination);
 		try {
