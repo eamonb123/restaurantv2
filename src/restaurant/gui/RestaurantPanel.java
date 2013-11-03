@@ -47,6 +47,10 @@ public class RestaurantPanel extends JPanel {
         markets.add(new MarketAgent("Market 2"));
         markets.add(new MarketAgent("Market 3"));
         
+        CookGui cookGui = new CookGui(cook, gui);
+        gui.animationPanel.addGui(cookGui);
+        cook.setGui(cookGui);
+        
         for(MarketAgent market: markets)
         {
         	market.setCashier(cashier);

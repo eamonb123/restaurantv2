@@ -39,9 +39,15 @@ public class AnimationPanel extends JPanel implements ActionListener {
 
     public void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D)g;
+        Graphics2D cookingArea = (Graphics2D)g;
+        Graphics2D platingArea = (Graphics2D)g;
         //Clear the screen by painting a rectangle the size of the frame
         g2.setColor(getBackground());
         g2.fillRect(0, 0, this.getWidth(), this.getHeight() );
+        cookingArea.setColor(Color.PINK);
+        cookingArea.fillRect(0, 60, 20, 80);
+        platingArea.setColor(Color.CYAN);
+        platingArea.fillRect(0, 150, 20, 80);
         int xPosUpdated=xPos;
         //Here is the table
         for (int i=1; i<=NTABLES; i++) //CREATING GUI TABLES
@@ -59,50 +65,22 @@ public class AnimationPanel extends JPanel implements ActionListener {
 
         for(Gui gui : guis) {
             if (gui.isPresent()) {
-            	gui.draw(g2); //
-            	//g2.drawString("hello", 30, 30);
+            	gui.draw(g2); 
                 Graphics2D stringOrder = (Graphics2D)g;
             	if (gui instanceof WaiterGui)
             	{
             		WaiterGui waiterGui = (WaiterGui) gui;
             		waiterGui.drawOrder(stringOrder, waiterGui.text);
-//            		if (waiterGui.reOrdering)
-//            		{
-//            			waiterGui.drawOrder(stringOrder, "currently out of " + waiterGui.order);
-//            		}
-//            		if (waiterGui.deliveringFood)
-//            		{
-//            			waiterGui.drawOrder(stringOrder, waiterGui.order);
-//            		}
-//            		if (waiterGui.deliveringCheck)
-//            		{
-//            			waiterGui.drawOrder(stringOrder, "delivering check of $" + waiterGui.check);
-//            		}
             	}
             	else if (gui instanceof CustomerGui)
             	{
             		CustomerGui customerGui = (CustomerGui) gui;
             		customerGui.drawOrder(stringOrder, customerGui.text);
-//            		if (customerGui.decidedOrder)
-//            		{
-//            			customerGui.drawOrder(stringOrder, "Decided my order!");
-//            		}
-//            		if (customerGui.waitingForOrder)
-//            		{
-//            			customerGui.drawOrder(stringOrder, customerGui.order + "?");
-//            		}
-//            		if (customerGui.acceptedOrder)
-//            		{
-//            			customerGui.eatingOrder(stringOrder, "eating " + customerGui.order + "...");
-//            		}
-//            		if (customerGui.finishedOrder)
-//            		{
-//            			customerGui.drawOrder(stringOrder, "Finished! Check please...");
-//            		}
-//            		if (customerGui.payingBill)
-//            		{
-//            			customerGui.drawOrder(stringOrder, "Going to cashier to pay $" + customerGui.bill + " for " + customerGui.order);
-//            		}
+            	}
+            	else if (gui instanceof CookGui)
+            	{
+            		CookGui cookGui = (CookGui) gui;
+            		cookGui.drawOrder(stringOrder, cookGui.text);
             	}
             }
         }
@@ -111,8 +89,13 @@ public class AnimationPanel extends JPanel implements ActionListener {
     public void addGui(CustomerGui gui) {
         guis.add(gui);
     }
-
+    
     public void addGui(WaiterGui gui) {
         guis.add(gui);
     }
+    
+    public void addGui(CookGui gui){
+    	guis.add(gui);
+    }
+
 }

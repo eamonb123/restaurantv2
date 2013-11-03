@@ -2,6 +2,7 @@ package restaurant;
 
 import agent.Agent;
 import restaurant.HostAgent.Table;
+import restaurant.gui.CookGui;
 import restaurant.gui.WaiterGui;
 import restaurant.interfaces.Cook;
 import restaurant.interfaces.Market;
@@ -17,6 +18,7 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class CookAgent extends Agent implements Cook{
+	private CookGui cookGui=null;
 	public List<Market> markets = new ArrayList<Market>();
 	List<String> menuOptions = new ArrayList<String>();{
 	    menuOptions.add("chicken");
@@ -25,7 +27,6 @@ public class CookAgent extends Agent implements Cook{
 	}
 	private String name; 
 	private int marketIndex=0;
-	public WaiterGui waiterGui = null;
 	public class Order
 	{
 		Waiter waiter;
@@ -79,7 +80,7 @@ public class CookAgent extends Agent implements Cook{
     {
     	for (String choice : menuOptions)
 		{
-			foods.put(choice, new Food(choice, cookingTimes.get(choice), 1, 3, 10, OrderState.nothing));
+			foods.put(choice, new Food(choice, cookingTimes.get(choice), 5, 3, 10, OrderState.nothing));
 		}
     }
 
@@ -264,12 +265,9 @@ public class CookAgent extends Agent implements Cook{
 		OrderFoodThatIsLow();
 	}
 	
-	public void setGui(WaiterGui gui) {
-		waiterGui = gui;
-	}
-
-	public WaiterGui getGui() {
-		return waiterGui;
+	public void setGui(CookGui cookGui)
+	{
+		this.cookGui=cookGui;
 	}
 	
 	
