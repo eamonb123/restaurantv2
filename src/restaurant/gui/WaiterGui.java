@@ -128,12 +128,10 @@ public class WaiterGui implements Gui {
     	DoMoveToPosition(homeBase);
     }
     
-    public void PickUpCustomer(Point location)
+    public void PickUpCustomer(int x, int y)
     {
-//    	Point newLoc = location;
-//    	newLoc.x-=20;
-//    	newLoc.y-=20;
-    	DoMoveToPosition(location);
+    	Point loc = new Point(x, y);
+    	DoMoveToPosition(loc);
     }
     
     public void DoSeatCustomer(Point location)

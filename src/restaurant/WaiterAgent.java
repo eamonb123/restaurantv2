@@ -43,14 +43,14 @@ public class WaiterAgent extends Agent implements Waiter{
 		    menuOptions.add("beef");
 		    menuOptions.add("lamb");
 		}
-		Point location = new Point();
+		Point destination = new Point();
 		CustomerState customerState = CustomerState.nothing;
 		MyCustomers(Customer cust, Point customerlocation, int tableNumber, CustomerState state, Point location) {
 			this.cust=cust;
 			this.customerlocation=customerlocation;
 			this.tableNumber=tableNumber;
 			this.customerState=state;
-			this.location=location;
+			this.destination=location;
 		}
 	}
 	private String name;
@@ -327,7 +327,7 @@ public class WaiterAgent extends Agent implements Waiter{
 		print("waiter is now currently busy helping customer " + c.cust.getName());
 		print("waiter is asking customer " + c.cust.getName() + " to follow him to table " + c.tableNumber);
 		//state = WaiterState.busy;
-		waiterGui.PickUpCustomer(c.customerlocation);
+		waiterGui.PickUpCustomer(c.customerlocation.x-20, c.customerlocation.y-20);
 		try {
 //			print("acquiring");
 			atTable.acquire();
@@ -336,8 +336,8 @@ public class WaiterAgent extends Agent implements Waiter{
 		}
 		host.msgPickedUpCustomer(c.customerlocation);
 		System.out.println("CUSTOMER LOCATION" + c.customerlocation);
-		c.cust.msgFollowMeToTable(this, c.menuOptions, c.tableNumber, c.location);
-		waiterGui.DoSeatCustomer(c.location);
+		c.cust.msgFollowMeToTable(this, c.menuOptions, c.tableNumber, c.destination);
+		waiterGui.DoSeatCustomer(c.destination);
 		try {
 //			print("acquiring");
 			atTable.acquire();
