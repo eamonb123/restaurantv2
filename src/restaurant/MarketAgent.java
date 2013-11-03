@@ -19,7 +19,6 @@ import java.util.concurrent.TimeUnit;
 /**
  * Restaurant Host Agent
  */
-
 public class MarketAgent extends Agent implements Market{
 	private Cashier cashier;
 	private String name; 
@@ -28,7 +27,7 @@ public class MarketAgent extends Agent implements Market{
 	{
 		this.name=name;
 	}
-	HashMap<String, Integer> prices = new HashMap<String, Integer>();
+	Map<String, Integer> prices = new HashMap<String, Integer>();
 	{
 	    prices.put("beef", 15);
     	prices.put("chicken", 10);
@@ -37,9 +36,9 @@ public class MarketAgent extends Agent implements Market{
 	public class IncomingOrder
 	{
 		Cook cook;
-	    HashMap<String, Integer> incomingList = new HashMap<String, Integer>();
+		Map<String, Integer> incomingList = new HashMap<String, Integer>();
 	    reStockingState state;
-		IncomingOrder(Cook cook,  HashMap<String, Integer> incomingList, reStockingState state)
+		IncomingOrder(Cook cook,  Map<String, Integer> incomingList, reStockingState state)
 		{
 			this.cook=cook;
 			this.incomingList=incomingList;
@@ -54,7 +53,7 @@ public class MarketAgent extends Agent implements Market{
 	    menuOptions.add("beef");
 	    menuOptions.add("lamb");
 	}
-    HashMap<String, Integer> inventory = new HashMap<String, Integer>();
+	Map<String, Integer> inventory = new HashMap<String, Integer>();
     {
 		for (String choice : menuOptions)
 		{
@@ -66,7 +65,7 @@ public class MarketAgent extends Agent implements Market{
 	
 	//Messages
 	
-	public void msgOrderRestock(Cook cook, HashMap<String, Integer> groceryList)
+	public void msgOrderRestock(Cook cook, Map<String, Integer> groceryList)
 	{
 		print("the market recieves the grocery list and changes it's state to restocking");
 		orders.add(new IncomingOrder(cook, groceryList, reStockingState.restocking));
@@ -100,12 +99,12 @@ public class MarketAgent extends Agent implements Market{
 
 	// Actions
 
-	private void TryToShipOrder(IncomingOrder incomingOrder, HashMap<String, Integer> inventoryList)
+	private void TryToShipOrder(IncomingOrder incomingOrder, Map<String, Integer> inventoryList)
 	{
 		boolean partialOrder = false;
 		print("the market is now trying to ship the order");
-		HashMap<String, Integer> groceryList = incomingOrder.incomingList;
-		HashMap<String, Integer> outgoingList = groceryList;
+		Map<String, Integer> groceryList = incomingOrder.incomingList;
+		Map<String, Integer> outgoingList = groceryList;
 		for (Map.Entry<String, Integer> groceryItem : groceryList.entrySet())
 		{
 			for (Map.Entry<String, Integer> marketItem : inventoryList.entrySet())
@@ -161,7 +160,7 @@ public class MarketAgent extends Agent implements Market{
 		}
 	}
 	
-	private int CalculateBill(HashMap<String, Integer> outgoingList)
+	private int CalculateBill(Map<String, Integer> outgoingList)
 	{
 		int bill = 0;
 		for (Map.Entry<String, Integer> groceryItem : outgoingList.entrySet())
@@ -185,6 +184,6 @@ public class MarketAgent extends Agent implements Market{
 	{
 		return name;
 	}
-	
+
 }
 

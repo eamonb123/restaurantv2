@@ -148,7 +148,6 @@ public class RestaurantGui extends JFrame implements ActionListener {
                 WaiterAgent w = (WaiterAgent) currentPerson;
                 if (!w.getGui().onBreak) //if the box is unchecked
                 {
-                	System.out.println("CLICKING WAITER BUTTON");
                 	w.getGui().askForBreak();
                 	//should not select box if only one waiter, yet it selects it and keeps it selected
                 	//if only one waiter, the host should send message to waiter and set onBreak to false
@@ -156,7 +155,6 @@ public class RestaurantGui extends JFrame implements ActionListener {
                 }
                 else //if the box is checked
                 {
-                	System.out.println("UNCLICKING BREAK BUTTON");
                 	w.getGui().getBackToWork();
                 	stateBD.setSelected(w.getGui().onBreak);
                 }
@@ -188,7 +186,6 @@ public class RestaurantGui extends JFrame implements ActionListener {
             	//w.getGui().goOffBreak();
                 if (w.getGui().onBreak)
                 {
-                	System.out.println("THIS IS NEVER GETTING CALLED");
                 	w.getGui().onBreak=false;
                 	stateBD.setSelected(false);
                 }

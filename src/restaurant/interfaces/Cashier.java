@@ -1,6 +1,7 @@
 package restaurant.interfaces;
 
 import java.util.HashMap;
+import java.util.Map;
 
 
 public interface Cashier {
@@ -8,5 +9,5 @@ public interface Cashier {
 	
 	public abstract void msgPayBill(Customer customer, int money, int bill);
 	
-	public abstract void msgHereIsMarketBill(Market market, int bill, HashMap<String, Integer> outgoingList);
+	public abstract void msgHereIsMarketBill(Market market, int bill, Map<String, Integer> outgoingList);
 }

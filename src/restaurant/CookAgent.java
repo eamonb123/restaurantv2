@@ -22,8 +22,8 @@ import java.util.concurrent.TimeUnit;
 public class CookAgent extends Agent implements Cook{
 	private CookGui cookGui=null;
 	Timer timer = new Timer();
-	public List<Market> markets = new ArrayList<Market>();
-	List<String> menuOptions = new ArrayList<String>();{
+	public List<Market> markets = Collections.synchronizedList(new ArrayList<Market>());
+	List<String> menuOptions = Collections.synchronizedList(new ArrayList<String>());{
 	    menuOptions.add("chicken");
 	    menuOptions.add("beef");
 	    menuOptions.add("lamb");
@@ -62,7 +62,8 @@ public class CookAgent extends Agent implements Cook{
 			this.orderState= orderstate;
 		}
 	}
-	public List<Order> orders = new ArrayList<Order>();
+    Map<String, Integer> outGoingList = Collections.synchronizedMap(new HashMap<String, Integer>());
+	public List<Order> orders = Collections.synchronizedList(new ArrayList<Order>());
 	boolean incomplete=false;
 	boolean ordering=false;
 	boolean opening=false;
@@ -70,7 +71,7 @@ public class CookAgent extends Agent implements Cook{
 	{nothing};
 	public enum state
 	{pending, cooking, orderingFood, done};
-	HashMap<String, Integer> cookingTimes = new HashMap<String, Integer>();
+	Map<String, Integer> cookingTimes = Collections.synchronizedMap(new HashMap<String, Integer>());
     {
     	int time=2000;
 		for (String choice : menuOptions)
@@ -79,14 +80,14 @@ public class CookAgent extends Agent implements Cook{
 			time+=2000;
 		}
     }
-    HashMap<String, Food> foods = new HashMap<String, Food>();
+    Map<String, Food> foods = Collections.synchronizedMap(new HashMap<String, Food>());
     {
     	for (String choice : menuOptions)
 		{
-			foods.put(choice, new Food(choice, cookingTimes.get(choice), 5, 3, 10, OrderState.nothing));
+			foods.put(choice, new Food(choice, cookingTimes.get(choice), 1, 3, 10, OrderState.nothing));
 		}
     }
-    public List<CookingArea> cookingAreas = new ArrayList<CookingArea>();
+    public List<CookingArea> cookingAreas = Collections.synchronizedList(new ArrayList<CookingArea>());
     public class CookingArea 
     {
     	int panNumber;
@@ -99,7 +100,7 @@ public class CookAgent extends Agent implements Cook{
 			this.panNumber=i;
 		}
 	}
-    HashMap<Integer, Point> cookingArea = new HashMap<Integer, Point>();
+    Map<Integer, Point> cookingArea = Collections.synchronizedMap(new HashMap<Integer, Point>());
     {
     	int yPosition=105;
     	for (int i=0; i<3; i++)
@@ -109,7 +110,7 @@ public class CookAgent extends Agent implements Cook{
     		yPosition+=30;
     	}
     }
-    public List<PlatingArea> platingAreas = new ArrayList<PlatingArea>();
+    public List<PlatingArea> platingAreas = Collections.synchronizedList(new ArrayList<PlatingArea>());
     public class PlatingArea 
     {
     	int plateNumber;
@@ -123,7 +124,7 @@ public class CookAgent extends Agent implements Cook{
 			this.plateNumber=i;
 		}
 	}
-    HashMap<Integer, Point> platingArea = new HashMap<Integer, Point>();
+    Map<Integer, Point> platingArea = Collections.synchronizedMap(new HashMap<Integer, Point>());
     {
     	int yPosition=155;
     	for (int i=0; i<3; i++)
@@ -148,6 +149,8 @@ public class CookAgent extends Agent implements Cook{
 	
 	public void msgPickedUpOrder(String order)
 	{
+		synchronized(platingAreas)
+		{
 		for (PlatingArea platingArea: platingAreas)
 		{
 			if (platingArea.food==order && platingArea.isOccupied)
@@ -156,14 +159,19 @@ public class CookAgent extends Agent implements Cook{
 				platingArea.isOccupied=false;
 			}
 		}
+		}
 		stateChanged();
 	}
 	
-	public void msgFufilledCompleteOrder(String name, HashMap<String, Integer> incomingOrder)
+	public void msgFufilledCompleteOrder(String name, Map<String, Integer> incomingOrder)
 	{
 		print("cook is getting the message that " + name + " fufilled the order.");
+		synchronized(foods)
+		{
 		for (Map.Entry<String, Food>  currentFood: foods.entrySet())
 		{
+			synchronized(incomingOrder)
+			{
 			for (Map.Entry<String, Integer> incomingFood: incomingOrder.entrySet())
 			{
 				if (currentFood.getKey().equals(incomingFood.getKey()))
@@ -171,6 +179,8 @@ public class CookAgent extends Agent implements Cook{
 					currentFood.getValue().currentAmount+=incomingFood.getValue();
 				}
 			}
+			}
+		}
 		}
 		print("cook has completely resupplied his stock of food");
 		ordering=false;
@@ -178,12 +188,16 @@ public class CookAgent extends Agent implements Cook{
 		stateChanged();
 	}
 	
-	public void msgFufilledPartialOrder(String name, HashMap<String, Integer> incomingOrder)
+	public void msgFufilledPartialOrder(String name, Map<String, Integer> incomingOrder)
 	{
 		print("cook is getting the message that " + name + " could NOT fully fufill the order.");
-	    HashMap<String, Integer> newOutgoingList = new HashMap<String, Integer>();
+	    Map<String, Integer> newOutgoingList = new HashMap<String, Integer>();
+		synchronized(foods)
+		{
 		for (Map.Entry<String, Food>  currentFood: foods.entrySet())
 		{
+			synchronized(incomingOrder)
+			{
 			for (Map.Entry<String, Integer> incomingFood: incomingOrder.entrySet())
 			{
 				if (currentFood.getKey().equals(incomingFood.getKey()))
@@ -195,6 +209,8 @@ public class CookAgent extends Agent implements Cook{
 					}
 				}
 			}
+			}
+		}
 		}
 		print("new outgoing list: ");
 		System.out.println(newOutgoingList);
@@ -206,7 +222,7 @@ public class CookAgent extends Agent implements Cook{
 		else
 		{
 			marketIndex++;
-			SendOrder(newOutgoingList);
+			outGoingList=newOutgoingList;
 		}
 		stateChanged();
 	}
@@ -218,10 +234,20 @@ public class CookAgent extends Agent implements Cook{
 	 */	
 			
 	protected boolean pickAndExecuteAnAction() {
+		if (ordering)
+		{
+			SendOrder(outGoingList);
+		}
+		synchronized(orders)
+		{
 		for (Order order : orders) 
 		{	
+			synchronized(cookingAreas)
+			{
 			for(CookingArea cookingArea: cookingAreas)
 			{
+				synchronized(platingAreas)
+				{
 				for(PlatingArea platingArea: platingAreas)	
 				{
 					if (order.s==state.pending && !cookingArea.isOccupied)
@@ -235,7 +261,10 @@ public class CookAgent extends Agent implements Cook{
 						return true;
 					}
 				}
+				}
 			}
+			}
+		}
 		}
 		return false;
 	}
@@ -270,12 +299,10 @@ public class CookAgent extends Agent implements Cook{
 
 	
 	
-	
-	
 	private void OrderFoodThatIsLow()
 	{
 		ordering=true;
-		HashMap<String, Integer> groceryList = new HashMap<String, Integer>();
+		Map<String, Integer> groceryList = new HashMap<String, Integer>();
 		if (markets.isEmpty())
 		{
 			print("no markets to order from to begin with. stop the cook");
@@ -292,7 +319,7 @@ public class CookAgent extends Agent implements Cook{
 		SendOrder(groceryList);
 	}
 	
-	private void SendOrder(HashMap<String, Integer> groceryList)
+	private void SendOrder(Map<String, Integer> groceryList)
 	{
 		if (groceryList.isEmpty())
 		{

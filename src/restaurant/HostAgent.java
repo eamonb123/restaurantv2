@@ -74,7 +74,7 @@ public class HostAgent extends Agent implements Host{
 			this.location=waitingSpot.get(i);
 		}
 	}
-    HashMap<Integer, Point> waitingSpot = new HashMap<Integer, Point>();
+    Map<Integer, Point> waitingSpot = new HashMap<Integer, Point>();
     {
     	int xPosition=20;
     	int yPosition=20;
@@ -85,7 +85,7 @@ public class HostAgent extends Agent implements Host{
     		xPosition+=30;
     	}
     }
-    HashMap<Integer, Point> tableMap = new HashMap<Integer, Point>();
+    Map<Integer, Point> tableMap = new HashMap<Integer, Point>();
     {
     	for (int i=1; i<=NTABLES; i++)
     	{
@@ -105,7 +105,7 @@ public class HostAgent extends Agent implements Host{
 			this.location=waiterHomeBase.get(i);
 		}
     }
-    HashMap<Integer, Point> waiterHomeBase = new HashMap<Integer, Point>();
+    Map<Integer, Point> waiterHomeBase = new HashMap<Integer, Point>();
     {	
     	int xPosition = 200;
     	int yPosition = 80;
@@ -272,7 +272,6 @@ public class HostAgent extends Agent implements Host{
 			{
 				if (!waiter.assignedHomeBase && !homeBase.isOccupied)
 				{
-					print("TEEEE");
 					print("the waiter is assigned to the first home base location");
 					GoToHomeBase(waiter, homeBase);
 					return true;
@@ -337,7 +336,6 @@ public class HostAgent extends Agent implements Host{
 	{
 		w.assignedHomeBase=true;
 		w.homeBase=homeBase.location;
-		System.out.println(w.homeBase);
 		homeBase.isOccupied=true;
 		w.waiter.msgSetHomeBase(homeBase.location);	
 	}
@@ -447,7 +445,6 @@ public class HostAgent extends Agent implements Host{
 	public void setWaiter(Waiter waiter)
 	{
 		myWaiters.add(new MyWaiter(waiter, WaiterState.working));
-		System.out.println(myWaiters.size());
 		stateChanged();
 	}
 

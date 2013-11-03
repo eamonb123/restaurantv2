@@ -18,11 +18,11 @@ import restaurant.interfaces.Waiter;
  */
 
 public class CashierAgent extends Agent implements Cashier{
-	public List<Waiter> waiters = new ArrayList<Waiter>();
-	public List<Order> receipts = new ArrayList<Order>();
-	public List<Payment> payments = new ArrayList<Payment>();
+	public List<Waiter> waiters = Collections.synchronizedList(new ArrayList<Waiter>());
+	public List<Order> receipts = Collections.synchronizedList(new ArrayList<Order>());
+	public List<Payment> payments = Collections.synchronizedList(new ArrayList<Payment>());
 	private int money=1000000;
-	HashMap<String, Integer> menu = new HashMap<String, Integer>();
+	Map<String, Integer> menu = Collections.synchronizedMap(new HashMap<String, Integer>());
 	{
 	    menu.put("beef", 15);
     	menu.put("chicken", 10);
@@ -88,7 +88,7 @@ public class CashierAgent extends Agent implements Cashier{
 	}
 	
 	
-	public void msgHereIsMarketBill(Market market, int bill, HashMap<String, Integer> outgoingList)
+	public void msgHereIsMarketBill(Market market, int bill, Map<String, Integer> outgoingList)
 	{
 		if (money>=bill)
 		{
@@ -116,22 +116,28 @@ public class CashierAgent extends Agent implements Cashier{
 	 */	
 			
 	protected boolean pickAndExecuteAnAction() {
-		for (Order order : orders) 
-		{	
-			if (order.state==receiptState.pending)
-			{
-				order.state=receiptState.complete;
-				CalculateReceipt(order);		
-				return true;
+		synchronized(orders)
+		{
+			for (Order order : orders) 
+			{	
+				if (order.state==receiptState.pending)
+				{
+					order.state=receiptState.complete;
+					CalculateReceipt(order);		
+					return true;
+				}
 			}
 		}
-		for (Payment payment : payments)
+		synchronized(payments)
 		{
-			if (payment.state==paymentState.pending)
+			for (Payment payment : payments)
 			{
-				payment.state=paymentState.complete;
-				GiveChange(payment);
-				return true;
+				if (payment.state==paymentState.pending)
+				{
+					payment.state=paymentState.complete;
+					GiveChange(payment);
+					return true;
+				}
 			}
 		}
 		return false;
