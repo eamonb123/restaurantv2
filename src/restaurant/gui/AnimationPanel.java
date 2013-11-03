@@ -83,6 +83,9 @@ public class AnimationPanel extends JPanel implements ActionListener {
             		cookGui.drawFirstPan(stringOrder, cookGui.firstPan);
             		cookGui.drawSecondPan(stringOrder, cookGui.secondPan);
             		cookGui.drawThirdPan(stringOrder, cookGui.thirdPan);
+               		cookGui.drawFirstPlate(stringOrder, cookGui.firstPlate);
+            		cookGui.drawSecondPlate(stringOrder, cookGui.secondPlate);
+            		cookGui.drawThirdPlate(stringOrder, cookGui.thirdPlate);
             	}
             }
         }

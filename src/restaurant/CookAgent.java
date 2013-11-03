@@ -87,17 +87,42 @@ public class CookAgent extends Agent implements Cook{
     public List<CookingArea> cookingAreas = new ArrayList<CookingArea>();
     public class CookingArea 
     {
+    	int panNumber;
 		boolean isOccupied=false;
 		Point location = new Point();
 		CookingArea(int i)
 		{
 			this.isOccupied=false;
 			this.location=cookingArea.get(i);
+			this.panNumber=i;
 		}
 	}
     HashMap<Integer, Point> cookingArea = new HashMap<Integer, Point>();
     {
     	int yPosition=105;
+    	for (int i=0; i<3; i++)
+    	{
+    		Point location = new Point(0, yPosition);
+    		cookingArea.put(i,location);
+    		yPosition+=30;
+    	}
+    }
+    public List<PlatingArea> platingAreas = new ArrayList<PlatingArea>();
+    public class PlatingArea 
+    {
+    	int plateNumber;
+		boolean isOccupied=false;
+		Point location = new Point();
+		PlatingArea(int i)
+		{
+			this.isOccupied=false;
+			this.location=platingArea.get(i);
+			this.plateNumber=i;
+		}
+	}
+    HashMap<Integer, Point> platingArea = new HashMap<Integer, Point>();
+    {
+    	int yPosition=155;
     	for (int i=0; i<3; i++)
     	{
     		Point location = new Point(0, yPosition);
@@ -185,15 +210,19 @@ public class CookAgent extends Agent implements Cook{
 		{	
 			for(CookingArea cookingArea: cookingAreas)
 			{
-				if (order.s==state.pending && !cookingArea.isOccupied)
+				for(PlatingArea platingArea: platingAreas)	
 				{
-					TryToCookFood(order, cookingArea);				
-					return true;
-				}
-				if (order.s==state.done)
-				{
-					PlateIt(order);
-					return true;
+					if (order.s==state.pending && !cookingArea.isOccupied)
+					{
+						TryToCookFood(order, cookingArea);				
+						return true;
+					}
+					if (order.s==state.done && !platingArea.isOccupied)
+					{
+						
+						PlateIt(order, platingArea);
+						return true;
+					}
 				}
 			}
 		}
@@ -223,11 +252,38 @@ public class CookAgent extends Agent implements Cook{
 		//DoCooking(order);
 		print("the cook begins cooking the " + order.choice);
 		order.s = state.cooking; //put this inside timer class when u implement it
+		cookingArea.isOccupied=true;
+		DecidePan(cookingArea.location, order.choice);
 		CookingTimer(order);
+		cookingArea.isOccupied=false;
 		order.s = state.done;
 		print("the cook is done cooking the " + order.choice);
 	}
 
+	private void DecidePan(Point cookingArea, String choice)
+	{
+		for (CookingArea area: cookingAreas)
+		{
+			if (area.location.equals(cookingArea))
+			{
+				if (area.panNumber==0)
+				{
+					cookGui.firstPan=choice;
+				}
+				if (area.panNumber==1)
+				{
+					cookGui.secondPan=choice;
+				}
+				if (area.panNumber==2)
+				{
+					cookGui.thirdPan=choice;
+				}
+			}
+		}
+	}
+	
+	
+	
 	private void OrderFoodThatIsLow()
 	{
 		ordering=true;
@@ -260,12 +316,37 @@ public class CookAgent extends Agent implements Cook{
 	}
 	
 	
-	private void PlateIt(Order order)
+	private void PlateIt(Order order, PlatingArea platingArea)
 	{
 		//DoPlating(order);
 		print("the cook notifies the waiter that the " + order.choice + " is ready to be served to the customer");
+		platingArea.isOccupied=true;
+		DecidePlate(platingArea.location, order.choice);
 		order.waiter.msgOrderIsReady(order.choice, order.tableNumber);
 		orders.remove(order);
+	}
+	
+	private void DecidePlate(Point platingArea, String choice)
+	{
+		for (PlatingArea area: platingAreas)
+		{
+			if (area.location.equals(platingArea))
+			{
+				System.out.println("HEYEYYYSA");
+				if (area.plateNumber==0)
+				{
+					cookGui.firstPlate=choice;
+				}
+				if (area.plateNumber==1)
+				{
+					cookGui.secondPlate=choice;
+				}
+				if (area.plateNumber==2)
+				{
+					cookGui.thirdPlate=choice;
+				}
+			}
+		}
 	}
 	
 	
@@ -290,11 +371,17 @@ public class CookAgent extends Agent implements Cook{
 		OrderFoodThatIsLow();
 	}
 	
-	public void InitializeCookingAreas()
+	public void InitializeAreas()
 	{
 		for (int i=0; i<3; i++)
 		{
 			cookingAreas.add(new CookingArea(i));
+			System.out.println(cookingAreas.get(i).location);
+		}
+		for (int i=0; i<3; i++)
+		{
+			platingAreas.add(new PlatingArea(i));
+			System.out.println(platingAreas.get(i).location);
 		}
 	}
 	

@@ -11,6 +11,9 @@ public class CookGui implements Gui{
 	public String firstPan="";
 	public String secondPan="";
 	public String thirdPan="";
+	public String firstPlate="";
+	public String secondPlate="";
+	public String thirdPlate="";
 	//private HostAgent host;
 	RestaurantGui gui;
 	
@@ -63,11 +66,27 @@ public class CookGui implements Gui{
         g.drawString(order, 0, 135);
     }
     
+    public void drawFirstPlate(Graphics2D g, String order) {
+        g.setColor(Color.BLACK);
+    	g.drawString(order, 0, 75);
+    }
+    
+    public void drawSecondPlate(Graphics2D g, String order) {
+        g.setColor(Color.BLACK);
+        g.drawString(order, 0, 105);
+    }
+    
+    public void drawThirdPlate(Graphics2D g, String order) {
+        g.setColor(Color.BLACK);
+        g.drawString(order, 0, 135);
+    }
+    
     public void eatingOrder(Graphics2D g, String order) {
         g.setColor(Color.RED);
     	g.drawString(order, xPos, yPos);
     }
     
+
 
 	public boolean isPresent() {
 		return isPresent;
