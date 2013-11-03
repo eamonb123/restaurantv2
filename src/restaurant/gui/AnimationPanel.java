@@ -39,11 +39,17 @@ public class AnimationPanel extends JPanel implements ActionListener {
 
     public void paintComponent(Graphics g) {
         Graphics2D g2 = (Graphics2D)g;
+        Graphics2D g3 = (Graphics2D)g;
         Graphics2D cookingArea = (Graphics2D)g;
         Graphics2D platingArea = (Graphics2D)g;
         //Clear the screen by painting a rectangle the size of the frame
         g2.setColor(getBackground());
         g2.fillRect(0, 0, this.getWidth(), this.getHeight() );
+        g3.setColor(Color.BLACK);
+		g3.drawString("CUSTOMER LINE", 20, 15);
+		g3.drawString("COOK", 0, 150);
+		g3.drawString("WAITER BREAK AREA", 240, 15);
+	    
         cookingArea.setColor(Color.PINK);
         cookingArea.fillRect(0, 60, 40, 80);
         platingArea.setColor(Color.CYAN);
@@ -71,9 +77,7 @@ public class AnimationPanel extends JPanel implements ActionListener {
             	{
             		WaiterGui waiterGui = (WaiterGui) gui;
             		waiterGui.drawOrder(stringOrder, waiterGui.text);
-            		waiterGui.drawCustomerArea(stringOrder, "CUSTOMER LINE");
-            		waiterGui.drawCookArea(stringOrder, "COOK");
-            		waiterGui.drawBreakArea(stringOrder, "BREAK AREA");
+
             	}
             	else if (gui instanceof CustomerGui)
             	{

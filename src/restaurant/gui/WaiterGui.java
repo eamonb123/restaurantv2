@@ -102,20 +102,7 @@ public class WaiterGui implements Gui {
     	g.drawString(order, xPos, yPos);
     }
     
-    public void drawCustomerArea(Graphics2D g, String order) {
-        g.setColor(Color.BLACK);
-    	g.drawString(order, 20, 15);
-    }
-    
-    public void drawCookArea(Graphics2D g, String order) {
-        g.setColor(Color.BLACK);
-    	g.drawString(order, 0, 150);
-    }
-    
-    public void drawBreakArea(Graphics2D g, String order) {
-        g.setColor(Color.BLACK);
-    	g.drawString(order, 260, 20);
-    }
+
     
 
     public boolean isPresent() {
