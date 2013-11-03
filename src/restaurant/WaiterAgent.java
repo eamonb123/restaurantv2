@@ -401,6 +401,7 @@ public class WaiterAgent extends Agent implements Waiter{
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		cook.msgPickedUpOrder(c.choice);
 		waiterGui.text=waiterGui.order;
 		waiterGui.DoGoToCustomer(c.tableNumber, c.choice);
 		try {

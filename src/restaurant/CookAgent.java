@@ -1,6 +1,7 @@
 package restaurant;
 
 import agent.Agent;
+import restaurant.CustomerAgent.AgentEvent;
 import restaurant.HostAgent.Table;
 import restaurant.HostAgent.WaitingSpot;
 import restaurant.gui.CookGui;
@@ -20,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 
 public class CookAgent extends Agent implements Cook{
 	private CookGui cookGui=null;
+	Timer timer = new Timer();
 	public List<Market> markets = new ArrayList<Market>();
 	List<String> menuOptions = new ArrayList<String>();{
 	    menuOptions.add("chicken");
@@ -111,6 +113,7 @@ public class CookAgent extends Agent implements Cook{
     public class PlatingArea 
     {
     	int plateNumber;
+    	String food="";
 		boolean isOccupied=false;
 		Point location = new Point();
 		PlatingArea(int i)
@@ -137,15 +140,24 @@ public class CookAgent extends Agent implements Cook{
 	
 	public void msgHereIsOrder(Waiter waiter, String choice, int tableNumber)
 	{
-//		cookGui.firstPan="hello";
-//		cookGui.secondPan="hello";
-//		cookGui.thirdPan="hello";
 		Order order = new Order(waiter, choice, tableNumber, state.pending);
 		print("the cook recieves the order " + order.choice + " and puts it on a list of orders");
 		orders.add(order);
 		stateChanged();
 	}
 	
+	public void msgPickedUpOrder(String order)
+	{
+		for (PlatingArea platingArea: platingAreas)
+		{
+			if (platingArea.food==order && platingArea.isOccupied)
+			{
+				ClearPlates(platingArea);
+				platingArea.isOccupied=false;
+			}
+		}
+		stateChanged();
+	}
 	
 	public void msgFufilledCompleteOrder(String name, HashMap<String, Integer> incomingOrder)
 	{
@@ -215,7 +227,6 @@ public class CookAgent extends Agent implements Cook{
 					if (order.s==state.pending && !cookingArea.isOccupied)
 					{
 						TryToCookFood(order, cookingArea);
-						ClearText(cookingArea);
 						return true;
 					}
 					if (order.s==state.done && !platingArea.isOccupied)
@@ -254,10 +265,7 @@ public class CookAgent extends Agent implements Cook{
 		order.s = state.cooking; //put this inside timer class when u implement it
 		cookingArea.isOccupied=true;
 		DecidePan(cookingArea.location, order.choice);
-		CookingTimer(order);
-		cookingArea.isOccupied=false;
-		order.s = state.done;
-		print("the cook is done cooking the " + order.choice);
+		CookingTimer(order, cookingArea);
 	}
 
 	
@@ -301,6 +309,7 @@ public class CookAgent extends Agent implements Cook{
 		//DoPlating(order);
 		print("the cook notifies the waiter that the " + order.choice + " is ready to be served to the customer");
 		platingArea.isOccupied=true;
+		platingArea.food=order.choice;
 		DecidePlate(platingArea.location, order.choice);
 		order.waiter.msgOrderIsReady(order.choice, order.tableNumber);
 		orders.remove(order);
@@ -351,7 +360,7 @@ public class CookAgent extends Agent implements Cook{
 	}
 	
 	
-	private void ClearText(CookingArea cookingArea)
+	private void ClearCookingPan(CookingArea cookingArea)
 	{
 		if (cookingArea.panNumber==0)
 		{
@@ -367,21 +376,36 @@ public class CookAgent extends Agent implements Cook{
 		}
 	}
 	
+	private void ClearPlates(PlatingArea platingArea)
+	{
+		if (platingArea.plateNumber==0)
+		{
+			cookGui.firstPlate="";
+		}
+		else if (platingArea.plateNumber==1)
+		{
+			cookGui.secondPlate="";
+		}
+		else if (platingArea.plateNumber==2)
+		{
+			cookGui.thirdPlate="";
+		}
+	}
 	
 	
-	
-	private void CookingTimer(Order order)
+	private void CookingTimer(final Order order, final CookingArea cookingArea)
 	{
 		int time = cookingTimes.get(order.choice);
-		try
-		{
-			Thread.sleep(time);
-		}
-		catch(Exception e)
-		{
-			System.out.println("Exception caught");
-		}
-
+		timer.schedule(new TimerTask() {
+			public void run() {
+				cookingArea.isOccupied=false;
+				ClearCookingPan(cookingArea);
+				order.s = state.done;
+				print("the cook is done cooking the " + order.choice);
+				stateChanged();
+			}
+		},
+		time);
 	}
 
 	//utilities

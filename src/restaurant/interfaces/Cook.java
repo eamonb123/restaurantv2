@@ -15,4 +15,6 @@ public interface Cook {
 	public abstract void msgFufilledCompleteOrder(String name, HashMap<String, Integer> incomingOrder);
 	
 	public abstract void msgFufilledPartialOrder(String name, HashMap<String, Integer> incomingOrder);
+	
+	public abstract void msgPickedUpOrder(String order);
 }
