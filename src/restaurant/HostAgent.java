@@ -33,7 +33,6 @@ public class HostAgent extends Agent implements Host{
 	public class MyWaiter
 	{
 		Waiter waiter;
-//		boolean wantsToGoOnBreak=false;
 		WaiterState state; 
 		List<MyCustomer> customers = new ArrayList<MyCustomer>();
 		MyWaiter(Waiter waiter, WaiterState state)

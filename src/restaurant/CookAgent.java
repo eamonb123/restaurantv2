@@ -296,7 +296,6 @@ public class CookAgent extends Agent implements Cook{
 	{
 		if (groceryList.isEmpty())
 		{
-			print("GROCERY LIST IS EMPTY. something went wrong");
 			return;
 		}
 		print("the cook sends a message to the market with the grocery list");
