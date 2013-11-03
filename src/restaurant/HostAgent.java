@@ -34,6 +34,7 @@ public class HostAgent extends Agent implements Host{
 	{
 		Waiter waiter;
 		WaiterState state; 
+		Point homeBase = new Point();
 		List<MyCustomer> customers = new ArrayList<MyCustomer>();
 		MyWaiter(Waiter waiter, WaiterState state)
 		{
@@ -83,7 +84,46 @@ public class HostAgent extends Agent implements Host{
     		xPosition+=30;
     	}
     }
-
+    HashMap<Integer, Point> tableMap = new HashMap<Integer, Point>();
+    {
+    	for (int i=1; i<=NTABLES; i++)
+    	{
+    		Point location = new Point(xPosition, yPosition);
+    		tableMap.put(i,location);
+    		xPosition+=150;
+    	}
+    }
+    public List<WaiterHomeBase> waiterHomeBases = new ArrayList<WaiterHomeBase>();
+    class WaiterHomeBase
+    {
+    	boolean isOccupied=false;
+    	Point location = new Point();
+    	WaiterHomeBase(int i)
+		{
+			this.isOccupied=false;
+			this.location=waiterHomeBase.get(i);
+		}
+    }
+    HashMap<Integer, Point> waiterHomeBase = new HashMap<Integer, Point>();
+    {	
+    	int xPosition = 200;
+    	int yPosition = 80;
+    	for (int i=0; i<5; i++)
+    	{
+    		Point location = new Point(xPosition, yPosition);
+    		waiterHomeBase.put(i,location);
+    		xPosition+=30;
+    	}
+    	xPosition = 200;
+    	yPosition += 30;
+    	for (int i=5; i<10; i++)
+    	{
+    		Point location = new Point(xPosition, yPosition);
+    		waiterHomeBase.put(i,location);
+    		xPosition+=30;
+    	}
+    }
+    
     
 	public HostAgent(String name, RestaurantPanel restPanel) {
 		super();
@@ -95,6 +135,11 @@ public class HostAgent extends Agent implements Host{
 	    	WaitingSpot spot = new WaitingSpot(i);
 	    	waitingSpots.add(spot);
 	    }
+	    for (int i=0; i<10; i++)
+	    {
+	    	WaiterHomeBase homeBase = new WaiterHomeBase(i);
+	    	waiterHomeBases.add(homeBase);
+	    }
 		int xPos = 200;
 		for (int ix = 1; ix <= NTABLES; ix++) {
 			Table newTable = new Table(ix);
@@ -103,15 +148,7 @@ public class HostAgent extends Agent implements Host{
 			xPos+=150;
 		}
 	}
-    HashMap<Integer, Point> tableMap = new HashMap<Integer, Point>();
-    {
-    	for (int i=1; i<=NTABLES; i++)
-    	{
-    		Point location = new Point(xPosition, yPosition);
-    		tableMap.put(i,location);
-    		xPosition+=150;
-    	}
-    }
+
     
     
 	// Messages

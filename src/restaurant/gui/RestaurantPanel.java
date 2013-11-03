@@ -213,7 +213,6 @@ public class RestaurantPanel extends JPanel {
     		w.setCashier(cashier);
     		w.setCook(cook);
     		waiters.add(w);
-    		g.goToHome();
     		w.startThread();
     	}
     }
