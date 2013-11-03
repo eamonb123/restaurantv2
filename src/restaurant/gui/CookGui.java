@@ -68,17 +68,17 @@ public class CookGui implements Gui{
     
     public void drawFirstPlate(Graphics2D g, String order) {
         g.setColor(Color.BLACK);
-    	g.drawString(order, 0, 75);
+    	g.drawString(order, 0, 165);
     }
     
     public void drawSecondPlate(Graphics2D g, String order) {
         g.setColor(Color.BLACK);
-        g.drawString(order, 0, 105);
+        g.drawString(order, 0, 195);
     }
     
     public void drawThirdPlate(Graphics2D g, String order) {
         g.setColor(Color.BLACK);
-        g.drawString(order, 0, 135);
+        g.drawString(order, 0, 225);
     }
     
     public void eatingOrder(Graphics2D g, String order) {

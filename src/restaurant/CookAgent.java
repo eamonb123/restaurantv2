@@ -214,12 +214,12 @@ public class CookAgent extends Agent implements Cook{
 				{
 					if (order.s==state.pending && !cookingArea.isOccupied)
 					{
-						TryToCookFood(order, cookingArea);				
+						TryToCookFood(order, cookingArea);
+						ClearText(cookingArea);
 						return true;
 					}
 					if (order.s==state.done && !platingArea.isOccupied)
 					{
-						
 						PlateIt(order, platingArea);
 						return true;
 					}
@@ -260,27 +260,7 @@ public class CookAgent extends Agent implements Cook{
 		print("the cook is done cooking the " + order.choice);
 	}
 
-	private void DecidePan(Point cookingArea, String choice)
-	{
-		for (CookingArea area: cookingAreas)
-		{
-			if (area.location.equals(cookingArea))
-			{
-				if (area.panNumber==0)
-				{
-					cookGui.firstPan=choice;
-				}
-				if (area.panNumber==1)
-				{
-					cookGui.secondPan=choice;
-				}
-				if (area.panNumber==2)
-				{
-					cookGui.thirdPan=choice;
-				}
-			}
-		}
-	}
+	
 	
 	
 	
@@ -326,28 +306,68 @@ public class CookAgent extends Agent implements Cook{
 		orders.remove(order);
 	}
 	
+	private void DecidePan(Point cookingArea, String choice)
+	{
+		for (CookingArea area: cookingAreas)
+		{
+			if (area.location.equals(cookingArea))
+			{
+				if (area.panNumber==0)
+				{
+					cookGui.firstPan="cooking " + choice + "...";
+				}
+				if (area.panNumber==1)
+				{
+					cookGui.secondPan="cooking " + choice + "...";
+				}
+				if (area.panNumber==2)
+				{
+					cookGui.thirdPan="cooking " + choice + "...";
+				}
+			}
+		}
+	}
+	
 	private void DecidePlate(Point platingArea, String choice)
 	{
 		for (PlatingArea area: platingAreas)
 		{
 			if (area.location.equals(platingArea))
 			{
-				System.out.println("HEYEYYYSA");
 				if (area.plateNumber==0)
 				{
-					cookGui.firstPlate=choice;
+					cookGui.firstPlate="cooked " + choice;
 				}
 				if (area.plateNumber==1)
 				{
-					cookGui.secondPlate=choice;
+					cookGui.secondPlate="cooked " + choice;
 				}
 				if (area.plateNumber==2)
 				{
-					cookGui.thirdPlate=choice;
+					cookGui.thirdPlate="cooked " + choice;
 				}
 			}
 		}
 	}
+	
+	
+	private void ClearText(CookingArea cookingArea)
+	{
+		if (cookingArea.panNumber==0)
+		{
+			cookGui.firstPan="";
+		}
+		else if (cookingArea.panNumber==1)
+		{
+			cookGui.secondPan="";
+		}
+		else if (cookingArea.panNumber==2)
+		{
+			cookGui.thirdPan="";
+		}
+	}
+	
+	
 	
 	
 	private void CookingTimer(Order order)
