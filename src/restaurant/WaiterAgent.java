@@ -74,6 +74,13 @@ public class WaiterAgent extends Agent implements Waiter{
 		stateChanged();
 	}
 	
+	public void msgSetHomeBase(Point location)
+	{
+		waiterGui.setHome(location);
+		waiterGui.setDestination(location);
+		stateChanged();
+	}
+	
 	public void msgTryToGoOnBreak()
 	{
 		print("the waiter wants to go on break");

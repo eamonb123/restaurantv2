@@ -23,7 +23,7 @@ public class WaiterGui implements Gui {
     public String order;
     public int check;
     Point cookLocation = new Point(-40, 135);
-    Point homeBase = new Point(260, 100);
+    Point homeBase = new Point();
     Point customerLine = new Point(-20,-20);
     Point breakLocation = new Point(260, 20);
     Point cashierLocation = new Point(520, 100);
@@ -81,7 +81,16 @@ public class WaiterGui implements Gui {
     }
 
     
- 
+    public void setHome(Point location)
+    {
+    	homeBase=location;
+    }
+    
+    public void setDestination(Point location)
+    {
+    	xDestination = location.x;
+    	yDestination = location.y;
+    }
     
     public void draw(Graphics2D g) {
         g.setColor(Color.MAGENTA);

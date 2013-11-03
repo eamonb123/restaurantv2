@@ -79,6 +79,12 @@ public class MockWaiter extends Mock implements Waiter {
 		
 	}
 
+	@Override
+	public void msgSetHomeBase(Point location) {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 
 

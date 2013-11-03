@@ -17,6 +17,8 @@ public interface Waiter {
 
 	public abstract void msgAtTable();
 	
+	public abstract void msgSetHomeBase(Point location);
+	
 	public abstract void msgTryToGoOnBreak();
 	
 	public abstract void msgYouCannotBreak();
