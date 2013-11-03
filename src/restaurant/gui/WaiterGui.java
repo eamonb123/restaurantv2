@@ -130,8 +130,9 @@ public class WaiterGui implements Gui {
     
     public void PickUpCustomer(Point location)
     {
-    	location.x-=20;
-    	location.y-=20;
+//    	Point newLoc = location;
+//    	newLoc.x-=20;
+//    	newLoc.y-=20;
     	DoMoveToPosition(location);
     }
     

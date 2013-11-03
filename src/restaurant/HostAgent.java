@@ -123,6 +123,20 @@ public class HostAgent extends Agent implements Host{
 		myWaitingCustomers.add(new MyCustomer(cust));
 		stateChanged();
 	}
+	
+	public void msgPickedUpCustomer(Point loc)
+	{
+		print("host has reached customer and marks his location as available");
+		for (WaitingSpot waitingSpot: waitingSpots)
+		{
+			if (waitingSpot.location.equals(loc))
+			{
+				System.out.print(loc);
+				waitingSpot.isOccupied=false;
+			}
+		}
+		stateChanged();
+	}
 
 	public void msgWakeUp()
 	{
@@ -208,7 +222,6 @@ public class HostAgent extends Agent implements Host{
 					{
 						if (!waitingSpot.isOccupied && !customer.waitingInLine)
 						{
-							customer.waitingLocation=waitingSpot.location;
 							WaitInLine(customer, waitingSpot);
 							return true;
 						}
@@ -218,19 +231,33 @@ public class HostAgent extends Agent implements Host{
 			}
 			else
 			{
+				for (MyCustomer c: myWaitingCustomers)
+				{
+					for (WaitingSpot w: waitingSpots)
+					{
+						if (!c.waitingInLine && !w.isOccupied)
+						{
+							System.out.println(w.location);
+							WaitInLine(c, w);
+						}
+					}
+				}
 				MyWaiter leastBusyWaiter = leastBusyWaiter(myWaiters);
 				for (Table table : myTables)
 				{
-					if(!table.isOccupied)
+					for (WaitingSpot waitingSpot: waitingSpots)
 					{
-						MyCustomer customer = myWaitingCustomers.get(0);
-						customer.cust.msgSemaphoreRelease();
-						leastBusyWaiter.customers.add(customer);
-						callWaiter(customer.cust, customer.waitingLocation, leastBusyWaiter.waiter, table);
-						print("HERE IT IS");
-						System.out.println(customer.waitingLocation);
-						myWaitingCustomers.remove(0);
-						return true;
+						if(!table.isOccupied && !waitingSpot.isOccupied)
+						{
+							MyCustomer customer = myWaitingCustomers.get(0);
+							customer.cust.msgSemaphoreRelease();
+							leastBusyWaiter.customers.add(customer);
+							callWaiter(customer.cust, customer.waitingLocation, leastBusyWaiter.waiter, table);
+							print("HERE IT IS");
+							System.out.println(customer.waitingLocation);
+							myWaitingCustomers.remove(0);
+							return true;
+						}
 					}
 				}
 			}
@@ -270,9 +297,10 @@ public class HostAgent extends Agent implements Host{
 	
 	private void WaitInLine(MyCustomer customer, WaitingSpot waitingSpot)
 	{
-		customer.waitingInLine=true;
-		customer.cust.msgWaitInLine(customer.waitingLocation);
 		waitingSpot.isOccupied=true;
+		customer.waitingInLine=true;
+		customer.waitingLocation=waitingSpot.location;
+		customer.cust.msgWaitInLine(customer.waitingLocation);
 	}
 	
 	

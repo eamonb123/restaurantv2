@@ -1,5 +1,7 @@
 package restaurant.interfaces;
 
+import java.awt.Point;
+
 import restaurant.CustomerAgent;
 import restaurant.WaiterAgent;
 import restaurant.HostAgent.MyCustomer;
@@ -11,6 +13,8 @@ public interface Host {
 	public abstract void msgIWantToEat(Customer cust);
 
 	public abstract void msgWakeUp();
+	
+	public abstract void msgPickedUpCustomer(Point loc);
 	
 	public abstract void msgCanIGoOnBreak(Waiter askingWaiter);
 	
