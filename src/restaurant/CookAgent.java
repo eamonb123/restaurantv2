@@ -2,6 +2,7 @@ package restaurant;
 
 import agent.Agent;
 import restaurant.HostAgent.Table;
+import restaurant.HostAgent.WaitingSpot;
 import restaurant.gui.CookGui;
 import restaurant.gui.WaiterGui;
 import restaurant.interfaces.Cook;
@@ -83,6 +84,27 @@ public class CookAgent extends Agent implements Cook{
 			foods.put(choice, new Food(choice, cookingTimes.get(choice), 5, 3, 10, OrderState.nothing));
 		}
     }
+    public List<CookingArea> cookingAreas = new ArrayList<CookingArea>();
+    public class CookingArea 
+    {
+		boolean isOccupied=false;
+		Point location = new Point();
+		CookingArea(int i)
+		{
+			this.isOccupied=false;
+			this.location=cookingArea.get(i);
+		}
+	}
+    HashMap<Integer, Point> cookingArea = new HashMap<Integer, Point>();
+    {
+    	int yPosition=105;
+    	for (int i=0; i<3; i++)
+    	{
+    		Point location = new Point(0, yPosition);
+    		cookingArea.put(i,location);
+    		yPosition+=30;
+    	}
+    }
 
 
 	
@@ -90,6 +112,9 @@ public class CookAgent extends Agent implements Cook{
 	
 	public void msgHereIsOrder(Waiter waiter, String choice, int tableNumber)
 	{
+//		cookGui.firstPan="hello";
+//		cookGui.secondPan="hello";
+//		cookGui.thirdPan="hello";
 		Order order = new Order(waiter, choice, tableNumber, state.pending);
 		print("the cook recieves the order " + order.choice + " and puts it on a list of orders");
 		orders.add(order);
@@ -158,18 +183,18 @@ public class CookAgent extends Agent implements Cook{
 	protected boolean pickAndExecuteAnAction() {
 		for (Order order : orders) 
 		{	
-			if (order.s==state.pending)
+			for(CookingArea cookingArea: cookingAreas)
 			{
-				TryToCookFood(order);				
-				return true;
-			}
-		}
-		for (Order order : orders) 
-		{
-			if (order.s==state.done)
-			{
-				PlateIt(order);
-				return true;
+				if (order.s==state.pending && !cookingArea.isOccupied)
+				{
+					TryToCookFood(order, cookingArea);				
+					return true;
+				}
+				if (order.s==state.done)
+				{
+					PlateIt(order);
+					return true;
+				}
 			}
 		}
 		return false;
@@ -178,7 +203,7 @@ public class CookAgent extends Agent implements Cook{
 
 	// Actions
 
-	private void TryToCookFood(Order order) //can cook multiple things at a time with no decrease in speed
+	private void TryToCookFood(Order order, CookingArea cookingArea) //can cook multiple things at a time with no decrease in speed
 	{
 		Food f = foods.get(order.choice);
 		if (f.currentAmount==0)
@@ -199,8 +224,8 @@ public class CookAgent extends Agent implements Cook{
 		print("the cook begins cooking the " + order.choice);
 		order.s = state.cooking; //put this inside timer class when u implement it
 		CookingTimer(order);
+		order.s = state.done;
 		print("the cook is done cooking the " + order.choice);
-		
 	}
 
 	private void OrderFoodThatIsLow()
@@ -255,7 +280,7 @@ public class CookAgent extends Agent implements Cook{
 		{
 			System.out.println("Exception caught");
 		}
-		order.s = state.done;
+
 	}
 
 	//utilities
@@ -263,6 +288,14 @@ public class CookAgent extends Agent implements Cook{
 	public void CheckInitialFood()
 	{
 		OrderFoodThatIsLow();
+	}
+	
+	public void InitializeCookingAreas()
+	{
+		for (int i=0; i<3; i++)
+		{
+			cookingAreas.add(new CookingArea(i));
+		}
 	}
 	
 	public void setGui(CookGui cookGui)

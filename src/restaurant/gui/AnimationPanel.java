@@ -45,9 +45,9 @@ public class AnimationPanel extends JPanel implements ActionListener {
         g2.setColor(getBackground());
         g2.fillRect(0, 0, this.getWidth(), this.getHeight() );
         cookingArea.setColor(Color.PINK);
-        cookingArea.fillRect(0, 60, 20, 80);
+        cookingArea.fillRect(0, 60, 40, 80);
         platingArea.setColor(Color.CYAN);
-        platingArea.fillRect(0, 150, 20, 80);
+        platingArea.fillRect(0, 150, 40, 80);
         int xPosUpdated=xPos;
         //Here is the table
         for (int i=1; i<=NTABLES; i++) //CREATING GUI TABLES
@@ -80,7 +80,9 @@ public class AnimationPanel extends JPanel implements ActionListener {
             	else if (gui instanceof CookGui)
             	{
             		CookGui cookGui = (CookGui) gui;
-            		cookGui.drawOrder(stringOrder, cookGui.text);
+            		cookGui.drawFirstPan(stringOrder, cookGui.firstPan);
+            		cookGui.drawSecondPan(stringOrder, cookGui.secondPan);
+            		cookGui.drawThirdPan(stringOrder, cookGui.thirdPan);
             	}
             }
         }

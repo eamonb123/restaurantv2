@@ -13,7 +13,7 @@ public class CookGui implements Gui{
 	public String thirdPan="";
 	//private HostAgent host;
 	RestaurantGui gui;
-
+	
 	public int xPos, yPos;
 	public int xDestination, yDestination;
 	public enum Command {noCommand, GoToSeat, LeaveRestaurant};
@@ -48,17 +48,19 @@ public class CookGui implements Gui{
 		g.setColor(Color.GREEN);
 	}
 	
-    public void drawFirstOrder(Graphics2D g, String order) {
+    public void drawFirstPan(Graphics2D g, String order) {
         g.setColor(Color.BLACK);
-    	g.drawString(order, 200, 200);
+    	g.drawString(order, 0, 75);
     }
-    public void drawSecondOrder(Graphics2D g, String order) {
+    
+    public void drawSecondPan(Graphics2D g, String order) {
         g.setColor(Color.BLACK);
-    	g.drawString(order, 200, 200);
+        g.drawString(order, 0, 105);
     }
-    public void drawThirdOrder(Graphics2D g, String order) {
+    
+    public void drawThirdPan(Graphics2D g, String order) {
         g.setColor(Color.BLACK);
-    	g.drawString(order, 200, 200);
+        g.drawString(order, 0, 135);
     }
     
     public void eatingOrder(Graphics2D g, String order) {
