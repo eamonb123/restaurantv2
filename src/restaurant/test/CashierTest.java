@@ -38,13 +38,16 @@ public class CashierTest extends TestCase
 	 */
 	public void testCalculatingPayment()
 	{
-		assertEquals("Cashier should have 0 orders in it. It doesn't.",cashier.orders.size(), 0);                
+		waiter = new MockWaiter("waiter");
+		assertEquals("Cashier should have 0 orders in it. It doesn't.", cashier.orders.size(), 0);                
         assertEquals("The cashier should know of no waiters. It does", cashier.waiters.size(),0);
         cashier.msgComputeCheck(waiter, "beef", 3);
         assertEquals("Cashier should have order size of 1", cashier.orders.size(), 1);
         assertTrue("Cashier's scheduler should have returned true because there is 1 order", cashier.pickAndExecuteAnAction());
         assertEquals("Cashier should be trying to calculate the price of beef", cashier.log.getLastLoggedEvent().toString(), "beef");
-        assertEquals("The cashier should have only one order. It doesn't", cashier.orders.size(),1);
+        assertEquals("The cashier should have only one order", cashier.orders.size(),1);
+        waiter.msgHereIsReceipt(cashier.menu.get("beef"), 3);
+        assertEquals("Waiter should have received the receipt", waiter.log.getLastLoggedEvent().toString(), "received receipt");
 	}
     
 	public void testGivingChange()
@@ -116,6 +119,10 @@ public class CashierTest extends TestCase
         market2.msgHereIsPayment(40);
         assertEquals("Market should have accepted the cashier's full payment", market1.log.getLastLoggedEvent().toString(), "accepted full payment");
 	}
+	
+
+	
+}
 	
 	
 

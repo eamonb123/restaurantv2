@@ -15,12 +15,19 @@ public class MockWaiter extends Mock implements Waiter {
 		// TODO Auto-generated constructor stub
 	}
 	
+
 	
 	@Override
 	public void msgDoneEating(Customer customer) {
 		log.add(new LoggedEvent("customer is done eating"));
 	}
 
+	@Override
+	public void msgHereIsReceipt(int bill, int tableNumber) {
+		log.add(new LoggedEvent("received receipt"));
+		
+	}
+	
 	@Override
 	public void msgAtTable() {
 		// TODO Auto-generated method stub
@@ -77,11 +84,7 @@ public class MockWaiter extends Mock implements Waiter {
 
 
 
-	@Override
-	public void msgHereIsReceipt(int bill, int tableNumber) {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
 	@Override
 	public void msgSetHomeBase(Point location) {
