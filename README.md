@@ -29,8 +29,16 @@
   - You will notice in the print statement that because the cashier owes Market 2 money, as soon as the customer pay's the cashier for his meal, the cashier sends that money over to market 2 to help relieve some of his debt. 
   
   
+  ###TESTING CUSTOMER WAITING LINE
+  - Simply add customers and see them being added a line.
+  - By adding waiters, customers will be taken off the line, and by adding new customers, they will the gaps in the line
   
+  
+   ###TESTING COOKING AND PLATING AREA
+- The pink area on the left is the cooking area
+- The cyan area on the left is the plating area
+- Once food is cooked, it is moved from the cooking area to the plating area, where the waiter gets the food
   
  ###Problems
-
+- no problems experienced at this point
  
