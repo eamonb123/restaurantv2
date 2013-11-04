@@ -8,9 +8,17 @@ import restaurant.interfaces.Waiter;
 
 public class MockWaiter extends Mock implements Waiter {
 
+	public EventLog log = new EventLog();
+
 	public MockWaiter(String name) {
 		super(name);
 		// TODO Auto-generated constructor stub
+	}
+	
+	
+	@Override
+	public void msgDoneEating(Customer customer) {
+		log.add(new LoggedEvent("customer is done eating"));
 	}
 
 	@Override
@@ -67,11 +75,7 @@ public class MockWaiter extends Mock implements Waiter {
 		
 	}
 
-	@Override
-	public void msgDoneEating(Customer customer) {
-		// TODO Auto-generated method stub
-		
-	}
+
 
 	@Override
 	public void msgHereIsReceipt(int bill, int tableNumber) {

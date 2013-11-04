@@ -38,6 +38,7 @@ public class CashierTest extends TestCase
 	public void testOneNormalCustomerScenario()
 	{
 		waiter.msgDoneEating(customer);
+		
 //		assertTrue(customer.log.getLastLoggedEvent().toString().equals("customer is hungry"));
 	}
 //		//setUp() runs first before this test!

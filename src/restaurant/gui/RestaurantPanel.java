@@ -84,6 +84,7 @@ public class RestaurantPanel extends JPanel {
 	        	{
 	        		if (!paused)
 	        		{
+	        			System.out.println("PAUSED");
 	        			paused=true;
 	        			for(CustomerAgent customer: customers)
 	        			{
@@ -97,11 +98,13 @@ public class RestaurantPanel extends JPanel {
 	    		        {
 	    	    	        market.pause();
 	    	    	    }
+	    		        cashier.pause();
 	    		        host.pause();
 	    		        cook.pause();
 	        		}
 	        		else
 	        		{
+	        			System.out.println("UNPAUSED");
 	        			paused=false;
 	        			for(CustomerAgent customer: customers)
 	        			{
@@ -115,6 +118,7 @@ public class RestaurantPanel extends JPanel {
 	    		        {
 	    	    	        market.restart();
 	    	    	    }
+	    		        cashier.restart();
 	    		        host.restart();
 	    		        cook.restart();
 	        		}
@@ -123,9 +127,7 @@ public class RestaurantPanel extends JPanel {
         }); 
         
         initRestLabel();
-        //RESTLABEL IS THE MENU
-        //add(restLabel);
-       // add(pause);
+
     }
 
     
