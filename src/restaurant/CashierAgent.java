@@ -13,6 +13,8 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 import restaurant.interfaces.Waiter;
+import restaurant.test.mock.EventLog;
+import restaurant.test.mock.LoggedEvent;
 /**
  * Restaurant Host Agent
  */
@@ -22,7 +24,7 @@ public class CashierAgent extends Agent implements Cashier{
 	public List<Order> receipts = Collections.synchronizedList(new ArrayList<Order>());
 	public List<Payment> payments = Collections.synchronizedList(new ArrayList<Payment>());
 	public List<MarketBill> marketBills = Collections.synchronizedList(new ArrayList<MarketBill>());
-
+	public EventLog log = new EventLog();
 	private int money=60;
 	Map<String, Integer> menu = Collections.synchronizedMap(new HashMap<String, Integer>());
 	{
@@ -127,7 +129,7 @@ public class CashierAgent extends Agent implements Cashier{
 	 * Scheduler.  Determine what action is called for, and do it.
 	 */	
 			
-	protected boolean pickAndExecuteAnAction() {
+	public boolean pickAndExecuteAnAction() {
 		synchronized(orders)
 		{
 		for (Order order : orders) 
@@ -171,6 +173,7 @@ public class CashierAgent extends Agent implements Cashier{
 
 	private void CalculateReceipt(Order order)
 	{
+		log.add(new LoggedEvent(order.choice));
 		int bill = menu.get(order.choice);
 		order.waiter.msgHereIsReceipt(bill, order.tableNumber);
 	}

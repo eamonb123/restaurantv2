@@ -7,6 +7,8 @@ import restaurant.interfaces.Market;
 
 public class MockMarket extends Mock implements Market{
 
+	public EventLog log = new EventLog();
+
 	public MockMarket(String name) {
 		super(name);
 		// TODO Auto-generated constructor stub
@@ -20,8 +22,7 @@ public class MockMarket extends Mock implements Market{
 
 	@Override
 	public void msgHereIsPayment(int bill) {
-		// TODO Auto-generated method stub
-		
+		log.add(new LoggedEvent("accepting payment"));
 	}
 
 }
