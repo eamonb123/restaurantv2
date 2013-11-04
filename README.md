@@ -16,16 +16,20 @@
   To run it in Eclipse after cloning the project, do the same as you would to open up the project for Lab1
 
   TO TEST DIFFERENT SCENARIOS
-  - out of food: go to the cook agent and change the 3rd parameter of the Food constructor. Set it to zero and then all the foods the cook has will be set to zero. Run the code and then witness the changes
-  - low food: go to the same line as the out of food, but set a number above zero and below the threshold. when the waiter delivers that order to the cook, the cook will realize he is low in certain foods and send out an order to the market
-  - to manipulate the market inventory, you can change line 47 in the marketagent.java file to whatever number you want. depending on what that number is, the cook will order accordingly from the different markets
-  - waiter on break: once you create a waiter, you can click his break checkbox on the bottom of the window. if there is more than one waiter, he will go on break, otherwise he will keep working
-  - cashier: once the customer is done eating, there will be print statements that calculate whether he can pay the meal or not. he will leave either way
-
+  - To test the extra credit scenario of the cashier not having enough money to pay the market, change line 87 of the cookagent.java
+  To modify line 87 of the cookagent.java, change the 3rd parameter of the Food constructor from 5 to 1
+  - Also, you must change line 26 of CashierAgent.java, where the money is being initialized. Set money to 100
+  - Now, you have forced the cashier to only have 60 dollars and the cook to only have 1 of every food item
+  - Then run the code, but don't click any buttons (do not add waiter or customer, or put waiter on break). Only monitor the print statements until it says that "Market 3 has $0". At this point you know that the cook has ordered from all the markets
+  - You have now created a scenario where, upon the store's opening, checks the inventory and notices that there is only 1 of every food item (hence "food is low")
+  and consequently orders from the market.
+  - The cashier currently only has $100 in this scenario, so Market 1 sends over what he can and charges $56 to the cashier
+  - Since the cashier has $60, he is able to pay Market 1 in full and has $4 left to continue the rest of his order to Market 2
+  - Market 2 charges the cashier $60 as well, but since the cashier only has $4, he pays Market 2 everything he has and still is left with a $56 bill
+  - Now add a waiter and a customer and watch the entire interaction until the customer leaves
+  - You will notice in the print statement that because the cashier owes Market 2 money, as soon as the customer pay's the cashier for his meal, the cashier sends that money over to market 2 to help relieve some of his debt. 
   
   
  ###Problems
- - I currently cannot uncheck a waiter on break to get him back to work
- - I did not yet implement the GUI for the cashier interaction but all the communication is in print statements.
- - the markets send
+
  

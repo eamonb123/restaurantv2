@@ -1,9 +1,11 @@
 package restaurant.test;
 
 import restaurant.CashierAgent;
+import restaurant.test.mock.MockCook;
 //import restaurant.CashierAgent.cashierBillState;
 //import restaurant.WaiterAgent.Bill;
 import restaurant.test.mock.MockCustomer;
+import restaurant.test.mock.MockMarket;
 import restaurant.test.mock.MockWaiter;
 import junit.framework.*;
 
@@ -19,6 +21,8 @@ public class CashierTest extends TestCase
 {
 	CashierAgent cashier;
 	MockWaiter waiter;
+	MockMarket market;
+	MockCook cook;
 	MockCustomer customer;
 	
 	
@@ -29,6 +33,8 @@ public class CashierTest extends TestCase
 	public void setUp() throws Exception{
 		super.setUp();		
 		cashier = new CashierAgent();		
+		cook = new MockCook("cook");
+		market = new MockMarket("market");
 		customer = new MockCustomer("mockcustomer");		
 		waiter = new MockWaiter("mockwaiter");
 	}	
@@ -37,7 +43,7 @@ public class CashierTest extends TestCase
 	 */
 	public void testOneNormalCustomerScenario()
 	{
-		waiter.msgDoneEating(customer);
+		cook.CheckInitialFood();
 		
 //		assertTrue(customer.log.getLastLoggedEvent().toString().equals("customer is hungry"));
 	}

@@ -23,7 +23,7 @@ public class CashierAgent extends Agent implements Cashier{
 	public List<Payment> payments = Collections.synchronizedList(new ArrayList<Payment>());
 	public List<MarketBill> marketBills = Collections.synchronizedList(new ArrayList<MarketBill>());
 
-	private int money=100;
+	private int money=60;
 	Map<String, Integer> menu = Collections.synchronizedMap(new HashMap<String, Integer>());
 	{
 	    menu.put("beef", 15);
