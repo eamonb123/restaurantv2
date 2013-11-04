@@ -29,9 +29,9 @@ public class MarketAgent extends Agent implements Market{
 	}
 	Map<String, Integer> prices = Collections.synchronizedMap(new HashMap<String, Integer>());
 	{
-	    prices.put("beef", 15);
-    	prices.put("chicken", 10);
-    	prices.put("lamb", 5);
+	    prices.put("beef", 7);
+    	prices.put("chicken", 5);
+    	prices.put("lamb", 2);
 	}
 	public class IncomingOrder
 	{
