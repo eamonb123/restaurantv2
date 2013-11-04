@@ -22,7 +22,7 @@ public class MockMarket extends Mock implements Market{
 
 	@Override
 	public void msgHereIsPayment(int bill) {
-		log.add(new LoggedEvent("accepting payment"));
+		log.add(new LoggedEvent("accepted full payment"));
 	}
 
 }

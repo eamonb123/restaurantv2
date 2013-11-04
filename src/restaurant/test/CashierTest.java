@@ -38,7 +38,6 @@ public class CashierTest extends TestCase
 	 */
 	public void testCalculatingPayment()
 	{
-		//step 1 of cashier calculating payment
 		assertEquals("Cashier should have 0 orders in it. It doesn't.",cashier.orders.size(), 0);                
         assertEquals("The cashier should know of no waiters. It does", cashier.waiters.size(),0);
         cashier.msgComputeCheck(waiter, "beef", 3);
@@ -46,9 +45,17 @@ public class CashierTest extends TestCase
         assertTrue("Cashier's scheduler should have returned true because there is 1 order", cashier.pickAndExecuteAnAction());
         assertEquals("Cashier should be trying to calculate the price of beef", cashier.log.getLastLoggedEvent().toString(), "beef");
         assertEquals("The cashier should have only one order. It doesn't", cashier.orders.size(),1);
-        
-        
-        //step 2 of cashier getting money from customer
+	}
+    
+	public void testGivingChange()
+	{
+		assertEquals("Cashier should have 0 orders in it. It doesn't.",cashier.orders.size(), 0);                
+        assertEquals("The cashier should know of no waiters. It does", cashier.waiters.size(),0);
+        cashier.msgComputeCheck(waiter, "beef", 3);
+        assertEquals("Cashier should have order size of 1", cashier.orders.size(), 1);
+        assertTrue("Cashier's scheduler should have returned true because there is 1 order", cashier.pickAndExecuteAnAction());
+        assertEquals("Cashier should be trying to calculate the price of beef", cashier.log.getLastLoggedEvent().toString(), "beef");
+        assertEquals("The cashier should have only one order. It doesn't", cashier.orders.size(),1);
         assertEquals("Cashier should have 0 market payments in it. It doesn't.", cashier.payments.size(), 0);  
         cashier.msgPayBill(customer, 20, 15);
         assertEquals("Cashier should have payment size of 1", cashier.payments.size(), 1);
@@ -57,10 +64,39 @@ public class CashierTest extends TestCase
         
 	}
 	
-	public void testPayMarketFull()
+	public void testPayOneMarket()
+	{
+		MockMarket market = new MockMarket("market1");
+		assertTrue("Market bills list should  be zero before adding markets", cashier.marketBills.isEmpty());                
+		cashier.setMarket(market);
+		assertTrue("Market bills list should not be zero after adding the market", !cashier.marketBills.isEmpty());                
+		cashier.msgHereIsMarketBill(market, 20, null);
+        assertTrue("Cashier's scheduler should have returned true because there is an unpaid payment", cashier.pickAndExecuteAnAction());
+        assertEquals("Cashier should have enough money to pay the market bill", cashier.log.getLastLoggedEvent().toString(), "have enough money");
+        market.msgHereIsPayment(20);
+        assertEquals("Market should have accepted the cashier's full payment", market.log.getLastLoggedEvent().toString(), "accepted full payment");
+	}
+	
+	public void testCannotPayOneMarket()
+	{
+		MockMarket market = new MockMarket("market1");
+		assertTrue("Market bills list should  be zero before adding markets", cashier.marketBills.isEmpty());                
+		cashier.setMarket(market);
+		assertTrue("Market bills list should not be zero after adding the market", !cashier.marketBills.isEmpty());                
+		cashier.msgHereIsMarketBill(market, 50000, null);
+        assertTrue("Cashier's scheduler should have returned true because there is an unpaid payment", cashier.pickAndExecuteAnAction());
+        assertEquals("Cashier should not have enough money to pay the market bill", cashier.log.getLastLoggedEvent().toString(), "don't have enough money");
+        market.msgHereIsPayment(cashier.money);
+        assertEquals("Market should have accepted the cashier's full payment", market.log.getLastLoggedEvent().toString(), "accepted full payment");
+	}
+	
+	
+	public void testPayTwoMarkets()
 	{
 		MockMarket market1 = new MockMarket("market1");
 		MockMarket market2 = new MockMarket("market2");
+		
+		//step 1 with the first market
 		assertTrue("Market bills list should  be zero before adding markets", cashier.marketBills.isEmpty());                
 		cashier.setMarket(market1);
 		cashier.setMarket(market2);
@@ -69,6 +105,16 @@ public class CashierTest extends TestCase
         assertTrue("Cashier's scheduler should have returned true because there is an unpaid payment", cashier.pickAndExecuteAnAction());
         assertEquals("Cashier should have enough money to pay the market bill", cashier.log.getLastLoggedEvent().toString(), "have enough money");
         market1.msgHereIsPayment(20);
+        assertEquals("Market should have accepted the cashier's full payment", market1.log.getLastLoggedEvent().toString(), "accepted full payment");
+        
+        
+        //step 2 with the second market
+        assertFalse("Cashier's scheduler should have returned false because we haven't run the message the second time", cashier.pickAndExecuteAnAction());
+		cashier.msgHereIsMarketBill(market2, 40, null);
+        assertTrue("Cashier's scheduler should now return true because we ran the message the second time", cashier.pickAndExecuteAnAction());
+        assertEquals("Cashier should have enough money to pay the market bill", cashier.log.getLastLoggedEvent().toString(), "have enough money");
+        market2.msgHereIsPayment(40);
+        assertEquals("Market should have accepted the cashier's full payment", market1.log.getLastLoggedEvent().toString(), "accepted full payment");
 	}
 		//setUp() runs first before this test!
 //		cashier.msgComputeCheck(waiter, "beef", 3);	
