@@ -49,10 +49,9 @@ public class AnimationPanel extends JPanel implements ActionListener {
 		g3.drawString("CUSTOMER LINE", 20, 15);
 		g3.drawString("COOK", 0, 150);
 		g3.drawString("WAITER BREAK AREA", 240, 15);
-		g3.drawString("TABLE 1", 100, 250);
-		g3.drawString("TABLE 2", 250, 250);
-		g3.drawString("TABLE 3", 400, 250);
-	    
+		g3.drawString("TABLE 1", 50, 275);
+		g3.drawString("TABLE 2", 200, 275);
+		g3.drawString("TABLE 3", 350, 275);
         cookingArea.setColor(Color.PINK);
         cookingArea.fillRect(0, 60, 40, 80);
         platingArea.setColor(Color.CYAN);

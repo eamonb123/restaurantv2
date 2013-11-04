@@ -27,7 +27,7 @@ public class MarketAgent extends Agent implements Market{
 	{
 		this.name=name;
 	}
-	Map<String, Integer> prices = new HashMap<String, Integer>();
+	Map<String, Integer> prices = Collections.synchronizedMap(new HashMap<String, Integer>());
 	{
 	    prices.put("beef", 15);
     	prices.put("chicken", 10);
@@ -36,7 +36,7 @@ public class MarketAgent extends Agent implements Market{
 	public class IncomingOrder
 	{
 		Cook cook;
-		Map<String, Integer> incomingList = new HashMap<String, Integer>();
+		Map<String, Integer> incomingList = Collections.synchronizedMap(new HashMap<String, Integer>());
 	    reStockingState state;
 		IncomingOrder(Cook cook,  Map<String, Integer> incomingList, reStockingState state)
 		{
@@ -47,13 +47,13 @@ public class MarketAgent extends Agent implements Market{
 	}
 	public enum reStockingState
 	{none, restocking, fufillingOrder, failedToFufillOrder};
-	public List<IncomingOrder> orders = new ArrayList<IncomingOrder>();
-	List<String> menuOptions = new ArrayList<String>();{
+	public List<IncomingOrder> orders = Collections.synchronizedList(new ArrayList<IncomingOrder>());
+	List<String> menuOptions = Collections.synchronizedList(new ArrayList<String>());{
 	    menuOptions.add("chicken");
 	    menuOptions.add("beef");
 	    menuOptions.add("lamb");
 	}
-	Map<String, Integer> inventory = new HashMap<String, Integer>();
+	Map<String, Integer> inventory = Collections.synchronizedMap(new HashMap<String, Integer>());
     {
 		for (String choice : menuOptions)
 		{
@@ -85,6 +85,8 @@ public class MarketAgent extends Agent implements Market{
 	 */	
 			
 	protected boolean pickAndExecuteAnAction() {
+		synchronized(orders)
+		{
 		for (IncomingOrder order: orders)
 		{
 			if (order.state==reStockingState.restocking)
@@ -92,6 +94,7 @@ public class MarketAgent extends Agent implements Market{
 				TryToShipOrder(order, inventory);
 				return true;
 			}
+		}
 		}
 		return false;
 	}

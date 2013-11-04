@@ -11,6 +11,7 @@ import agent.Agent;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -32,7 +33,7 @@ public class CustomerAgent extends Agent implements Customer{
 	Timer timer = new Timer();
 	private Point location = new Point();
 	private CustomerGui customerGui;
-	public List<String> menuOptions = new ArrayList<String>();
+	public List<String> menuOptions = Collections.synchronizedList(new ArrayList<String>());
 	public class Menu {
 		String lamb;
 		String beef;

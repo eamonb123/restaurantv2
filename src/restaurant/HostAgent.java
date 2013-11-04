@@ -22,9 +22,9 @@ public class HostAgent extends Agent implements Host{
 	static int NTABLES=3;
 	private String name;
 	private RestaurantPanel restPanel;
-	public List<MyCustomer> myWaitingCustomers = new ArrayList<MyCustomer>();
-	public List<MyWaiter> myWaiters = new ArrayList<MyWaiter>();
-	public Collection<Table> myTables;
+	public List<MyCustomer> myWaitingCustomers = Collections.synchronizedList(new ArrayList<MyCustomer>());
+	public List<MyWaiter> myWaiters = Collections.synchronizedList(new ArrayList<MyWaiter>());
+	public List<Table> myTables;
 	public WaiterGui waiterGui = null;
     private int xPosition=100;
     private int yPosition=250;
@@ -36,7 +36,7 @@ public class HostAgent extends Agent implements Host{
 		WaiterState state; 
 		Point homeBase = new Point();
 		boolean assignedHomeBase=false;
-		List<MyCustomer> customers = new ArrayList<MyCustomer>();
+		List<MyCustomer> customers = Collections.synchronizedList(new ArrayList<MyCustomer>());
 		MyWaiter(Waiter waiter, WaiterState state)
 		{
 			this.waiter=waiter;
@@ -63,7 +63,7 @@ public class HostAgent extends Agent implements Host{
 			this.tableNumber = tableNumber;
 		}
 	}
-	public List<WaitingSpot> waitingSpots = new ArrayList<WaitingSpot>();
+	public List<WaitingSpot> waitingSpots = Collections.synchronizedList(new ArrayList<WaitingSpot>());
     public class WaitingSpot 
     {
 		boolean isOccupied=false;
@@ -85,7 +85,7 @@ public class HostAgent extends Agent implements Host{
     		xPosition+=30;
     	}
     }
-    Map<Integer, Point> tableMap = new HashMap<Integer, Point>();
+    Map<Integer, Point> tableMap = Collections.synchronizedMap(new HashMap<Integer, Point>());
     {
     	for (int i=1; i<=NTABLES; i++)
     	{
@@ -105,7 +105,7 @@ public class HostAgent extends Agent implements Host{
 			this.location=waiterHomeBase.get(i);
 		}
     }
-    Map<Integer, Point> waiterHomeBase = new HashMap<Integer, Point>();
+    Map<Integer, Point> waiterHomeBase = Collections.synchronizedMap(new HashMap<Integer, Point>());
     {	
     	int xPosition = 200;
     	int yPosition = 80;
@@ -146,7 +146,7 @@ public class HostAgent extends Agent implements Host{
 		super();
 		this.name = name;
 		this.restPanel=restPanel;
-		myTables = new ArrayList<Table>(NTABLES);
+		myTables = Collections.synchronizedList(new ArrayList<Table>(NTABLES));
 	    for (int i=0; i<10; i++)
 	    {
 	    	WaitingSpot spot = new WaitingSpot(i);
@@ -179,12 +179,15 @@ public class HostAgent extends Agent implements Host{
 	public void msgPickedUpCustomer(Point loc)
 	{
 		print("host has reached customer and marks his location as available");
+		synchronized(waitingSpots)
+		{
 		for (WaitingSpot waitingSpot: waitingSpots)
 		{
 			if (waitingSpot.location.equals(loc))
 			{
 				waitingSpot.isOccupied=false;
 			}
+		}
 		}
 		stateChanged();
 	}
@@ -197,6 +200,8 @@ public class HostAgent extends Agent implements Host{
 	public void msgCanIGoOnBreak(Waiter askingWaiter)
 	{
 		print("the host recieved the message from the waiter asking to go on break and is considering...");
+		synchronized(myWaiters)
+		{
 		for (MyWaiter w: myWaiters)
 		{
 			if (w.waiter==askingWaiter)
@@ -205,6 +210,7 @@ public class HostAgent extends Agent implements Host{
 				w.state=WaiterState.wantsToGoOnBreak;
 			}
 		}
+		}
 		stateChanged();
 	}
 
@@ -212,8 +218,12 @@ public class HostAgent extends Agent implements Host{
 	
 	public void msgTableIsFree(Waiter waiter, Customer customer, int tableNumber) {//from animation
 		MyCustomer cust = new MyCustomer(null);
+		synchronized(myWaiters)
+		{
 		for (MyWaiter wait: myWaiters)
 		{
+			synchronized(wait.customers)
+			{
 			for (MyCustomer c: wait.customers)
 			{
 				if (c.cust==customer)
@@ -221,6 +231,9 @@ public class HostAgent extends Agent implements Host{
 					cust = c;
 				}
 			}
+			}
+			synchronized(waitingSpots)
+			{
 			for (WaitingSpot spot: waitingSpots)
 			{
 				if (spot.equals(cust.waitingLocation))
@@ -228,14 +241,19 @@ public class HostAgent extends Agent implements Host{
 					spot.isOccupied=false;
 				}
 			}
+			}
 			wait.customers.remove(cust);
 		}
+		}
+		synchronized(myTables)
+		{
 		for (Table table : myTables) 
 		{
 			if (table.tableNumber==tableNumber)
 			{
 				table.isOccupied=false;
 			}
+		}
 		}
 		stateChanged();
 	}
@@ -247,16 +265,18 @@ public class HostAgent extends Agent implements Host{
 	protected boolean pickAndExecuteAnAction() {
 		synchronized(myWaiters)
 		{
-			for (MyWaiter waiter : myWaiters)
+		for (MyWaiter waiter : myWaiters)
+		{
+			if (waiter.state==WaiterState.wantsToGoOnBreak)
 			{
-				if (waiter.state==WaiterState.wantsToGoOnBreak)
-				{
-					print("the host is deciding whether the waiter should go on break");
-					DecideIfWaiterCanBreak(waiter);
-					return true;
-				}
+				print("the host is deciding whether the waiter should go on break");
+				DecideIfWaiterCanBreak(waiter);
+				return true;
 			}
 		}
+		}
+		synchronized(myWaiters)
+		{
 		for (MyWaiter waiter : myWaiters)
 		{
 			if (waiter.state==WaiterState.waitingForBreak && waiter.customers.isEmpty())
@@ -266,8 +286,13 @@ public class HostAgent extends Agent implements Host{
 				return true;
 			}
 		}
+		}
+		synchronized(myWaiters)
+		{
 		for (MyWaiter waiter : myWaiters)
 		{
+			synchronized(waiterHomeBases)
+			{
 			for (WaiterHomeBase homeBase: waiterHomeBases)
 			{
 				if (!waiter.assignedHomeBase && !homeBase.isOccupied)
@@ -277,13 +302,19 @@ public class HostAgent extends Agent implements Host{
 					return true;
 				}			
 			}
+			}
+		}
 		}
 		if (!myWaitingCustomers.isEmpty())
 		{
 			if (myWaiters.isEmpty())
 			{
+				synchronized(myWaitingCustomers)
+				{
 				for (MyCustomer customer : myWaitingCustomers)	
 				{	
+					synchronized(waitingSpots)
+					{
 					for (WaitingSpot waitingSpot: waitingSpots)
 					{
 						if (!waitingSpot.isOccupied && !customer.waitingInLine)
@@ -292,13 +323,19 @@ public class HostAgent extends Agent implements Host{
 							return true;
 						}
 					}
+					}
+				}
 				}
 				print("waiter list is empty. customers waiting in line");
 			}
 			else
 			{
+				synchronized(myWaitingCustomers)
+				{
 				for (MyCustomer c: myWaitingCustomers)
 				{
+					synchronized(waitingSpots)
+					{
 					for (WaitingSpot w: waitingSpots)
 					{
 						if (!c.waitingInLine && !w.isOccupied)
@@ -306,10 +343,16 @@ public class HostAgent extends Agent implements Host{
 							WaitInLine(c, w);
 						}
 					}
+					}
+				}
 				}
 				MyWaiter leastBusyWaiter = leastBusyWaiter(myWaiters);
+				synchronized(myTables)
+				{
 				for (Table table : myTables)
 				{
+					synchronized(waitingSpots)
+					{
 					for (WaitingSpot waitingSpot: waitingSpots)
 					{
 						if(!table.isOccupied && !waitingSpot.isOccupied)
@@ -322,6 +365,8 @@ public class HostAgent extends Agent implements Host{
 							return true;
 						}
 					}
+					}
+				}
 				}
 			}
 		}
