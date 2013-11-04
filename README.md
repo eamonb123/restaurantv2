@@ -15,7 +15,7 @@
   You can simply run the code by clicking the green arrow in Eclipe.
   To run it in Eclipse after cloning the project, do the same as you would to open up the project for Lab1
 
-  #TO TEST EXTRA CREDIT FOR CASHIER NOT HAVING ENOUGH MONEY
+  ###TO TEST EXTRA CREDIT FOR CASHIER NOT HAVING ENOUGH MONEY
   - Change line 87 of the cookagent.java. To modify line 87 of the cookagent.java, change the 3rd parameter of the Food constructor from 5 to 1
   - Also, you must change line 26 of CashierAgent.java, where the money is being initialized. Set money to 100
   - Now, you have forced the cashier to only have 60 dollars and the cook to only have 1 of every food item
