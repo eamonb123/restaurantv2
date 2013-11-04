@@ -50,6 +50,20 @@ public class CashierTest extends TestCase
         assertEquals("Waiter should have received the receipt", waiter.log.getLastLoggedEvent().toString(), "received receipt");
 	}
     
+	public void testPayMarket()
+	{
+		MockMarket market1 = new MockMarket("market1");
+		
+		assertTrue("Market bills list should  be zero before adding markets", cashier.marketBills.isEmpty());                
+		cashier.setMarket(market1);
+		assertTrue("Market bills list should not be zero after adding the 2 markets", !cashier.marketBills.isEmpty());                
+		cashier.msgHereIsMarketBill(market1, 0, null);
+        assertTrue("Cashier's scheduler should have returned true because there is an unpaid payment", cashier.pickAndExecuteAnAction());
+//        assertEquals("Cashier should have enough money to pay the market bill", cashier.log.getLastLoggedEvent().toString(), "0 dollar bill");
+//        market1.msgHereIsPayment(20);
+//        assertEquals("Market should have accepted the cashier's full payment", market1.log.getLastLoggedEvent().toString(), "accepted full payment");
+	}
+	
 	public void testGivingChange()
 	{
 		assertEquals("Cashier should have 0 orders in it. It doesn't.",cashier.orders.size(), 0);                

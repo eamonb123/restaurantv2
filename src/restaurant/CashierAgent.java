@@ -251,6 +251,10 @@ public class CashierAgent extends Agent implements Cashier{
 			print ("the cashier now has $" + money);
 			marketBill.market.msgHereIsPayment(moneyBack);
 		}
+		else if (marketBill.bill==0)
+		{
+			log.add(new LoggedEvent("0 dollar bill"));
+		}
 		marketBill.paid=true;
 	}
 
