@@ -173,7 +173,7 @@ public class CustomerAgent extends Agent implements Customer{
 	
 	public void msgHereIsChange(int change)
 	{
-		print("customer recieved $" + change);
+		print("customer recieved $" + change + " change");
 		money+=change;
 		event = AgentEvent.leaving;
 		stateChanged();

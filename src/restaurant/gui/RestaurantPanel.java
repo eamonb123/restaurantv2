@@ -63,7 +63,7 @@ public class RestaurantPanel extends JPanel {
         cook.startThread();
         cashier.startThread();
         cook.InitializeAreas();
-        cook.CheckInitialFood();
+//        cook.CheckInitialFood();
         
         
         setLayout(new GridLayout(1, 2, 20, 20));

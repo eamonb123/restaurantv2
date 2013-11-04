@@ -84,7 +84,7 @@ public class CookAgent extends Agent implements Cook{
     {
     	for (String choice : menuOptions)
 		{
-			foods.put(choice, new Food(choice, cookingTimes.get(choice), 1, 3, 10, OrderState.nothing));
+			foods.put(choice, new Food(choice, cookingTimes.get(choice), 5, 3, 10, OrderState.nothing));
 		}
     }
     public List<CookingArea> cookingAreas = Collections.synchronizedList(new ArrayList<CookingArea>());
@@ -343,6 +343,8 @@ public class CookAgent extends Agent implements Cook{
 	
 	private void DecidePan(Point cookingArea, String choice)
 	{
+		synchronized(cookingAreas)
+		{
 		for (CookingArea area: cookingAreas)
 		{
 			if (area.location.equals(cookingArea))
@@ -361,10 +363,13 @@ public class CookAgent extends Agent implements Cook{
 				}
 			}
 		}
+		}
 	}
 	
 	private void DecidePlate(Point platingArea, String choice)
 	{
+		synchronized(platingAreas)
+		{
 		for (PlatingArea area: platingAreas)
 		{
 			if (area.location.equals(platingArea))
@@ -382,6 +387,7 @@ public class CookAgent extends Agent implements Cook{
 					cookGui.thirdPlate="cooked " + choice;
 				}
 			}
+		}
 		}
 	}
 	

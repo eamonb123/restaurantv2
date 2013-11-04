@@ -194,6 +194,8 @@ public class CashierAgent extends Agent implements Cashier{
 	
 	private void PayDebt()
 	{
+		synchronized(marketBills)
+		{
 		for (MarketBill marketBill: marketBills)
 		{
 			if (marketBill.bill!=0)
@@ -217,6 +219,7 @@ public class CashierAgent extends Agent implements Cashier{
 				{
 				}
 			}
+		}
 		}
 	}
 	

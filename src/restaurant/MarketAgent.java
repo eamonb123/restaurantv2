@@ -108,8 +108,12 @@ public class MarketAgent extends Agent implements Market{
 		print("the market is now trying to ship the order");
 		Map<String, Integer> groceryList = incomingOrder.incomingList;
 		Map<String, Integer> outgoingList = groceryList;
+		synchronized(groceryList)
+		{
 		for (Map.Entry<String, Integer> groceryItem : groceryList.entrySet())
 		{
+			synchronized(inventoryList)
+			{
 			for (Map.Entry<String, Integer> marketItem : inventoryList.entrySet())
 			{
 				if (groceryItem.getKey().equals(marketItem.getKey())) //if the two comparing items are the same
@@ -131,6 +135,8 @@ public class MarketAgent extends Agent implements Market{
 					}
 				}	
 			}
+			}
+		}
 		}
 		print("the market is shipping the food to the cook");
 		if(partialOrder)
@@ -166,12 +172,15 @@ public class MarketAgent extends Agent implements Market{
 	private int CalculateBill(Map<String, Integer> outgoingList)
 	{
 		int bill = 0;
+		synchronized(outgoingList)
+		{
 		for (Map.Entry<String, Integer> groceryItem : outgoingList.entrySet())
 		{
 			int quantity = groceryItem.getValue();
 			int price = prices.get(groceryItem.getKey());
 			int total = quantity * price;
 			bill += total;
+		}
 		}
 		return bill;
 	}

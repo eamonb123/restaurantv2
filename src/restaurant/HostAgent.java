@@ -414,12 +414,15 @@ public class HostAgent extends Agent implements Host{
 	
 	private void setUnoccupied(MyWaiter waiter)
 	{
+		synchronized(waiterHomeBases)
+		{
 		for (WaiterHomeBase homeBase: waiterHomeBases)
 		{
 			if (homeBase.location.equals(waiter.homeBase))
 			{
 				homeBase.isOccupied=false;
 			}
+		}
 		}
 	}
 	
