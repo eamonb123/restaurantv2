@@ -1,43 +1,45 @@
-//package restaurant.test;
-//
-//import restaurant.CashierAgent;
-////import restaurant.CashierAgent.cashierBillState;
-////import restaurant.WaiterAgent.Bill;
-//import restaurant.test.mock.MockCustomer;
-//import restaurant.test.mock.MockWaiter;
-//import junit.framework.*;
-//
-///**
-// * 
-// * This class is a JUnit test class to unit test the CashierAgent's basic interaction
-// * with waiters, customers, and the host.
-// * It is provided as an example to students in CS201 for their unit testing lab.
-// *
-// * @author Monroe Ekilah
-// */
-//public class CashierTest extends TestCase
-//{
-//	//these are instantiated for each test separately via the setUp() method.
-//	CashierAgent cashier;
-//	MockWaiter waiter;
-//	MockCustomer customer;
-//	
-//	
-//	/**
-//	 * This method is run before each test. You can use it to instantiate the class variables
-//	 * for your agent and mocks, etc.
-//	 */
-//	public void setUp() throws Exception{
-//		super.setUp();		
-//		cashier = new CashierAgent();		
-//		customer = new MockCustomer("mockcustomer");		
-//		waiter = new MockWaiter("mockwaiter");
-//	}	
-//	/**
-//	 * This tests the cashier under very simple terms: one customer is ready to pay the exact bill.
-//	 */
-//	public void testOneNormalCustomerScenario()
-//	{
+package restaurant.test;
+
+import restaurant.CashierAgent;
+//import restaurant.CashierAgent.cashierBillState;
+//import restaurant.WaiterAgent.Bill;
+import restaurant.test.mock.MockCustomer;
+import restaurant.test.mock.MockWaiter;
+import junit.framework.*;
+
+/**
+ * 
+ * This class is a JUnit test class to unit test the CashierAgent's basic interaction
+ * with waiters, customers, and the host.
+ * It is provided as an example to students in CS201 for their unit testing lab.
+ *
+ * @author Monroe Ekilah
+ */
+public class CashierTest extends TestCase
+{
+	CashierAgent cashier;
+	MockWaiter waiter;
+	MockCustomer customer;
+	
+	
+	/**
+	 * This method is run before each test. You can use it to instantiate the class variables
+	 * for your agent and mocks, etc.
+	 */
+	public void setUp() throws Exception{
+		super.setUp();		
+		cashier = new CashierAgent();		
+		customer = new MockCustomer("mockcustomer");		
+		waiter = new MockWaiter("mockwaiter");
+	}	
+	/**
+	 * This tests the cashier under very simple terms: one customer is ready to pay the exact bill.
+	 */
+	public void testOneNormalCustomerScenario()
+	{
+		waiter.msgDoneEating(customer);
+//		assertTrue(customer.log.getLastLoggedEvent().toString().equals("customer is hungry"));
+	}
 //		//setUp() runs first before this test!
 //		customer.gotHungry();
 ////		assertTrue(customer.log.getLastLoggedEvent().toString().equals("customer is hungry"));
@@ -123,5 +125,5 @@
 //	
 //	}//end one normal customer scenario
 //	
-//	
-//}
+	
+}

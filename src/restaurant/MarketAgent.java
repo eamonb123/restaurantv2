@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 public class MarketAgent extends Agent implements Market{
 	private Cashier cashier;
 	private String name; 
-	private int money;
+	private int money=0;
 	public MarketAgent(String name)
 	{
 		this.name=name;
@@ -75,7 +75,7 @@ public class MarketAgent extends Agent implements Market{
 	public void msgHereIsPayment(int bill)
 	{
 		money+=bill;
-		print(name + " now has $" + money);
+		print(name + " has $" + money);
 		stateChanged();
 	}
 

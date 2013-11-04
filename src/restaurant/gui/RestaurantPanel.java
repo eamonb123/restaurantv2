@@ -53,6 +53,7 @@ public class RestaurantPanel extends JPanel {
         
         for(MarketAgent market: markets)
         {
+        	cashier.setMarket(market);
         	market.setCashier(cashier);
         	cook.setMarket(market);
         	market.startThread();

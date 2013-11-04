@@ -21,7 +21,9 @@ public class CashierAgent extends Agent implements Cashier{
 	public List<Waiter> waiters = Collections.synchronizedList(new ArrayList<Waiter>());
 	public List<Order> receipts = Collections.synchronizedList(new ArrayList<Order>());
 	public List<Payment> payments = Collections.synchronizedList(new ArrayList<Payment>());
-	private int money=1000000;
+	public List<MarketBill> marketBills = Collections.synchronizedList(new ArrayList<MarketBill>());
+
+	private int money=200;
 	Map<String, Integer> menu = Collections.synchronizedMap(new HashMap<String, Integer>());
 	{
 	    menu.put("beef", 15);
@@ -30,6 +32,20 @@ public class CashierAgent extends Agent implements Cashier{
 	}
 	private String name; 
 	public WaiterGui waiterGui = null;
+	public class MarketBill
+	{
+		Market market;
+		int bill;
+		boolean paid = true;
+		Map<String, Integer> groceryList = Collections.synchronizedMap(new HashMap<String, Integer>());
+		MarketBill(Market market, int bill, Map<String, Integer> groceryList)
+		{
+			this.market=market;
+			this.bill=bill;
+			this.paid=true;
+			this.groceryList=groceryList;
+		}
+	}
 	public class Payment
 	{
 		Customer customer;
@@ -90,21 +106,17 @@ public class CashierAgent extends Agent implements Cashier{
 	
 	public void msgHereIsMarketBill(Market market, int bill, Map<String, Integer> outgoingList)
 	{
-		if (money>=bill)
+		synchronized(marketBills)
 		{
-			print ("the cashier has enough money to pay " + market.getName() + " for the order");
-			money-=bill;
-			print ("the cashier pays the market $" + bill  + " for " + outgoingList);
-			print ("the cashier now has $" + money);
-			market.msgHereIsPayment(bill);
+		for (MarketBill marketBill: marketBills)
+		{
+			if (marketBill.market.equals(market))
+			{
+				marketBill.bill=bill;
+				marketBill.paid=false;
+				marketBill.groceryList=outgoingList;
+			}
 		}
-		if (money<bill)
-		{
-			print ("the cashier does not have enough money to pay " + market.getName() + " for " + outgoingList + ". The cashier paid all he could");
-			bill=bill-money;
-			money=0;
-			print ("the cashier now has $" + money);
-			market.msgHereIsPayment(bill);
 		}
 		stateChanged();
 	}
@@ -118,27 +130,38 @@ public class CashierAgent extends Agent implements Cashier{
 	protected boolean pickAndExecuteAnAction() {
 		synchronized(orders)
 		{
-			for (Order order : orders) 
-			{	
-				if (order.state==receiptState.pending)
-				{
-					order.state=receiptState.complete;
-					CalculateReceipt(order);		
-					return true;
-				}
+		for (Order order : orders) 
+		{	
+			if (order.state==receiptState.pending)
+			{
+				order.state=receiptState.complete;
+				CalculateReceipt(order);		
+				return true;
 			}
+		}
 		}
 		synchronized(payments)
 		{
-			for (Payment payment : payments)
+		for (Payment payment : payments)
+		{
+			if (payment.state==paymentState.pending)
 			{
-				if (payment.state==paymentState.pending)
-				{
-					payment.state=paymentState.complete;
-					GiveChange(payment);
-					return true;
-				}
+				payment.state=paymentState.complete;
+				GiveChange(payment);
+				return true;
 			}
+		}
+		}
+		synchronized(marketBills)
+		{
+		for (MarketBill marketBill: marketBills)
+		{
+			if (!marketBill.paid)
+			{
+				PayMarketBill(marketBill);
+				return true;
+			}
+		}
 		}
 		return false;
 	}
@@ -158,13 +181,66 @@ public class CashierAgent extends Agent implements Cashier{
 		if (change < 0)
 		{
 			print("customer did not have enough money to pay for meal");
+			money+=payment.money;
 		}
+		else
+		{
+			money+=payment.bill;
+		}
+		for (MarketBill marketBill: marketBills)
+		{
+			if (marketBill.bill!=0)
+			{
+				if (money>marketBill.bill)
+				{
+					print("cashier could repay " + marketBill.market.getName() + "in full");
+					marketBill.market.msgHereIsPayment(marketBill.bill);
+					money-=marketBill.bill;
+					marketBill.bill=0;
+				}
+				else if (money > 0)
+				{
+					print("cashier paid some of his debt to " + marketBill.market.getName());
+					marketBill.bill-=money;
+					marketBill.market.msgHereIsPayment(money);
+					money=0;
+				}
+				else if (money==0)
+				{
+				}
+			}
+		}
+		print("the cashier now has $" + money);
 		payment.customer.msgHereIsChange(change);
 	}
 	
+	private void PayMarketBill(MarketBill marketBill)
+	{
+		if (money>=marketBill.bill)
+		{
+			int moneyBack = marketBill.bill;
+			print ("the cashier has enough money to pay " + marketBill.market.getName() + " for the order");
+			money-=marketBill.bill;
+			print ("the cashier pays the market $" + marketBill.bill  + " for " + marketBill.groceryList);
+			marketBill.bill=0;
+			print ("the cashier now has $" + money);
+			marketBill.market.msgHereIsPayment(moneyBack);
+		}
+		else if (money<marketBill.bill)
+		{
+			int moneyBack=money;
+			print ("the cashier does not have enough money to pay " + marketBill.market.getName() + " for " + marketBill.groceryList + ". The cashier paid all he could");
+			marketBill.bill-=money;
+			print(marketBill.market.getName() + " bill is still $" + marketBill.bill);
+			money=0;
+			print ("the cashier now has $" + money);
+			marketBill.market.msgHereIsPayment(moneyBack);
+		}
+		marketBill.paid=true;
+	}
+
 	
-
-
+	
 	//utilities
 
 	public void setGui(WaiterGui gui) {
@@ -180,5 +256,9 @@ public class CashierAgent extends Agent implements Cashier{
 		waiters.add(waiter);
 	}
 	
+	public void setMarket(Market market)
+	{
+		marketBills.add(new MarketBill(market, 0, null));
+	}
 }
 
