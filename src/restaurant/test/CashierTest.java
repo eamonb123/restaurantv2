@@ -2,8 +2,8 @@ package restaurant.test;
 
 import restaurant.CashierAgent;
 import restaurant.test.mock.MockCustomer;
+import restaurant.test.mock.MockMarket;
 import restaurant.test.mock.MockWaiter;
-
 import junit.framework.*;
 
 /**
@@ -20,6 +20,7 @@ public class CashierTest extends TestCase
 	CashierAgent cashier;
 	MockWaiter waiter;
 	MockCustomer customer;
+	
 	
 	
 	/**
@@ -51,14 +52,23 @@ public class CashierTest extends TestCase
         assertEquals("Cashier should have 0 market payments in it. It doesn't.", cashier.payments.size(), 0);  
         cashier.msgPayBill(customer, 20, 15);
         assertEquals("Cashier should have payment size of 1", cashier.payments.size(), 1);
-
+        assertTrue("Cashier's scheduler should have returned true because there is 1 payment", cashier.pickAndExecuteAnAction());
+        assertEquals("Cashier should be giving correct amount of change", cashier.log.getLastLoggedEvent().toString(), "giving change 5");
+        
 	}
 	
-	public void testPayBill()
+	public void testPayMarketFull()
 	{
-		
-
-
+		MockMarket market1 = new MockMarket("market1");
+		MockMarket market2 = new MockMarket("market2");
+		assertTrue("Market bills list should  be zero before adding markets", cashier.marketBills.isEmpty());                
+		cashier.setMarket(market1);
+		cashier.setMarket(market2);
+		assertTrue("Market bills list should not be zero after adding the 2 markets", !cashier.marketBills.isEmpty());                
+		cashier.msgHereIsMarketBill(market1, 20, null);
+        assertTrue("Cashier's scheduler should have returned true because there is an unpaid payment", cashier.pickAndExecuteAnAction());
+        assertEquals("Cashier should have enough money to pay the market bill", cashier.log.getLastLoggedEvent().toString(), "have enough money");
+        market1.msgHereIsPayment(20);
 	}
 		//setUp() runs first before this test!
 //		cashier.msgComputeCheck(waiter, "beef", 3);	

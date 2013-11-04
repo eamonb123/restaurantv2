@@ -181,6 +181,7 @@ public class CashierAgent extends Agent implements Cashier{
 	private void GiveChange(Payment payment)
 	{
 		int change = payment.money-payment.bill;
+		log.add(new LoggedEvent("giving change " + change));
 		if (change < 0)
 		{
 			print("customer did not have enough money to pay for meal");
@@ -230,6 +231,7 @@ public class CashierAgent extends Agent implements Cashier{
 	{
 		if (money>=marketBill.bill)
 		{
+			log.add(new LoggedEvent("have enough money"));
 			int moneyBack = marketBill.bill;
 			print ("the cashier has enough money to pay " + marketBill.market.getName() + " for the order");
 			money-=marketBill.bill;
@@ -240,6 +242,7 @@ public class CashierAgent extends Agent implements Cashier{
 		}
 		else if (money<marketBill.bill)
 		{
+			log.add(new LoggedEvent("don't have enough money"));
 			int moneyBack=money;
 			print ("the cashier does not have enough money to pay " + marketBill.market.getName() + " for " + marketBill.groceryList + ". The cashier paid all he could");
 			marketBill.bill-=money;
