@@ -62,7 +62,7 @@ public class AnimationPanel extends JPanel implements ActionListener {
         {
         	ImageIcon table = new ImageIcon("images/restaurantE_table.png");
         	Image image = table.getImage();
-        	g.drawImage(image, xPos, yPos, null);
+        	g.drawImage(image, xPosUpdated, yPos, null);
 //        	g2.setColor(Color.ORANGE);
 //	        g2.fillRect(xPosUpdated, yPos, Width, Height);//200 and 250 need to be table params
 	        xPosUpdated+=150;
