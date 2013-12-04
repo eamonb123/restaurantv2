@@ -8,6 +8,8 @@ import restaurant.gui.CustomerGui.Command;
 import java.awt.*;
 import java.util.*;
 
+import javax.swing.ImageIcon;
+
 public class WaiterGui implements Gui {
     private WaiterAgent waiter = null;
 	//private HostAgent host;
@@ -93,8 +95,11 @@ public class WaiterGui implements Gui {
     }
     
     public void draw(Graphics2D g) {
-        g.setColor(Color.MAGENTA);
-        g.fillRect(xPos, yPos, 20, 20);
+    	ImageIcon waiter = new ImageIcon("images/restaurantE_waiter.png");
+    	Image image = waiter.getImage();
+    	g.drawImage(image, xPos, yPos, null);
+//        g.setColor(Color.MAGENTA);
+//        g.fillRect(xPos, yPos, 20, 20);
     }
     
     public void drawOrder(Graphics2D g, String order) {

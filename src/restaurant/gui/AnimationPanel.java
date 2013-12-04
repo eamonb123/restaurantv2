@@ -60,8 +60,11 @@ public class AnimationPanel extends JPanel implements ActionListener {
         //Here is the table
         for (int i=1; i<=NTABLES; i++) //CREATING GUI TABLES
         {
-	        g2.setColor(Color.ORANGE);
-	        g2.fillRect(xPosUpdated, yPos, Width, Height);//200 and 250 need to be table params
+        	ImageIcon table = new ImageIcon("images/restaurantE_table.png");
+        	Image image = table.getImage();
+        	g.drawImage(image, xPos, yPos, null);
+//        	g2.setColor(Color.ORANGE);
+//	        g2.fillRect(xPosUpdated, yPos, Width, Height);//200 and 250 need to be table params
 	        xPosUpdated+=150;
         }
 

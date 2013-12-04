@@ -6,6 +6,8 @@ import restaurant.CustomerAgent.AgentEvent;
 import java.awt.*;
 import java.util.HashMap;
 
+import javax.swing.ImageIcon;
+
 public class CustomerGui implements Gui{
 
 	private CustomerAgent customer = null;
@@ -54,8 +56,9 @@ public class CustomerGui implements Gui{
 	}
 
 	public void draw(Graphics2D g) {
-		g.setColor(Color.GREEN);
-		g.fillRect(xPos, yPos, 20, 20);
+    	ImageIcon customer = new ImageIcon("images/restaurantE_customer.png");
+    	Image image = customer.getImage();
+    	g.drawImage(image, xPos, yPos, null);
 	}
 	
     public void drawOrder(Graphics2D g, String order) {
