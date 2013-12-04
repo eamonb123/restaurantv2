@@ -25,7 +25,7 @@ public class CashierAgent extends Agent implements Cashier{
 	public List<Payment> payments = Collections.synchronizedList(new ArrayList<Payment>());
 	public List<MarketBill> marketBills = Collections.synchronizedList(new ArrayList<MarketBill>());
 	public EventLog log = new EventLog();
-	public int money=60;
+	public int money=100000;
 	public Map<String, Integer> menu = Collections.synchronizedMap(new HashMap<String, Integer>());
 	{
 	    menu.put("beef", 15);

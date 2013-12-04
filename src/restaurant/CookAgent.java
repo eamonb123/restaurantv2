@@ -84,7 +84,7 @@ public class CookAgent extends Agent implements Cook{
     {
     	for (String choice : menuOptions)
 		{
-			foods.put(choice, new Food(choice, cookingTimes.get(choice), 1, 3, 10, OrderState.nothing));
+			foods.put(choice, new Food(choice, cookingTimes.get(choice), 5, 3, 10, OrderState.nothing));
 		}
     }
     public List<CookingArea> cookingAreas = Collections.synchronizedList(new ArrayList<CookingArea>());

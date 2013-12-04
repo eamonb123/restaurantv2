@@ -63,7 +63,7 @@ public class RestaurantPanel extends JPanel {
         cook.startThread();
         cashier.startThread();
         cook.InitializeAreas();
-        cook.CheckInitialFood();
+//        cook.CheckInitialFood();
         
         
         setLayout(new GridLayout(1, 2, 20, 20));
@@ -73,7 +73,7 @@ public class RestaurantPanel extends JPanel {
         group.add(customerPanel);
         group.add(waiterPanel);
         biggerGroup.add(group);
-        biggerGroup.add(pause);
+//        biggerGroup.add(pause);
         biggerGroup.add(restLabel);
         add(biggerGroup);
         
